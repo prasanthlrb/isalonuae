@@ -52,10 +52,10 @@ return $output->access_token;
 
 public function createPaymentOrder(Request $request){
   $amount = '100';
-  $postData = new StdClass(); 
+  $postData = new StdClass();  
   $postData->action = "SALE"; 
   $postData->merchantAttributes = new StdClass();
-  $postData->merchantAttributes->redirectUrl = "http://15.184.60.53/payment-success"; 
+  $postData->merchantAttributes->redirectUrl = "http://86.97.176.102:6700/payment-success"; 
   $postData->amount = new StdClass();
   $postData->amount->currencyCode = "AED"; 
   $postData->amount->value = $amount; 

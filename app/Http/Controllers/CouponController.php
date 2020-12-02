@@ -17,7 +17,7 @@ class CouponController extends Controller
         $this->middleware('auth:admin');
     }
     public function index(){
-        $coupon = coupon::all();
+        $coupon = coupon::where('status',1)->get();
         return view('admin.couponList',compact('coupon'));
     }
 
@@ -196,6 +196,18 @@ class CouponController extends Controller
         $coupon->status = $status;
         $coupon->save();
         return response()->json(['message'=>'Successfully Update'],200); 
+    }
+
+    public function updateCouponRequest(Request $request){
+        $request->validate([
+            'deny_remark'=> 'required',
+        ]);
+        
+        $coupon = coupon::find($request->id);
+        $coupon->deny_remark = $request->deny_remark;
+        $coupon->status = 2;
+        $coupon->save();
+        return response()->json('successfully update'); 
     }
 
 }

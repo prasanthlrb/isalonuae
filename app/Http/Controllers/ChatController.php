@@ -8,6 +8,9 @@ use App\chat_salon;
 use App\chat_customer;
 use App\role;
 use App\customer;
+use App\booking;
+use App\booking_item;
+use App\salon_customer;
 use Hash;
 use session;
 use Auth;
@@ -22,7 +25,9 @@ class ChatController extends Controller
     
     public function chatToCustomer(){
         $customer = customer::all();
-        return view('admin.chat_to_customer',compact('customer'));
+        $salon = User::all();
+        $booking = booking::all();
+        return view('admin.chat_to_customer',compact('customer','salon','booking'));
     }
 
     public function chatToSalon(){
@@ -137,4 +142,47 @@ chatContainer.scrollTop($(".chat-container > .chat-content").height());
          
         return response()->json(['html'=>$output],200); 
     }
+
+
+    public function getCustomerChat($id){
+      $chat = salon_customer::where('booking_id',$id)->get();
+
+      date_default_timezone_set("Asia/Dubai");
+      date_default_timezone_get();
+      $output=''; 
+  foreach($chat as $row){
+      $dateTime = new Carbon($row->updated_at, new \DateTimeZone('Asia/Dubai'));
+      if($row->message_from == 0){
+      $output.='<div class="chat chat-left">
+        <div class="chat-body">
+          <div class="chat-message">
+            <p>'.$row->text.'</p>
+            <span style="left:10px !important;" class="chat-time">'.$dateTime->diffForHumans().'</span>
+          </div>
+        </div>
+      </div>';
+      }
+      else{
+      $output.='<div class="chat">
+        <div class="chat-body">
+          <div class="chat-message">
+            <p>'.$row->text.'</p>
+            <span class="chat-time">'.$dateTime->diffForHumans().'</span>
+          </div>
+        </div>
+      </div>';
+      }
+  }
+
+$output.='<script src="/app-assets/js/scripts/pages/app-chat.js"></script>
+<script>
+chatContainer.scrollTop($(".chat-container > .chat-content").height());
+</script>
+';
+       
+      return response()->json(['html'=>$output],200); 
+  }
+
+
+
 }

@@ -22,6 +22,7 @@ class CreateCustomersTable extends Migration
             $table->string('dob')->nullable();
             $table->string('location')->nullable();
             $table->string('firebase_key')->nullable();
+            $table->string('city')->nullable();
             $table->string('otp')->nullable();
             $table->string('password')->nullable();
             $table->string('membership_plan')->nullable();

@@ -10,7 +10,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-      $this->middleware('guest:admin');
+      $this->middleware('guest:admin')->except('logout');
     }
 
     public function showLoginForm()
@@ -36,10 +36,11 @@ class LoginController extends Controller
       return redirect()->back()->withInput($request->only('email', 'remember'));
     }
 
-    public function logout(){
+    public function logout(Request $request){
       Auth::guard('admin')->logout();
       $request->session()->flush();
       $request->session()->regenerate();
-      return redirect()->guest(route( 'admin.login' ));
+      return redirect('/admin/login');
     }
+
 }

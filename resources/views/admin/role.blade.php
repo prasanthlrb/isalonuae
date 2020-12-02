@@ -499,8 +499,8 @@
                                     <tr>
                                         <td>Review & Ratings</td>
                                         <td>
-                                            <div class="checkbox"><input type="checkbox" name="chat_to_salon_read" id="chat_to_salon_read" class="checkbox-input">
-                                            <label for="chat_to_salon_read"></label>
+                                            <div class="checkbox"><input type="checkbox" name="review_ratings_read" id="review_ratings_read" class="checkbox-input">
+                                            <label for="review_ratings_read"></label>
                                             </div>
                                         </td>
                                         <td></td>

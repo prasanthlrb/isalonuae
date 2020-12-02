@@ -58,10 +58,51 @@
                         @foreach($review as $row)
                             <tr>
                             	<td>#{{$row->invoice_id}}</td>
-                                <td>{{$row->salon_name}}</td>
-                                <td>{{$row->customer_name}}</td>
+                                <td>
+                                @foreach($salon as $sal)
+                                @if($sal->id == $row->salon_id)
+                                    @if($sal->salon_name != '')
+                                    {{$sal->salon_name}}
+                                    @else
+                                    {{$sal->name}}
+                                    @endif
+                                @endif
+                                @endforeach
+                                </td>
+                                <td>
+                                @foreach($customer as $cus)
+                                @if($cus->id == $row->customer_id)
+                                {{$cus->name}}
+                                @endif
+                                @endforeach
+                                </td>
                                 <td>{{$row->comments}}</td>
                 <td>
+                @if($row->reviews == '1')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '2')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '3')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '4')
                     <div class="mb-1 font-small-2">
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
@@ -69,6 +110,15 @@
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
                       <i class="cursor-pointer bx bx-star text-muted"></i>
                     </div>
+                @elseif($row->reviews == '5')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                    </div>
+                @endif
                 </td>
                                 <td>{{$row->created_at}}</td>
                 <td><div class="dropdown">

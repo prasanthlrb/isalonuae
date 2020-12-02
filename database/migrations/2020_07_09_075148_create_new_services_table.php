@@ -20,6 +20,7 @@ class CreateNewServicesTable extends Migration
             $table->string('service_name')->nullable();
             $table->string('category')->nullable();
             $table->string('remark',5000)->nullable();
+            $table->string('deny_remark',5000)->nullable();
             $table->string('status')->default('0');
             $table->timestamps();
         });

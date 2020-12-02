@@ -29,6 +29,7 @@ class CreateBookingsTable extends Migration
             $table->string('discount')->nullable()->default('');
             $table->string('total')->nullable()->default('');
             $table->string('otp')->nullable()->default('');
+            $table->string('address_id')->default('0');
             $table->int('booking_status')->default('0');
             $table->string('status')->default('0');
             $table->timestamps();

@@ -75,6 +75,7 @@
 
             <li class="apps dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Settings</span></a>
                 <ul class="dropdown-menu">
+                @if(Auth::user()->busisness_type != 5)
                     @if($role->workers == 'on')
                     <li data-menu=""><a class="workers dropdown-item align-items-center" href="/vendor/workers" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Workers</a>
                     </li>
@@ -83,6 +84,7 @@
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/role" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Roles</a>
                     </li>
                     @endif
+                @endif
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/gallery" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Gallery</a>
                     </li>
                 </ul>
@@ -145,10 +147,12 @@
 
             <li class="apps dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Settings</span></a>
                 <ul class="dropdown-menu">
+                @if(Auth::user()->busisness_type != 5)
                     <li data-menu=""><a class="workers dropdown-item align-items-center" href="/vendor/workers" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Workers</a>
                     </li>
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/role" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Roles</a>
                     </li>
+                @endif
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/gallery" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Gallery</a>
                 </ul>
             </li>

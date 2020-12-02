@@ -17,6 +17,7 @@ use App\customer;
 use Hash;
 use DB;
 use Mail;
+use PDF;
 
 class PageController extends Controller
 {
@@ -83,11 +84,12 @@ public function send_sms($phone,$msg)
         $salon->salon_id = $request->salon_id;
         $salon->nationality = $request->nationality;
         $salon->emirates_id = $request->emirates_id;
+        $salon->trade_license_no = $request->trade_license_no;
+        $salon->vat_certificate_no = $request->vat_certificate_no;
         $salon->passport_number = $request->passport_number;
-        $salon->member_license = $request->member_license;
+        //$salon->member_license = $request->member_license;
         $salon->salon_commission = $request->salon_commission;
         $salon->city = $request->city;
-        $salon->area = $request->area;
         $salon->address = $request->address;
         $salon->trade_license = $fileName;
         if($request->file('passport_copy')!=""){
@@ -147,8 +149,10 @@ public function send_sms($phone,$msg)
         $all = $salon_password::find($salon_password->id);
         Mail::send('mail.salon_send_mail',compact('all'),function($message) use($all){
             $message->to($all['email'])->subject('Create your Own Password');
-            $message->from('aravind.0216@gmail.com','I-Salon Website');
+            $message->from('contact@lrbinfotech.com','I-Salon Website');
         });
+
+        $this->contractSendMail($salon->id);
         
         return response()->json('successfully save'); 
     }
@@ -156,7 +160,7 @@ public function send_sms($phone,$msg)
     public function SalonValidate(Request $request){
         $request->validate([
             'email'=> 'required|unique:users',
-            'owner_name'=>'required',
+            'name'=>'required',
         ]);
         
         return response()->json(true); 
@@ -222,14 +226,40 @@ public function send_sms($phone,$msg)
     
     $data = area::where('parent_id',$id)->get();
 
-$output ='<option value="">SELECT</option>';
-foreach ($data as $key => $value) {
-    
-$output .= '<option value="'.$value->id.'">'.$value->area.'</option>';
-}
-      
+        $output ='<option value="">SELECT</option>';
+        foreach ($data as $key => $value) {
+            
+        $output .= '<option value="'.$value->id.'">'.$value->area.'</option>';
+        }
       echo $output;
       
+    }
+
+    private function contractSendMail($id){
+        $user = User::find($id);
+
+        $pdf = PDF::loadView('pdf.contract',compact('user'));
+
+        try{
+            Mail::send('mail.contract', compact('user'), function($message)use($user) {
+            $message->to($user->email)->subject('I-Salon Website Contract');
+            $message->from('contact@lrbinfotech.com','I-Salon Website');
+            $message->attachData($pdf->output(), 'contract'.$user->id.'.pdf');
+            });
+        }catch(JWTException $exception){
+            $this->serverstatuscode = "0";
+            $this->serverstatusdes = $exception->getMessage();
+        }
+        if (Mail::failures()) {
+             $this->statusdesc  =   "Error sending mail";
+             $this->statuscode  =   "0";
+
+        }else{
+
+           $this->statusdesc  =   "Mail sent Succesfully";
+           $this->statuscode  =   "1";
+        }
+        //return response()->json($this);
     }
 
 

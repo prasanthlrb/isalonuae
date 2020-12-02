@@ -127,16 +127,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Category</label>
-                        <select id="category_id" name="category_id" class="form-control">
-                            <option value="">SELECT</option>
-                            @foreach($category as $row)
-                            <option value="{{$row->id}}">{{$row->category_name_english}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
                         <label>Image</label>
                         <input type="file" id="image" name="image" class="form-control">
                         <input type="hidden" id="image1" name="image1">
@@ -236,7 +226,7 @@ function Edit(id){
       $('input[name=service_name_arabic]').val(data.service_name_arabic);
       $('input[name=service_name_english]').val(data.service_name_english);
       $('input[name=image1]').val(data.image);
-      $('select[name=category_id]').val(data.category_id);
+      //$('select[name=category_id]').val(data.category_id);
       $('input[name=id]').val(id);
       $('#popup_modal').modal('show');
       action_type = 2;

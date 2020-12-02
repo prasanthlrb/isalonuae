@@ -19,12 +19,9 @@ class CreateManageAddressesTable extends Migration
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->string('city')->nullable();
-            $table->string('street')->nullable();
-            $table->string('addr_type')->nullable();
             $table->string('addr_title')->nullable();
-            $table->string('address1')->nullable();
-            $table->string('address2')->nullable();
-            $table->string('address3')->nullable();
+            $table->string('address')->nullable();
+            $table->string('landmark')->nullable();
             $table->string('customer_id')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

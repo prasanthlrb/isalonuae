@@ -37,14 +37,14 @@
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label>App Privacy Policy English</label>
-                                <textarea rows="10" class="form-control" type="text" name="app_about_english" id="app_about_english">{{$data->app_about_english}}</textarea>
+                                <textarea rows="10" class="form-control" type="text" name="app_privacy_english" id="app_privacy_english">{{$data->app_privacy_english}}</textarea>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label>App Privacy Policy Arabic</label>
-                                <textarea rows="10" class="form-control" type="text" name="app_about_arabic" id="app_about_arabic">{{$data->app_about_arabic}}</textarea>
+                                <textarea rows="10" class="form-control" type="text" name="app_privacy_arabic" id="app_privacy_arabic">{{$data->app_privacy_arabic}}</textarea>
                             </div>
                         </div>
                         

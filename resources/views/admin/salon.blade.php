@@ -93,8 +93,8 @@
                                       <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
                                       <a onclick="UpgradePlan({{$row->id}})" class="dropdown-item"><i class="bx bxs-chat mr-1"></i> Upgrade Package</a>
                                       <a target="_blank" class="dropdown-item" href="/admin/salon-login/{{$row->id}}"><i class="bx bxs-chat mr-1"></i> Salon Login</a>
-                                      <a class="dropdown-item" href="/admin/chat-to-salon"><i class="bx bxs-chat mr-1"></i> Chat</a>
-                                      <a class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a>
+                                      <!-- <a class="dropdown-item" href="/admin/chat-to-salon"><i class="bx bxs-chat mr-1"></i> Chat</a> -->
+                                      <!-- <a class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a> -->
                                       <a class="dropdown-item" href="/admin/view-salon/{{$row->id}}"><i class="bx bx-show-alt mr-1"></i> See Profile</a>
                                     </div>
                                   </div>
@@ -190,11 +190,11 @@
                 </div> -->
                 <div class="row salon-view">
                     <div class="form-group col-md-6">
-                        <label>Salon Name</label>
+                        <label>Busisness Name</label>
                         <input type="text" id="salon_name" name="salon_name" class="form-control">
                     </div>
                     <div class="form-group col-md-6">
-                        <label>Salon ID</label>
+                        <label>Busisness ID</label>
                         <input type="text" id="salon_id" name="salon_id" class="form-control">
                     </div>
                 </div>
@@ -213,32 +213,31 @@
 
                   <div class="col-sm-4">
                     <div class="form-group">
-                        <label>Area</label>
-                        <select id="area" name="area" class="form-control">
-                            <option value="">SELECT</option>
-                            @foreach($area as $row)
-                            <option value="{{$row->id}}">{{$row->area}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-4">
-                    <div class="form-group">
                         <label>Address</label>
                         <textarea id="address" name="address" class="form-control"></textarea>
                     </div>
                   </div>
+                  <div class="form-group col-md-4">
+                        <label>Emirates ID</label>
+                        <input type="text" id="emirates_id" name="emirates_id" class="form-control">
+                    </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <label>Emirates ID</label>
-                        <input type="text" id="emirates_id" name="emirates_id" class="form-control">
+                        <label>Trade License No</label>
+                        <input type="text" id="trade_license_no" name="trade_license_no" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Vat Certificate No</label>
+                        <input type="text" id="vat_certificate_no" name="vat_certificate_no" class="form-control">
                     </div>
                     <div class="form-group col-md-4">
                         <label>Passport Number</label>
                         <input type="text" id="passport_number" name="passport_number" class="form-control">
                     </div>
+                    
+                </div>
+                <div class="row">
                     <div class="form-group col-md-4">
                         <label>Nationality</label>
                         <select id="nationality" name="nationality" class="form-control">
@@ -249,9 +248,8 @@
                             <option value="4">Pakistan</option>
                         </select>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
+
+                    <div class="form-group col-md-4">
                         <label>Salon Package</label>
                         <select id="salon_package" name="salon_package" class="form-control">
                             <option value="">SELECT</option>
@@ -260,7 +258,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label>Salon Comission (%)</label>
                         <input type="text" id="salon_commission" name="salon_commission" class="form-control">
                     </div>
@@ -521,11 +519,12 @@ function Edit(id){
       $('input[name=salon_id]').val(data.salon_id);
       $('input[name=salon_name]').val(data.salon_name);
       $('input[name=emirates_id]').val(data.emirates_id);
+      $('input[name=trade_license_no]').val(data.trade_license_no);
+      $('input[name=vat_certificate_no]').val(data.vat_certificate_no);
       $('input[name=passport_number]').val(data.passport_number);
       $('select[name=nationality]').val(data.nationality);
       $('select[name=salon_package]').val(data.salon_package);
       $('select[name=city]').val(data.city);
-      $('select[name=area]').val(data.area);
       $('textarea[name=address]').val(data.address);
       $('#salon_package').attr('disabled', 'disabled');
       $('input[name=salon_commission]').val(data.salon_commission);

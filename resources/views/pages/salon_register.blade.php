@@ -120,31 +120,44 @@
 
                   <div class="col-sm-6 salon-view">
                     <div class="form-group">
-                        <label>Salon Name</label>
+                        <label>Busisness Name</label>
                         <input type="text" id="salon_name" name="salon_name" class="form-control">
                     </div>
                   </div>
                   <div class="col-sm-6 salon-view">
                     <div class="form-group">
-                        <label>Salon ID</label>
+                        <label>Busisness ID</label>
                         <input type="text" id="salon_id" name="salon_id" class="form-control">
                     </div>
                   </div>
 
                   <div class="col-sm-6">
                     <div class="form-group">
+                        <label>trade License No</label>
+                        <input type="text" id="trade_license_no" name="trade_license_no" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>vat certificate no</label>
+                        <input type="text" id="vat_certificate_no" name="vat_certificate_no" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="form-group">
                         <label>Emirates ID</label>
                         <input type="text" id="emirates_id" name="emirates_id" class="form-control">
                     </div>
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-sm-4">
                     <div class="form-group">
                         <label>Passport Number</label>
                         <input type="text" id="passport_number" name="passport_number" class="form-control">
                     </div>
                   </div>
 
-                  <div class="col-sm-6">
+                  <div class="col-sm-4">
                     <div class="form-group">
                         <label>City</label>
                         <select onchange="getArea()" id="city" name="city" class="form-control">
@@ -156,17 +169,6 @@
                     </div>
                   </div>
 
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Area</label>
-                        <select id="area" name="area" class="form-control">
-                            <option value="">SELECT</option>
-                            @foreach($area as $row)
-                            <option value="{{$row->id}}">{{$row->area}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                  </div>
 
                 </div>
 
@@ -279,11 +281,17 @@
                   <div class="col-sm-3">
                   </div>
                   <div class="col-sm-6">
+                    <br>
                     <div class="form-group">
-                      <div class="radio">
-                        <center><input type="radio" name="bsradio" id="agree">
-                        <label for="agree" class="text-success">I read all term and conditions and i Agree.</label></center>
+                    <fieldset>
+                      <div class="checkbox checkbox-success">
+                          <center>
+                          <input type="checkbox" id="agree" name="agree" checked="">
+                          <label for="agree">I read all term and conditions and i Agree</label>
+                          </center>
                       </div>
+                    </fieldset>
+                        
                       <!-- <div class="radio">
                         <input type="radio" name="bsradio" id="disagree">
                         <label for="disagree" class="text-danger">I am not Agree with it.</label>
@@ -373,7 +381,7 @@
 
     <script src="/app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 // $('.salon').addClass('active');
 
 $(".trade-license").hide();
@@ -464,33 +472,6 @@ function sweetAlert(){
     }).then(function() {
     window.location.href="/login";
     });
-}
-
-function SaveValidate(){
-    var formData = new FormData($('#form')[0]);
-    $.ajax({
-        url : '/salon-validate',
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: "JSON",
-        success: function(data)
-        {    
-            console.log(data);   
-            return true;  
-        },
-        error: function (data) 
-        {
-            var errorData = data.responseJSON.errors;
-            $.each(errorData, function(i, obj) {
-                toastr.error(obj[0]);
-            });
-            console.log(data);
-            return false;   
-        }
-    });
-    //return false;
 }
 
 function init_Sign_Canvas() {
@@ -601,6 +582,108 @@ function init_Sign_Canvas() {
 </script>
 
 <script type="text/javascript">
+var resultInLogin='';
+function SaveValidate(){
+    var formData = new FormData($('#form')[0]);
+    window.resultInLogin;
+    $.ajax({
+        url : '/salon-validate',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {    
+          console.log(data);   
+          resultInLogin = 'true';
+          //alert(resultInLogin);
+          return resultInLogin;
+        },
+        error: function (data) 
+        {
+          var errorData = data.responseJSON.errors;
+          $.each(errorData, function(i, obj) {
+            toastr.error(obj[0]);
+          });
+          resultInLogin = 'false';
+          //alert(resultInLogin);
+          return resultInLogin;
+        }
+    });
+
+    //return resultInLogin;
+}
+
+function validateForm() {
+  var busisness_type = $('#busisness_type').val();
+  var name = $('#name').val();
+  var email = $('#email').val();
+  var phone = $('#phone').val();
+  var trade_license_no = $('#trade_license_no').val();
+  var vat_certificate_no = $('#vat_certificate_no').val();
+  var city = $('#city').val();
+  var nationality = $('#nationality').val();
+  var address = $('#address').val();
+
+  if (busisness_type != "") {
+    if (name != "") {
+      if (email != "") {
+        if (phone != "") {
+          if (trade_license_no != "") {
+            if (vat_certificate_no != "") {
+              if (city != "") {
+                if (address != "") {
+                  if (nationality != "") {
+                    return true;
+                  }
+                  else{
+                    toastr.error("Nationality must be filled out");
+                    return false;
+                  }
+                }
+                else{
+                  toastr.error("Address must be filled out");
+                  return false;
+                }
+              }
+              else{
+                toastr.error("City must be filled out");
+                return false;
+              }
+            }
+            else{
+              toastr.error("Vat Certificate No must be filled out");
+              return false;
+            }
+          }
+          else{
+            toastr.error("Trade License No must be filled out");
+            return false;
+          }
+        }
+        else{
+          toastr.error("Phone Number must be filled out");
+          return false;
+        }
+      }
+      else{
+        toastr.error("Email ID must be filled out");
+        return false;
+      }
+    }
+    else{
+      toastr.error("Owner Name must be filled out");
+      return false;
+    }
+  }
+  else{
+    toastr.error("Busisness Type must be filled out");
+    return false;
+  }
+
+}
+
 $(".wizard-horizontal").steps({
     headerTag: "h6",
     bodyTag: "fieldset",
@@ -610,16 +693,42 @@ $(".wizard-horizontal").steps({
     finish: 'Submit'
     },
     onStepChanging: function (event, currentIndex, newIndex) {
-        // if (SaveValidate()) {
-            return true;
-        //}
-
+      // alert(currentIndex);
+      // alert(newIndex);
+      //return true;
+      if(newIndex == '1') {
+        //var res = SaveValidate();
+        //resultInLogin='';
+        //alert(res);
+        //return true;
+        if(validateForm() == true){
+          return true;
+        }
+      }
+      else if(newIndex == '0') {
+        // var res1 = SaveValidate();
+        // resultInLogin='';
+        // alert(res1);
+        if(validateForm() == true){
+          return true;
+        }
+      }
+      else if (newIndex == '2')
+      {
+        if($('#agree').is(":checked") ){
+          return true;
+        }
+        else{
+          toastr.error('Please Agree the Terms and Conditions');
+        }
+      }
     },
     onFinished: function (event, currentIndex) {
         fun_submit();
         // alert("Form submitted.");
     }
 });
+
 
 // live Icon color change on state change
 $(document).ready(function () {

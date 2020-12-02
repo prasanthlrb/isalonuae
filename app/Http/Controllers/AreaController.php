@@ -81,6 +81,7 @@ class AreaController extends Controller
         $area = area::where('parent_id',$id)->get();
         return view('admin.area',compact('area','id'));
     }
+
     public function editArea($id){
         $area = area::find($id);
         return response()->json($area); 

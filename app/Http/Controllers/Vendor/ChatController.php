@@ -25,8 +25,93 @@ class ChatController extends Controller
         $this->middleware('auth');
     }
 
-    public function getBooking(){
-      $booking = booking::where('salon_id',Auth::user()->user_id)->get();
+    private function sendChatNotification($id){
+      $chat = salon_customer::find($id);
+      $customer = customer::find($chat->customer_id);
+      $salon = User::find($chat->salon_id);
+      $title;
+      if($salon->salon_name != ''){
+          $title = $salon->salon_name;
+      }
+      else{
+          $title = $salon->name;
+      }
+      $body= $chat->text;
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+      CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$customer->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+      CURLOPT_HTTPHEADER => array(
+          "Authorization: key=AAAAoZ2bbM0:APA91bF6daZlElRDd4EhxqKm3ThtWlEDugroa1a83scavpILHohGCZWUfN5DX7zsfRnZBHUWJF1rorEdvm4vAi6xxAuC9pSFfEnqZdy4_qkdQSVG23v6K7LADuBzQnrldACFpI9PnFoN",
+          "Content-Type: application/json"
+      ),
+      ));
+      
+      $response = curl_exec($curl);
+      curl_close($curl);
+    }
+    private function sendOTPNotification($id){
+      $booking = booking::find($id);
+      $customer = customer::find($booking->customer_id);
+      $salon = User::find($booking->salon_id);
+      $title;
+      if($salon->salon_name != ''){
+          $title = $salon->salon_name;
+      }
+      else{
+          $title = $salon->name;
+      }
+      
+      $body= "Your OTP is Verified";
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+      CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$customer->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+      CURLOPT_HTTPHEADER => array(
+          "Authorization: key=AAAAoZ2bbM0:APA91bF6daZlElRDd4EhxqKm3ThtWlEDugroa1a83scavpILHohGCZWUfN5DX7zsfRnZBHUWJF1rorEdvm4vAi6xxAuC9pSFfEnqZdy4_qkdQSVG23v6K7LADuBzQnrldACFpI9PnFoN",
+          "Content-Type: application/json"
+      ),
+      ));
+      
+      $response = curl_exec($curl);
+      curl_close($curl);
+  }
+    public function verifiedOtp(Request $request)
+    {
+      if($request->id != ''){
+          $booking = booking::find($request->id);
+          if($booking->otp == $request->otp){
+              $booking->booking_status = 1;
+              $booking->save();
+              $this->sendOTPNotification($booking->id);
+              return response()->json(['message' => 'Verified Your OTP'
+              ,'status'=>200], 200);
+          }else{
+              return response()->json(['message' => 'Verification Code Not Valid','status'=>400], 200);
+          }
+      }else{
+          return response()->json(['message' => 'Booking id not found','status'=>400], 200);
+      }
+    }
+
+
+  public function getBooking(){
+      $booking = booking::where('salon_id',Auth::user()->user_id)->orderBy('id','DESC')->get();
       $customer = customer::all();
       return view('vendor.booking',compact('booking','customer'));
   }
@@ -56,10 +141,12 @@ class ChatController extends Controller
       $salon_customer->message_from = 1;
       $salon_customer->save();
 
+      $this->sendChatNotification($salon_customer->id);
+
       $dateTime = new Carbon($salon_customer->updated_at, new \DateTimeZone('Asia/Dubai'));
         $message =  array(
            'message'=> $salon_customer->text,
-           'message_from'=> '0',
+           'message_from'=> '1',
            'date'=> $dateTime->diffForHumans(),
            'channel_name'=> $salon_customer->booking_id,
         );

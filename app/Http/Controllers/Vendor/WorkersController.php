@@ -134,7 +134,8 @@ class WorkersController extends Controller
         $profile->phone = $request->phone;
         $profile->address = $request->address;
         $profile->website = $request->website;
-        $profile->about_us = $request->about_us;
+        $profile->about_english = $request->about_english;
+        $profile->about_arabic = $request->about_arabic;
         $profile->email = $request->email;
         if($request->password != ''){
         $profile->password = Hash::make($request->password);

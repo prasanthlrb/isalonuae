@@ -16,8 +16,10 @@ use App\gallery;
 use App\coupon;
 use App\booking;
 use App\booking_item;
+use App\booking_package;
 use App\push_notification;
 use App\salon_customer;
+use App\package;
 use Hash;
 use Auth;
 use DB;
@@ -38,7 +40,7 @@ class ApiController extends Controller
         'datetime' => '2020-09-27',
         'username' => 'isalonuae',
         'password' => 'Ms5sbqBxif',
-        'senderid' => 'Smart Msg',
+        'senderid' => 'ISalon UAE',
         'type' => 'text',
         'to' => '+971'.$phone,
         'text' => $msg
@@ -115,21 +117,28 @@ class ApiController extends Controller
         $customer->name = $request->name;
         $customer->email = $request->email;
         $customer->phone = $request->phone;
-        //$customer->dob = $request->dob;
+        $customer->dob = $request->dob;
+        $customer->city = $request->city;
         $customer->firebase_key = $request->firebase_key;
-        //$customer->location = $request->location;
+        if($request->gender == 'male'){
+
+            $customer->gender = 0;
+        }else{
+            $customer->gender = 1;
+
+        }
         $customer->otp = $randomid;
         $customer->password = Hash::make($request->password);
         $customer->save();
 
-        $manage_address = new manage_address;
-        $manage_address->city = $request->city;
-        $manage_address->customer_id = $customer->id;
-        $manage_address->save();
+        // $manage_address = new manage_address;
+        // $manage_address->city = $request->city;
+        // $manage_address->customer_id = $customer->id;
+        // $manage_address->save();
 
-        $cus = customer::find($customer->id);
-        $cus->address_id = $manage_address->id;
-        $cus->save();
+        // $cus = customer::find($customer->id);
+        // $cus->address_id = $manage_address->id;
+        // $cus->save();
 
         $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
 
@@ -168,36 +177,43 @@ class ApiController extends Controller
             $customer->email = $request->email;
         }
 
-        if(isset($request->phone)){
-            
-                $customer->phone = $request->phone;
-                $customer->otp = $randomid;
-                $customer->status = 0;
-                $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
-                $this->send_sms($customer->phone,$msg);
-                $phone_status = 1;
-           // }
+        if(isset($request->dob)){
+            $customer->dob = $request->dob;
+        }
+
+        if(isset($request->gender)){
+            if($request->gender =='male'){
+                $customer->gender =0;
+            }else{
+                $customer->gender = 1;
+            }
+        }
+
+        if($request->phone != $customer->phone){
+            $customer->phone = $request->phone;
+            $customer->otp = $randomid;
+            $customer->status = 0;
+            $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
+            $this->send_sms($customer->phone,$msg);
+            $phone_status = 1;
         }
         // if(isset($request->password)){
         //     $customer->password = Hash::make($request->password);
         // }
         $customer->save();
-        $manage_address = manage_address::find($customer->address_id);
-        $street='';
+
         $city='';
-        if($manage_address->city != ''){
-            $city = $manage_address->city;
-        }
-        if($manage_address->street != ''){
-            $street = $manage_address->street;
+        if($customer->city != ''){
+            $city = $customer->city;
         }
         return response()->json(
             ['message' => 'Update Successfully',
             'name'=>$customer->name,
             'email'=>$customer->email,
             'phone'=>$customer->phone,
+            'dob'=>$customer->dob,
+            'gender'=>$customer->gender,
             'city'=>$city,
-            'street'=>$street,
             'phone_status'=>$phone_status,
             'customer_id'=>$customer->id],
         200);
@@ -221,20 +237,16 @@ class ApiController extends Controller
                     $customer->firebase_key = $request->firebase_key;
                     $customer->save();
 
-                    $manage_address = manage_address::find($customer->address_id);
-        $street='';
-        $city='';
-        if($manage_address->city != ''){
-            $city = $manage_address->city;
-        }
-        if($manage_address->street != ''){
-            $street = $manage_address->street;
-        }
+                    $city='';
+                    if($customer->city != ''){
+                        $city = $customer->city;
+                    }
                 return response()->json(['message' => 'Login Successfully','name'=>$exist[0]->name,
                 'email'=>$exist[0]->email,
                 'phone'=>$exist[0]->phone,
+                'dob'=>$exist[0]->dob,
+                'gender'=>$exist[0]->gender,
                 'city'=>$city,
-                'street'=>$street,
                 'customer_id'=>$exist[0]->id,'status'=>200], 200);
                 }else{
                     return response()->json(['message' => 'Records Does not Match','status'=>403], 403);
@@ -261,10 +273,10 @@ class ApiController extends Controller
 
         $this->send_sms($customer->phone,$msg);
 
-        Mail::send('mail.forgetpasswordmail',compact('customer'),function($message) use($customer){
-            $message->to($customer->email)->subject('Change Password Request');
-            $message->from('contact@lrbinfotech.com','I-Salon Reset Password');
-        });
+        // Mail::send('mail.forgetpasswordmail',compact('customer'),function($message) use($customer){
+        //     $message->to($customer->email)->subject('Change Password Request');
+        //     $message->from('contact@lrbinfotech.com','I-Salon Reset Password');
+        // });
         
 
         return response()->json(['message' => 'Successfully Send','_id'=>$customer->id], 200);
@@ -274,7 +286,7 @@ class ApiController extends Controller
         
         }catch (\Exception $e) {
             return response()->json($e);
-            return response()->json(['message' => 'this Email Address Not Registered()','status'=>200], 200);
+            return response()->json(['message' => 'this Email Address Not Registered','status'=>200], 200);
         }
     }
 
@@ -335,20 +347,15 @@ class ApiController extends Controller
             if($customer->otp == $request->otp){
                 $customer->status = 1;
                 $customer->save();
-                $manage_address = manage_address::find($customer->address_id);
-        $street='';
-        $city='';
-        if($manage_address->city != ''){
-            $city = $manage_address->city;
-        }
-        if($manage_address->street != ''){
-            $street = $manage_address->street;
-        }
+                $city='';
+                if($customer->city != ''){
+                    $city = $customer->city;
+                }
                 return response()->json(['message' => 'Verified Your Account','name'=>$customer->name,
                 'email'=>$customer->email,
                 'phone'=>$customer->phone,
+                'gender'=>$customer->gender,
                 'city'=>$city,
-                'street'=>$street,
                 'customer_id'=>$customer->id,'status'=>200], 200);
             }else{
                 return response()->json(['message' => 'Verification Code Not Valid','status'=>400], 400);
@@ -364,7 +371,7 @@ class ApiController extends Controller
     }
 
     public function getApiTerms($id){
-        if($id == "eng"){
+        if($id == "en"){
             $data = settings::select('app_terms_english')->first();
             return response()->json($data->app_terms_english);
         }
@@ -375,7 +382,18 @@ class ApiController extends Controller
     }
 
     public function getApiPrivacy($id){
-        if($id == "eng"){
+        if($id == "en"){
+            $data = settings::select('app_privacy_english')->first();
+            return response()->json($data->app_privacy_english);
+        }
+        else{
+            $data = settings::select('app_privacy_arabic')->first();
+            return response()->json($data->app_privacy_arabic);
+        }
+    }
+
+    public function getApiAbout($id){
+        if($id == "en"){
             $data = settings::select('app_about_english')->first();
             return response()->json($data->app_about_english);
         }
@@ -402,7 +420,7 @@ class ApiController extends Controller
                 'title' => $value->title,
                 'description' => '',
             );
-            if($value->description == 'null'){
+            if($value->description != null){
                 $data['description'] = $value->description;
             }
             $datas[] = $data;
@@ -419,30 +437,48 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiSalonDetails($city,$area){
-        if($area == 'null'){
-            $citys = area::where('area',$city)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
-        }
-        else{
-            $citys = area::where('area',$city)->first();
-            $areas = area::where('area',$area)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->where('area',$areas->id)->get();
-        }
+    public function getApiSalonDetails($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",1)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();
 
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
+                'cover_image' => '',
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
@@ -459,70 +495,48 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiSpaDetails($city,$area){
-        if($area == 'null'){
-            $citys = area::where('area',$city)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',2)->where('city',$citys->id)->get();
-        }
-        else{
-            $citys = area::where('area',$city)->first();
-            $areas = area::where('area',$area)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',2)->where('city',$citys->id)->where('area',$areas->id)->get();
-        }
+    public function getApiSpaDetails($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",2)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();
 
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
+                'cover_image' => '',
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
-            $q =DB::table('reviews as r');
-            $q->where('r.salon_id', '=', $value->id);
-            $q->groupBy('r.salon_id');
-            $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
-            $review = $q->first();
-
-            if(!empty($review)){
-                $data['review_count'] = $review->review_count;
-                $data['review_average'] = $review->review_average;
-            }
-            $datas[] = $data;
-        }   
-        return response()->json($user); 
-    }
-
-    public function getApiMakeupDetails($city,$area){
-        if($area == 'null'){
-            $citys = area::where('area',$city)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',3)->where('city',$citys->id)->get();
-        }
-        else{
-            $citys = area::where('area',$city)->first();
-            $areas = area::where('area',$area)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',3)->where('city',$citys->id)->where('area',$areas->id)->get();
-        }
-
-        $data =array();
-        $datas =array();
-        foreach ($user as $key => $value) {
-            $data = array(
-                'review_count' => '',
-                'review_average' => '',
-                'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
-                'address' => $value->address,
-                'salon_name' => $value->salon_name,
-            );
-            if(empty($value->salon_name)){
-                $data['salon_name'] = $value->name;
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
@@ -539,30 +553,48 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiBeautyDetails($city,$area){
-        if($area == 'null'){
-            $citys = area::where('area',$city)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',4)->where('city',$citys->id)->get();
-        }
-        else{
-            $citys = area::where('area',$city)->first();
-            $areas = area::where('area',$area)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',4)->where('city',$citys->id)->where('area',$areas->id)->get();
-        }
+    public function getApiMakeupDetails($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",3)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();
 
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
+                'cover_image' => '',
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
@@ -579,30 +611,48 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiHomeDetails($city,$area){
-        if($area == 'null'){
-            $citys = area::where('area',$city)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',5)->where('city',$citys->id)->get();
-        }
-        else{
-            $citys = area::where('area',$city)->first();
-            $areas = area::where('area',$area)->first();
-            $user = User::where('role_id','admin')->where('busisness_type',5)->where('city',$citys->id)->where('area',$areas->id)->get();
-        }
+    public function getApiBeautyDetails($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",4)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();
 
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
+                'cover_image' => '',
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
@@ -619,7 +669,65 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiServiceDetails($id,$city){
+    public function getApiHomeDetails($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",5)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();
+
+        $data =array();
+        $datas =array();
+        foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
+            $data = array(
+                'review_count' => '',
+                'review_average' => '',
+                'salon_id' => $value->id,
+                'cover_image' => '',
+                'address' => $value->address,
+                'salon_name' => $value->salon_name,
+                'distance' => $distance,
+            );
+            if(empty($value->salon_name)){
+                $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
+            }
+            $q =DB::table('reviews as r');
+            $q->where('r.salon_id', '=', $value->id);
+            $q->groupBy('r.salon_id');
+            $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
+            $review = $q->first();
+
+            if(!empty($review)){
+                $data['review_count'] = $review->review_count;
+                $data['review_average'] = $review->review_average;
+            }
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
+    public function getApiServiceDetails($id,$city,$lat,$lon){
         $citys = area::where('area',$city)->first();
         // $user = User::where('role_id','admin')->where('busisness_type',$id)->where('city',$citys->id)->get();
         $user =DB::table('salon_services as s')
@@ -627,21 +735,37 @@ class ApiController extends Controller
         ->join('users as u', 'u.id', '=', 's.salon_id')
         ->where('u.role_id','admin')
         ->where('u.city',$citys->id)
-        ->select('u.id','u.cover_image','u.address','u.salon_name','u.name')
-        //->orderBy('s.id','desc')
+        ->select('u.id','u.cover_image','u.address','u.salon_name','u.name' , DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(u.latitude)) 
+        * cos(radians(u.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(u.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        //->groupBy('u.id')
         ->get();
 
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => $value->cover_image,
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
@@ -661,18 +785,39 @@ class ApiController extends Controller
     }
 
 
-    public function getApiAllShop($city){
+    public function getApiAllShop($city,$lat,$lon){
         $citys = area::where('area',$city)->first();
         
-        $user = User::where('role_id','admin')->where('city',$citys->id)->where('busisness_type','!=','5')->get();
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where("users.busisness_type",'!=',5)
+        ->where("users.city",$citys->id)
+        //->groupBy("users.id")
+        ->get();    
+
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'salon_id' => $value->id,
                 'cover_image' => $value->cover_image,
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
                 'latitude' => '',
                 'longitude' => '',
             );
@@ -690,30 +835,52 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function ManageAddress(Request $request){
+    public function saveAddress(Request $request){
         try{
             $ma = new manage_address;
             $ma->map_title = $request->map_title;
-            $ma->addr_type = $request->addr_type;
             $ma->addr_title = $request->addr_title;
-            $ma->address1 = $request->address1;
-            $ma->address2 = $request->address2;
-            $ma->phone = $request->phone;
+            $ma->address = $request->address;
+            $ma->landmark = $request->landmark;
             $ma->lat = $request->lat;
             $ma->lng = $request->lng;
             $ma->city = $request->city;
-            $ma->area = $request->area;
             $ma->customer_id = $request->customer_id;
+            $ma->status =0;
             $ma->save();
-            return response()->json(['message' => 'Address Store Successfully',], 200);
+            return response()->json(['message' => 'Address Store Successfully','id'=>$ma->id], 200);
         }catch (\Exception $e) {
             return response()->json(['message' => ' Server Busy','status'=>400], 400);
         }
     }
      
     public function getAddress($id){
-        $addr = manage_address::where('customer_id',$id)->select('map_title','addr_type','addr_title','address1','address2','id','lat','lng','phone','city','area')->where('status',0)->get();
+        $addr = manage_address::where('customer_id',$id)->select('map_title','lat','lng','addr_title','address','id','city','landmark')->where('status',0)->get();
         return response()->json($addr);
+    }
+
+    public function updateAddress(Request $request){
+        try{
+        $ma =  manage_address::find($request->addr_id);
+        $ma->map_title = $request->map_title;
+        $ma->addr_title = $request->addr_title;
+        $ma->address = $request->address;
+        $ma->landmark = $request->landmark;
+        $ma->lat = $request->lat;
+        $ma->lng = $request->lng;
+        $ma->city = $request->city;
+        $ma->save();
+        return response()->json(['message' => 'Address Update Successfully',], 200);
+         }catch (\Exception $e) {
+            return response()->json(['message' => ' Server Busy','status'=>400], 400);
+        }
+    }
+
+    public function deleteAddress(Request $request){
+    $address = manage_address::find($request->addr_id);
+    $address->status = 1;
+    $address->save();
+    return response()->json(['message' => 'Address Delete Successfully',], 200);
     }
 
     public function getShopReview($id){
@@ -738,9 +905,14 @@ class ApiController extends Controller
 
     public function getShopGallery($id){
         $gallery = gallery::where('salon_id',$id)->select('image')->where('status',0)->get();
-        foreach ($gallery as $key => $value) {            
-            $datas[] = $value->image;
-        }  
+        if(count($gallery) > 0){
+            foreach ($gallery as $key => $value) {            
+                $datas[] = $value->image;
+            }  
+
+        }else{
+            $datas = array();
+        }
         return response()->json($datas); 
     }
 
@@ -752,6 +924,7 @@ class ApiController extends Controller
             'review_count' => '',
             'review_average' => '',
             'salon_id' => $user->id,
+            'busisness_type' => $user->busisness_type,
             'cover_image' => $user->cover_image,
             'address' => $user->address,
             'salon_name' => $user->salon_name,
@@ -778,6 +951,21 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
+    public function getApiShopStatus($id){
+        $user = User::find($id);
+        if($user->busisness_type == '5'){
+            $data = array(
+                'status' => 1,
+            );
+        }
+        else{
+            $data = array(
+                'status' => 0,
+            );
+        }   
+        return response()->json($data); 
+    }
+
     public function getShopWorkers($id){
         $user = User::where('user_id',$id)->get();
         $data =array();
@@ -788,6 +976,40 @@ class ApiController extends Controller
                 'name' => $value->name,
                 'email' => $value->email,
                 'phone' => $value->phone,
+            );
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
+    public function getShopPackage($id){
+        $package = package::where('salon_id',$id)->get();
+        $data =array();
+        foreach ($package as $key => $value) {
+            $data = array(
+                'package_id' => $value->id,
+                'package_image' => $value->image,
+                'package_name_english' => $value->package_name_english,
+                'package_name_arabic' => '',
+                'price' => (double)$value->price,
+            );
+            if($value->package_name_arabic != null){
+                $data['package_name_arabic'] = $value->package_name_arabic;
+            }
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
+    public function getPackageServices($id){
+        $package = package::find($id);
+        $data =array();
+        foreach(explode(',',$package->service_ids) as $service_id){
+            $service = service::find($service_id);
+            $data = array(
+                'service_id' => $service->id,
+                'service_name' => $service->service_name_english,
+                'service_image' => $service->image,
             );
             $datas[] = $data;
         }   
@@ -839,20 +1061,44 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
-    public function getApiShopName($name){
-        $user = user::where('salon_name','LIKE', "%$name%")->where('status',0)->get();
+    public function getApiShopName($name,$lat,$lon){
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        ->where('salon_name','LIKE', "%$name%")
+        ->where('status',0)
+        //->groupBy("users.id")
+        ->get();   
+
         $data =array();
         foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
             $data = array(
                 'review_count' => '',
                 'review_average' => '',
                 'salon_id' => $value->id,
-                'cover_image' => $value->cover_image,
+                'cover_image' => '',
                 'address' => $value->address,
                 'salon_name' => $value->salon_name,
+                'distance' => $distance,
             );
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
@@ -909,8 +1155,8 @@ class ApiController extends Controller
 
 
     public function getShopNear(Request $request){
-        $lat = '9.959009';
-        $lon = '78.101046';
+        $lat = '24.491054';
+        $lon = '54.363560';
 
     $data = DB::table("users")
         ->select("users.id"
@@ -919,7 +1165,8 @@ class ApiController extends Controller
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->groupBy("users.id")
+        ->where("users.role_id",'admin')
+        //->groupBy("users.id")
         ->get();
 
         return response()->json($data); 
@@ -945,7 +1192,7 @@ class ApiController extends Controller
     }
 
     public function couponModule($id,$code,$value,$salon_id){
-        $coupon = coupon::where('coupon_code',$code)->get();
+        $coupon = coupon::where('coupon_code',$code)->where('status',1)->get();
 if(count($coupon)>0){
     if($salon_id == $coupon[0]->salon_id || $coupon[0]->salon_id == 'admin'){
         if($value >= $coupon[0]->min_order_val){
@@ -1041,8 +1288,10 @@ if(count($coupon)>0){
     
 }
 
-    public function getAccessToken(){
-        $apikey="YmZjY2MwZjktMjhjNS00Njk1LWFjN2UtNDJmNWJjYTBhOGExOjY2MWI3OWRjLTRkODgtNDAzYi05MWY0LTM0YTBhZjY3YTE5MA==";     
+    private function getAccessToken(){
+        $apikey="YmZjY2MwZjktMjhjNS00Njk1LWFjN2UtNDJmNWJjYTBhOGExOjY2MWI3OWRjLTRkODgtNDAzYi05MWY0LTM0YTBhZjY3YTE5MA==";
+        
+        //$apikey="YmE2MjU0YmQtMjZhMi00MjE3LWIxODMtN2IwODI5NGZlN2MyOjZkZjVjNDNiLTQ2NjktNDE5YS1iYTc0LTAyYjI1MzcyNTQ0Zg==";     
         // enter your API key here
         $ch = curl_init(); 
         curl_setopt($ch, CURLOPT_URL, "https://api-gateway.sandbox.ngenius-payments.com/identity/auth/access-token"); 
@@ -1050,7 +1299,7 @@ if(count($coupon)>0){
             "accept: application/vnd.ni-identity.v1+json",
             "authorization: Basic ".$apikey,
             "content-type: application/vnd.ni-identity.v1+json",
-            "APP_KEY: 8Shm171pe2oTGvJlql7nxe2Ys/tHJaiiVq6vr5wIu5EJhEEmI3gVi",
+            "APP_KEY:8Shm171pe2oTGvJlql7nxe2Ys/tHJaiiVq6vr5wIu5EJhEEmI3gVi",
           )); 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);   
         curl_setopt($ch, CURLOPT_POST, 1); 
@@ -1061,7 +1310,9 @@ if(count($coupon)>0){
         
         
         
-    public function createPaymentOrder($total,$id){
+    private function createPaymentOrder($total,$id){
+        // foreach(explode('.', $d) as $info) {
+            
         $amount = $total.'00';
         $customer = customer::find($id);
         $postData = new StdClass(); 
@@ -1069,7 +1320,7 @@ if(count($coupon)>0){
         $postData->firstName = $customer->name; 
         $postData->email = $customer->email; 
         $postData->merchantAttributes = new StdClass();
-        $postData->merchantAttributes->redirectUrl = "http://86.97.176.102:5600/payment-success";
+        $postData->merchantAttributes->redirectUrl = "http://86.97.176.102:6700/payment-success";
         $postData->amount = new StdClass();
         $postData->amount->currencyCode = "AED"; 
         $postData->amount->value = $amount; 
@@ -1085,7 +1336,7 @@ if(count($coupon)>0){
             "Authorization: Bearer ".$token, 
             "Content-Type: application/vnd.ni-payment.v2+json", 
             "Accept: application/vnd.ni-payment.v2+json",
-            "APP_KEY: 8Shm171pe2oTGvJlql7nxe2Ys/tHJaiiVq6vr5wIu5EJhEEmI3gVi",
+            "APP_KEY:8Shm171pe2oTGvJlql7nxe2Ys/tHJaiiVq6vr5wIu5EJhEEmI3gVi",
           )); 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);   
         curl_setopt($ch, CURLOPT_POST, 1); 
@@ -1121,7 +1372,8 @@ if(count($coupon)>0){
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => [
           "Authorization: Bearer $token",
-          "Accept: application/vnd.ni-payment.v2+json"
+          "Accept: application/vnd.ni-payment.v2+json",
+          "APP_KEY:8Shm171pe2oTGvJlql7nxe2Ys/tHJaiiVq6vr5wIu5EJhEEmI3gVi",
         ],
       ]);
       
@@ -1145,7 +1397,7 @@ if(count($coupon)>0){
       if ($err) {
         echo "cURL Error #:" . $err;
       } else {
-        echo $response;
+        //echo $response;
         //echo $status;
         return response()->json(
             ['message' => 'Save Successfully'], 200);
@@ -1154,14 +1406,47 @@ if(count($coupon)>0){
 
     }
 
+    private function sendBookNotification($id){
+        $booking = booking::find($id);
+        $customer = customer::find($booking->customer_id);
+        $salon = User::find($booking->salon_id);
+        $title;
+        if($salon->salon_name != ''){
+            $title = $salon->salon_name;
+        }
+        else{
+            $title = $salon->name;
+        }
+        
+        $body= "Booking Successfull and your Booking ID #".$booking->id;
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$customer->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: key=AAAAoZ2bbM0:APA91bF6daZlElRDd4EhxqKm3ThtWlEDugroa1a83scavpILHohGCZWUfN5DX7zsfRnZBHUWJF1rorEdvm4vAi6xxAuC9pSFfEnqZdy4_qkdQSVG23v6K7LADuBzQnrldACFpI9PnFoN",
+            "Content-Type: application/json"
+        ),
+        ));
+        
+        $response = curl_exec($curl);
+        curl_close($curl);
+    }
+
     public function saveBooking(Request $request){
         try{
         $randomid = mt_rand(1000,9999); 
-        
         $booking = new booking;
         $booking->salon_id = $request->salon_id;
+        $booking->date = date('Y-m-d');
         $booking->customer_id = $request->customer_id;
-        //$booking->payment_id = $request->payment_id;
         $booking->appointment_date = date('Y-m-d',strtotime($request->appointment_date));
         $booking->appointment_time = $request->appointment_time;
         $booking->workers_id = $request->workers_id;
@@ -1171,24 +1456,41 @@ if(count($coupon)>0){
         $booking->discount = $request->discount;
         $booking->total = $request->total;
         $booking->otp = $randomid;
+        $booking->address_id = $request->address_id;
+        $booking->payment_type = $request->payment_type;
+        $booking->payment_status = 0;
         
-        $output = $this->createPaymentOrder($request->total,$request->customer_id);
+        if($request->payment_type == 1){
+        $totalData = explode('.',$request->total);
+        $output = $this->createPaymentOrder($totalData[0],$request->customer_id);
         $booking->order_id = $output['order_reference'];
         $booking->pay_url = $output['pay_url'];
+        //$booking->save();
+        }
         $booking->save();
-        
         $salon = User::find($request->salon_id);
         $customer=customer::find($request->customer_id);
+        //return response()->json($request);
 
-        $msg= "Dear Customer, Please use the code ".$customer->otp." to Approve your ".$salon->salon_name;
+        $this->sendBookNotification($booking->id);
 
-        // $this->send_sms($customer->phone,$msg);
-        return response()->json(
+        $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
+
+        //$this->send_sms($customer->phone,$msg);
+        if($request->payment_type == 1){
+            return response()->json(
             ['message' => 'Save Successfully',
             'booking_id'=>$booking->id,
             'pay_url'=>$output['pay_url'],
             'order_id'=>$output['order_reference'],
             ], 200);
+        }
+        else{
+            return response()->json(
+                ['message' => 'Save Successfully',
+                'booking_id'=>$booking->id,
+                ], 200);
+        }
         }catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(),'status'=>400], 400);
         } 
@@ -1210,12 +1512,30 @@ if(count($coupon)>0){
         } 
     }
 
+    public function saveBookingPackage(Request $request){
+        try{
+            $booking_package = new booking_package;
+            $booking_package->booking_id = $request->booking_id;
+            $booking_package->package_id = $request->package_id;
+            $booking_package->package_name = $request->package_name;
+            $booking_package->price = $request->price;
+            $booking_package->save();
+
+        return response()->json(
+            ['message' => 'Save Successfully'],
+             200);
+        }catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(),'status'=>400], 400);
+        } 
+    }
+
     public function getBooking($id){
-        $booking = booking::where('customer_id',$id)->get();
+        $booking = booking::where('customer_id',$id)->orderBy('id','DESC')->get();
         
         $data =array();
         foreach ($booking as $key => $value) {
            // $salon = User::where('id',$booking->salon_id)->first();
+            if($value->payment_type != 1 || $value->payment_status != 0){
             $salon = User::find($value->salon_id);
             // return response()->json($salon); 
             $data = array(
@@ -1227,13 +1547,17 @@ if(count($coupon)>0){
                 'appointment_date' => $value->appointment_date,
                 'appointment_time' => $value->appointment_time,
                 'booking_status' => (int)$value->booking_status,
+                'payment_type' => (int)$value->payment_type,
+                'payment_status' => (int)$value->payment_status,
                 'latitude' => '',
                 'longitude' => '',
                 'website' => '',
                 'otp' => $value->otp,
-                'total' => (double)$value->total,
+                'subtotal' => $value->subtotal,
+                'total' => $value->total,
                 'coupon' => '',
-                'discount' => 0,
+                'discount' => 0.0,
+                'address_id'=> (int)$value->address_id
             );
             if($salon->latitude != null){
                 $data['latitude'] = $salon->latitude;
@@ -1254,6 +1578,7 @@ if(count($coupon)>0){
                 $data['website'] = $salon->website;
             }
             $datas[] = $data;
+            }
         }   
         return response()->json($datas); 
     }
@@ -1261,17 +1586,42 @@ if(count($coupon)>0){
     public function getBookingItem($id){
         $booking = booking_item::where('booking_id',$id)->get();
         $data =array();
-        foreach ($booking as $key => $value) {
-            $service = service::find($value->service_id);
-            $data = array(
-                'booking_id' => $value->id,
-                'service_image' => $service->image,
-                'service_name_english' => $service->service_name_english,
-                'service_name_arabic' => $service->service_name_arabic,
-                'price' => $value->price,
-            );
-            $datas[] = $data;
-        }   
+        if(count($booking) >0){
+            foreach ($booking as $key => $value) {
+                $service = service::find($value->service_id);
+                $data = array(
+                    'booking_id' => $value->id,
+                    'service_image' => $service->image,
+                    'service_name_english' => $service->service_name_english,
+                    'service_name_arabic' => $service->service_name_arabic,
+                    'price' => $value->price,
+                );
+                $datas[] = $data;
+            }
+        }else{
+            $datas=array();
+        }
+        return response()->json($datas); 
+    }
+
+    public function getBookingPackage($id){
+        $package = booking_package::where('booking_id',$id)->get();
+        $data =array();
+        if(count($package) >0){
+
+            foreach ($package as $key => $value) {
+                $pack = package::find($value->package_id);
+                $data = array(
+                    'package_id' => $value->package_id,
+                    'package_name' => $value->package_name,
+                    'package_price' => $value->price,
+                    'package_image' => $pack->image,
+                );
+                $datas[] = $data;
+            }   
+        }else{
+            $datas=array();
+        }
         return response()->json($datas); 
     }
 
@@ -1291,6 +1641,36 @@ if(count($coupon)>0){
         return response()->json($datas); 
     }
 
+    private function sendChatNotification($id){
+        $chat = salon_customer::find($id);
+        $customer = customer::find($chat->customer_id);
+        $salon = User::where('user_id',$chat->salon_id)->get();
+
+        $title = "Booking ID #".$chat->booking_id;
+        $body= $chat->text;
+        foreach($salon as $salon1){
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$salon1->fcm_token\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$body\",\r\n  \"title\" : \"$title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: key=AAAAoZ2bbM0:APA91bF6daZlElRDd4EhxqKm3ThtWlEDugroa1a83scavpILHohGCZWUfN5DX7zsfRnZBHUWJF1rorEdvm4vAi6xxAuC9pSFfEnqZdy4_qkdQSVG23v6K7LADuBzQnrldACFpI9PnFoN",
+            "Content-Type: application/json"
+        ),
+        ));
+        
+        $response = curl_exec($curl);
+        curl_close($curl);
+        }
+    }
+
     public function saveChatBooking(Request $request){
         date_default_timezone_set("Asia/Dubai");
         date_default_timezone_get();
@@ -1301,7 +1681,10 @@ if(count($coupon)>0){
         $salon_customer->booking_id = $request->booking_id;
         $salon_customer->salon_id = $booking->salon_id;
         $salon_customer->message_from = 0;
+        if( $request->message != ''){
         $salon_customer->save();
+        
+        $this->sendChatNotification($salon_customer->id);
 
         $dateTime = new Carbon($salon_customer->updated_at, new \DateTimeZone('Asia/Dubai'));
         $message =  array(
@@ -1312,9 +1695,63 @@ if(count($coupon)>0){
         );
             //event(new MyEvent($message));
             event(new ChatEvent($message));
+        }
         return response()->json(
             ['message' => 'Save Successfully'],
         200);
       }
+
+
+      //Home Service Order final page show manage address
+      public function getManageAddress($id){
+          $ma = manage_address::find($id);
+          return response()->json($ma);
+      }
+
+      public function saveReview(Request $request){
+        try{
+            $order = booking::find($request->booking_id);
+            $exist = review::where('salon_id',$order->salon_id)->where('invoice_id',$request->booking_id)->get();
+            if(count($exist)>0){
+                 return response()->json(['message' => 'Review Has been Already Stored','status'=>403], 403);
+            }
+        
+        $review = new review;
+        $review->invoice_id = $request->booking_id;
+        $review->salon_id = $order->salon_id;
+        $review->customer_id = $order->customer_id;
+        $review->comments = $request->review;
+        $review->reviews = $request->rating;
+        $review->save();
+
+        return response()->json(
+            ['message' => 'Register Successfully',
+            // 'name'=>$review->name,
+            'review_id'=>$review->id],
+             200);
+        }catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(),'status'=>400], 400);
+        } 
+    }
+
+    public function getReview($order_id){
+        $order = booking::find($order_id);
+        $review = review::where('invoice_id',$order_id)->where('salon_id',$order->salon_id)->get();
+        $data =array();
+        if(count($review)>0){
+            $data = array(
+                'review' => $review[0]->comments,
+                'rating' => (int)$review[0]->reviews,
+            );
+        }
+        else{
+            $data = array(
+                'review' => '',
+                'rating' => '',
+            );
+        }
+        return response()->json($data); 
+    }
+
 
 }

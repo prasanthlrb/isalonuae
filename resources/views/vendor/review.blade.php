@@ -38,22 +38,50 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Invoice ID</th>
-						                                <th>Salon Name</th>
 						                                <th>Customer Name</th>
 						                                <th>Comments</th>
 						                                <th>Reviews</th>
 						                                <th>Date & Time</th>
-						                                <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($review as $row)
-                            <tr>
-                            	<td>#{{$row->invoice_id}}</td>
-                                <td>{{$row->salon_name}}</td>
-                                <td>{{$row->customer_name}}</td>
-                                <td>{{$row->comments}}</td>
-                <td>
+                                                <tr>
+                                                    <td>#{{$row->invoice_id}}</td>
+                                                    <td>
+                                                    @foreach($customer as $cus)
+                                                    @if($cus->id == $row->customer_id)
+                                                    {{$cus->name}}
+                                                    @endif
+                                                    @endforeach
+                                                    </td>
+                                                    <td>{{$row->comments}}</td>
+                                                    <td>
+                @if($row->reviews == '1')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '2')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '3')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '4')
                     <div class="mb-1 font-small-2">
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
@@ -61,28 +89,26 @@
                       <i class="cursor-pointer bx bxs-star text-warning"></i>
                       <i class="cursor-pointer bx bx-star text-muted"></i>
                     </div>
-                </td>
-                                <td>{{$row->created_at}}</td>
-                <td><div class="dropdown">
-                <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
-                </span>
-                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
-                  <a class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Approved</a>
-                  <a class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> Remove</a>
-                </div>
-              </div></td>
-                    </tr>
-                @endforeach
+                @elseif($row->reviews == '5')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                    </div>
+                @endif
+                                                    <td>{{$row->created_at}}</td>
+                                                </tr>
+                                                @endforeach
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <th>Invoice ID</th>
-						                                <th>Salon Name</th>
 						                                <th>Customer Name</th>
 						                                <th>Comments</th>
 						                                <th>Reviews</th>
 						                                <th>Date & Time</th>
-						                                <th>Action</th>
                                                     </tr>
                                                 </tfoot>
                                             </table>

@@ -1,5 +1,6 @@
  @section('css')
      <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
+     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/select/select2.min.css">
  @endsection
  @extends('admin.layouts')
 @section('body-section')
@@ -71,7 +72,7 @@
                 <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
                   <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
                   <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
-                  <a class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
+                  <a onclick="SendNotification({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
                 </div>
               </div></td>
                     </tr>
@@ -131,11 +132,39 @@
 
                     <div class="form-group">
                         <label>Send To</label>
-                        <select id="send_to" name="send_to" class="form-control">
+                        <select onchange="usertype()" id="send_to" name="send_to" class="form-control">
                         	<option value="">SELECT</option>
-                        	<option value="1">Salon</option>
-                        	<option value="2">Customer</option>
+                        	<option value="1">All Salon</option>
+                        	<option value="2">All Customer</option>
+                          <option value="3">Selected Salon</option>
+                          <option value="4">Selected Customer</option>
                         </select>
+                    </div>
+
+                    <div class="form-group" id="customershow">
+                      <label>Select the Customer</label>
+                      <select style="width:100% !imporatnt;" id="customer_id" name="customer_id[]" class="select2 form-control" multiple="multiple">
+                        <optgroup label="Select Customer">
+                        @foreach ($customer as $customer1)
+                          <option value="{{$customer1->id}}">{{$customer1->name}}</option>
+                        @endforeach
+                        </optgroup>
+                      </select>
+                    </div>
+
+                    <div class="form-group" id="salonshow">
+                      <label>Select the Salon</label>
+                      <select style="width:100% !imporatnt;" id="salon_id" name="salon_id[]" class="select2 form-control" multiple="multiple">
+                        <optgroup label="Select Salon">
+                        @foreach ($user as $user1)
+                          @if($user1->salon_name != '')
+                          <option value="{{$user1->id}}">{{$user1->salon_name}}</option>
+                          @else
+                          <option value="{{$user1->id}}">{{$user1->name}}</option>
+                          @endif
+                        @endforeach
+                        </optgroup>
+                      </select>
                     </div>
                     
                     <div class="form-group">
@@ -161,8 +190,41 @@
     <script src="../../../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
     <!-- END: Page Vendor JS-->
     <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
+    <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="/app-assets/js/scripts/forms/select/form-select2.js"></script>
 <script type="text/javascript">
 $('.push-notification').addClass('active');
+
+$("#customershow").hide();
+$("#salonshow").hide();
+$('#salon_id').select2();
+// $(".select2").select2({
+//     dropdownAutoWidth: true,
+//     width: '100%',
+//     //color:'#fff';
+// });
+//     $('#salon_id').select2({
+//         dropdownParent: $('#popup_modal')
+//     });
+function usertype(){
+  var send_to = $("#send_to").val();
+  if(send_to == '1'){
+    $("#salonshow").hide();
+    $("#customershow").hide();
+  }
+  else if(send_to == '2'){
+    $("#salonshow").hide();
+    $("#customershow").hide();
+  }
+  else if(send_to == '3'){
+    $("#salonshow").show();
+    $("#customershow").hide();
+  }
+  else if(send_to == '4'){
+    $("#salonshow").hide();
+    $("#customershow").show();
+  }
+}
 
 var action_type;
 $('#add_new').click(function(){
@@ -171,6 +233,7 @@ $('#add_new').click(function(){
     action_type = 1;
     $('#saveButton').text('Save');
     $('#modal-title').text('Add Push Notification');
+    $('#salon_id').select2();
 });
 
 function Save(){
@@ -221,6 +284,56 @@ function Save(){
   }
 }
 
+
+function Send(){
+  var formData = new FormData($('#form')[0]);
+  if(action_type == 1){
+    $.ajax({
+        url : '/admin/save-send-notification',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {                
+            $("#form")[0].reset();
+            $('#popup_modal').modal('hide');
+            $('.zero-configuration').load(location.href+' .zero-configuration');
+            toastr.success(data, 'Successfully Save');
+        },error: function (data) {
+            var errorData = data.responseJSON.errors;
+            $.each(errorData, function(i, obj) {
+            toastr.error(obj[0]);
+      });
+    }
+    });
+  }else{
+    $.ajax({
+      url : '/admin/update-send-notification',
+      type: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      dataType: "JSON",
+      success: function(data)
+      {
+        console.log(data);
+          $("#form")[0].reset();
+           $('#popup_modal').modal('hide');
+           $('.zero-configuration').load(location.href+' .zero-configuration');
+           toastr.success(data, 'Successfully Update');
+      },error: function (data) {
+        var errorData = data.responseJSON.errors;
+        $.each(errorData, function(i, obj) {
+          toastr.error(obj[0]);
+        });
+      }
+    });
+  }
+}
+
+
 function Edit(id){
   $.ajax({
     url : '/admin/notification/'+id,
@@ -234,10 +347,54 @@ function Edit(id){
       $('textarea[name=description]').val(data.description);
       $('select[name=send_to]').val(data.send_to);
       $('input[name=id]').val(id);
+      $('#salon_id').select2();
+  if(data.send_to == '1'){
+    $("#salonshow").hide();
+    $("#customershow").hide();
+  }
+  else if(data.send_to == '2'){
+    $("#salonshow").hide();
+    $("#customershow").hide();
+  }
+  else if(data.send_to == '3'){
+    $("#salonshow").show();
+    $("#customershow").hide();
+    get_notification_salon(data.id);
+  }
+  else if(data.send_to == '4'){
+    $("#salonshow").hide();
+    $("#customershow").show();
+    get_notification_customer(data.id);
+  }
       $('#popup_modal').modal('show');
       action_type = 2;
     }
   });
+}
+
+
+
+function get_notification_salon(id)
+{
+    $.ajax({        
+        url : '/admin/get-notification-salon/'+id,
+        type: "GET",
+        success: function(data)
+        {
+           $('#salon_id').html(data);
+        }
+   });
+}
+function get_notification_customer(id)
+{
+    $.ajax({        
+        url : '/admin/get-notification-customer/'+id,
+        type: "GET",
+        success: function(data)
+        {
+           $('#customer_id').html(data);
+        }
+   });
 }
 
 function Delete(id){
@@ -250,6 +407,22 @@ function Delete(id){
         success: function(data)
         {
           toastr.success(data, 'Successfully Delete');
+          $('.zero-configuration').load(location.href+' .zero-configuration');
+        }
+      });
+    } 
+}
+
+function SendNotification(id){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/admin/notification-send/'+id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Send');
           $('.zero-configuration').load(location.href+' .zero-configuration');
         }
       });

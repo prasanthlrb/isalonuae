@@ -19,7 +19,10 @@ class CreatePushNotificationsTable extends Migration
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->string('send_to')->nullable();
+            $table->string('customer_ids')->nullable();
+            $table->string('salon_ids')->nullable();
             $table->string('other_status')->nullable();
+            $table->string('deny_remark',5000)->nullable();
             $table->string('status')->default('0');
             $table->timestamps();
         });

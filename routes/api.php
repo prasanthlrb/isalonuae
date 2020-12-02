@@ -38,18 +38,21 @@ Route::get('/get-city', 'ApiController@getApiCity');
 
 Route::get('/get-terms/{id}', 'ApiController@getApiTerms');
 Route::get('/get-privacy/{id}', 'ApiController@getApiPrivacy');
+Route::get('/get-about/{id}', 'ApiController@getApiAbout');
 
-Route::get('/get-salon-details/{id}/{id1}', 'ApiController@getApiSalonDetails');
-Route::get('/get-spa-details/{id}/{id1}', 'ApiController@getApiSpaDetails');
-Route::get('/get-makeup-details/{id}/{id1}', 'ApiController@getApiMakeupDetails');
-Route::get('/get-beauty-details/{id}/{id1}', 'ApiController@getApiBeautyDetails');
-Route::get('/get-home-details/{id}/{id1}', 'ApiController@getApiHomeDetails');
+Route::get('/get-salon-details/{id}/{lat}/{lng}', 'ApiController@getApiSalonDetails');
+Route::get('/get-spa-details/{id}/{lat}/{lng}', 'ApiController@getApiSpaDetails');
+Route::get('/get-makeup-details/{id}/{lat}/{lng}', 'ApiController@getApiMakeupDetails');
+Route::get('/get-beauty-details/{id}/{lat}/{lng}', 'ApiController@getApiBeautyDetails');
+Route::get('/get-home-details/{id}/{lat}/{lng}', 'ApiController@getApiHomeDetails');
 
-Route::get('/get-service-details/{id}/{id1}', 'ApiController@getApiServiceDetails');
+Route::get('/get-service-details/{id}/{city}/{lat}/{lng}', 'ApiController@getApiServiceDetails');
 
-Route::get('/get-shop-name/{id}', 'ApiController@getApiShopName');
+Route::get('/get-shop-name/{name}/{lat}/{lng}', 'ApiController@getApiShopName');
 
-Route::get('/get-all-shop/{id}', 'ApiController@getApiAllShop');
+Route::get('/get-all-shop/{id}/{lat}/{lng}', 'ApiController@getApiAllShop');
+//check if agend id is home services
+Route::get('/get-shop-status/{id}', 'ApiController@getApiShopStatus');
 
 Route::post('/profile-update', 'ApiController@profileUpdate');
 Route::post('/change-password', 'ApiController@changePassword');
@@ -69,18 +72,21 @@ Route::get('/get-shop-services/{id}', 'ApiController@getShopServices');
 
 Route::get('/get-shop-weeks/{id}', 'ApiController@getShopWeeks');
 Route::get('/get-shop-booking/{id}/{id1}', 'ApiController@getShopBooking');
-
 Route::post('/get-shop-near', 'ApiController@getShopNear');
 
 Route::post('/save-booking', 'ApiController@saveBooking');
 Route::post('/save-booking-item', 'ApiController@saveBookingItem');
+Route::post('/save-booking-package', 'ApiController@saveBookingPackage');
 //appoinment done
 Route::get('/get-booking/{id}', 'ApiController@getBooking');
+//manage address get from 
+Route::get('/get-manage-address/{id}', 'ApiController@getManageAddress');
 //booking process
 Route::get('/get-booking-item/{id}', 'ApiController@getBookingItem');
+Route::get('/get-booking-package/{id}', 'ApiController@getBookingPackage');
 Route::get('/get-booking-transaction/{id}', 'ApiController@getBookingTransaction');
 
-Route::get('/get-package', 'ApiController@getPackage');
+Route::get('/get-package/{id}', 'ApiController@getShopPackage');
 Route::get('/get-package-services/{id}', 'ApiController@getPackageServices');
 
 Route::get('/coupon-code-apply/{customer_id}/{code}/{value}/{salon_id}', 'ApiController@couponModule');
@@ -97,5 +103,44 @@ Route::get('/get-retrive-payment/{id}', 'ApiController@getRetrivePayment');
 Route::get('/get-chat-booking/{id}', 'ApiController@getChatBooking');
 Route::post('/save-chat-booking', 'ApiController@saveChatBooking');
 Route::get('/chat-init/{id}', 'ApiController@chatInit');
+
+
+//review
+Route::POST('/save-review', 'ApiController@saveReview');
+Route::get('/get-review/{order_id}', 'ApiController@getReview');
+
+
+
+
+//salon
+Route::post('/salon-login', 'SalonApiController@salonLogin');
+// Route::post('/update-salon', 'SalonApiController@updateCustomer');
+// Route::get('/edit-salon/{id}', 'SalonApiController@editCustomer');
+
+Route::post('/salon-otp-resend', 'SalonApiController@getApiOtpResend');
+
+Route::post('/salon-forget-password', 'SalonApiController@forgetPassword');
+Route::post('/salon-reset-password', 'SalonApiController@resetPassword');
+
+Route::post('/salon-change-password', 'SalonApiController@changePassword');
+
+Route::get('/get-salon-dashboard/{id}', 'SalonApiController@getDashboard');
+Route::get('/get-salon-booking/{id}', 'SalonApiController@getBooking');
+Route::POST('/booking-otp-verified', 'SalonApiController@BookingOtpVerified');
+
+//booking process
+Route::get('/get-salon-booking-item/{id}', 'SalonApiController@getBookingItem');
+Route::get('/get-salon-booking-package/{id}', 'SalonApiController@getBookingPackage');
+Route::get('/get-salon-booking-transaction/{id}', 'SalonApiController@getBookingTransaction');
+
+Route::post('/update-booking-status', 'SalonApiController@uodateBookingStatus');
+
+//chat
+Route::get('/get-chat-salon/{id}', 'SalonApiController@getChatSalon');
+Route::post('/save-chat-salon', 'SalonApiController@saveChatSalon');
+
+//chat
+Route::get('/get-salon-service/{id}', 'SalonApiController@getSalonService');
+Route::post('/update-salon-service', 'SalonApiController@updateSalonService');
 
         

@@ -74,7 +74,7 @@
                 </span>
                 <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
                   <a onclick="updateNotification({{$row->id}},1)" class="dropdown-item" href="#">Approved</a>
-                  <a onclick="updateNotification({{$row->id}},2)" class="dropdown-item" href="#">Denied</a>
+                  <a onclick="updateModel({{$row->id}})" class="dropdown-item" href="#">Denied</a>
                 </div>
               </div></td>
                             </tr>
@@ -106,6 +106,35 @@
             </div>
             
         </div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="popup_modal" tabindex="-1" role="dialog" aria-labelledby="popup_modal" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-grey-dark-5">
+                <h6 class="modal-title text-white" id="modal-title">Add New</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form" method="POST" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                <input type="hidden" name="id" id="id">
+
+                    <div class="form-group">
+                        <label>Remark</label>
+                        <textarea id="deny_remark" name="deny_remark" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="Save()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Bootstrap Modal -->
 @endsection
 @section('js')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -136,6 +165,38 @@ function updateNotification(id,id1){
         }
       });
     } 
+}
+
+
+function updateModel(id){
+    $('#modal-title').text('Add Remark');
+    $('#save').text('Save Change');
+    $('input[name=id]').val(id);
+    $('#popup_modal').modal('show');
+}
+
+function Save(){
+  var formData = new FormData($('#form')[0]);
+    $.ajax({
+        url : '/admin/update-notification-request',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {                
+            $("#form")[0].reset();
+            $('#popup_modal').modal('hide');
+            $('.zero-configuration').load(location.href+' .zero-configuration');
+            toastr.success(data, 'Successfully Save');
+        },error: function (data) {
+            var errorData = data.responseJSON.errors;
+            $.each(errorData, function(i, obj) {
+            toastr.error(obj[0]);
+      });
+    }
+    });
 }
 
 </script>

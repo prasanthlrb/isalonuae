@@ -39,7 +39,6 @@
                                                         <th>Order ID</th>
                                                         <th>Customer Name</th>
                                                         <th>Appointment Date/Time</th>
-                                                        <th>Services</th>
                                                         <th>Amount</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
@@ -57,9 +56,14 @@
                                                             @endforeach
                                                         </td>
                                                         <td>{{$row->appointment_date}} / {{$row->appointment_time}}</td>
-                                                        <td></td>
                                                         <td>{{$row->total}} AED</td>
-                                                        <td></td>
+                                                        <td>
+                                                        @if($row->booking_status == 0)
+                                                        Un Visit
+                                                        @else
+                                                        Visited
+                                                        @endif
+                                                        </td>
                                                         <td>
             <div class="dropdown">
                 <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
@@ -68,7 +72,7 @@
                 @if($row->booking_status == 0)
                   <a href="/vendor/chat-to-customer/{{$row->id}}" class="dropdown-item"><i class="bx bx-edit-alt mr-1"></i> Chat</a>
                 @endif
-                  <a onclick="Edit()" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Approved</a>
+                  <a onclick="OTP({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Verified Otp</a>
                 </div>
             </div>
                                                         </td>
@@ -80,7 +84,6 @@
                                                         <th>Order ID</th>
                                                         <th>Customer Name</th>
                                                         <th>Appointment Date/Time</th>
-                                                        <th>Services</th>
                                                         <th>Amount</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
@@ -101,6 +104,36 @@
     </div>
     <!-- END: Content-->
 
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="otp_modal" tabindex="-1" role="dialog" aria-labelledby="popup_modal" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-grey-dark-5">
+                <h6 class="modal-title" id="modal-title">Update OTP</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form" method="POST" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                <input type="hidden" name="id" id="id">
+
+                    <div class="form-group">
+                        <label>Enter OTP</label>
+                        <input autocomplete="off" type="text" id="otp" name="otp" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <button onclick="updateOTP()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Bootstrap Modal -->
 @endsection
 @section('extra-js')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -117,6 +150,35 @@
 
 <script type="text/javascript">
 $('.booking').addClass('active');
+
+function updateOTP(){
+  var formData = new FormData($('#form')[0]);
+    $.ajax({
+        url : '/vendor/verified-otp',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {                
+            if(data.status == 400){
+                toastr.error(data.message);
+            }
+            else{
+                toastr.success(data.message);
+                $("#form")[0].reset();
+                $('#otp_modal').modal('hide');
+                $('.zero-configuration').load(location.href+' .zero-configuration');
+            }
+        }
+    });
+}
+
+function OTP(id){
+    $('input[name=id]').val(id);
+    $('#otp_modal').modal('show');
+}
 
 </script>
 @endsection

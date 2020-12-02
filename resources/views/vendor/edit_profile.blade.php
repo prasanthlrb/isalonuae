@@ -59,20 +59,26 @@
                         <label>Email</label>
                         <input value="{{$profile->email}}" autocomplete="off" type="email" id="email" name="email" class="form-control">
                     </div>
+                    @if(Auth::user()->busisness_type != 5)
                     <div class="form-group col-md-6">
                         <label>Address</label>
                         <textarea id="address" name="address" class="form-control">{{$profile->address}}</textarea>
                     </div>
+                    @endif
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label>Website</label>
                         <input value="{{$profile->website}}" autocomplete="off" type="text" id="website" name="website" class="form-control">
                     </div>
-                    <div class="form-group col-md-6">
-                        <label>About Us</label>
-                        <textarea row="5" id="about_us" name="about_us" class="form-control">{{$profile->about_us}}</textarea>
+                    <div class="form-group col-md-4">
+                        <label>About English</label>
+                        <textarea row="5" id="about_english" name="about_english" class="form-control">{{$profile->about_english}}</textarea>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>About Arabic</label>
+                        <textarea row="5" id="about_arabic" name="about_arabic" class="form-control">{{$profile->about_arabic}}</textarea>
                     </div>
                 </div>
 

@@ -130,9 +130,7 @@
                                 <!-- <a class="dropdown-item" href="page-user-profile.html"><i class="bx bx-user mr-50"></i> Edit Profile</a> -->
 
                                 <!-- <a class="dropdown-item" href="/vendor/role"><i class="bx bx-lock-open-alt mr-50"></i> Add Roles</a> -->
-
                                 <a class="dropdown-item" href="/vendor/edit-profile"><i class="bx bx-lock-open-alt mr-50"></i> Edit Profile</a>
-
                                 <div class="dropdown-divider mb-0"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">     
                         <i class="bx bx-power-off mr-50"></i>Log out
@@ -158,11 +156,8 @@
     <!-- END: Content-->
 
     <!-- demo chat-->
-    <div class="widget-chat-demo">
-        <!-- widget chat demo footer button start -->
+    <!-- <div class="widget-chat-demo">
         <button class="btn btn-primary chat-demo-button glow px-1"><i class="livicon-evo" data-options="name: comments.svg; style: lines; size: 24px; strokeColor: #fff; autoPlay: true; repeat: loop;"></i></button>
-        <!-- widget chat demo footer button ends -->
-        <!-- widget chat demo start -->
         <div class="widget-chat widget-chat-demo d-none">
             <div class="card mb-0">
                 <div class="card-header border-bottom p-0">
@@ -218,11 +213,10 @@
                 </div>
             </div>
         </div>
-        <!-- widget chat demo ends -->
 
     </div>
     <div class="sidenav-overlay"></div>
-    <div class="drag-target"></div>
+    <div class="drag-target"></div> -->
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">

@@ -30,7 +30,7 @@ class ServiceController extends Controller
         $service = new service;
         $service->service_name_english = $request->service_name_english;
         $service->service_name_arabic = $request->service_name_arabic;
-        $service->category_id = $request->category_id;
+        //$service->category_id = $request->category_id;
         $service->image = $fileName;
         $service->save();
         return response()->json('successfully save'); 
@@ -43,7 +43,7 @@ class ServiceController extends Controller
         $service = service::find($request->id);
         $service->service_name_english = $request->service_name_english;
         $service->service_name_arabic = $request->service_name_arabic;
-        $service->category_id = $request->category_id;
+        //$service->category_id = $request->category_id;
 
         if($request->image!=""){
             $old_image = "upload_files/".$request->image1;
@@ -97,6 +97,17 @@ class ServiceController extends Controller
         return response()->json(['message'=>'Successfully Update'],200); 
     }
 
+    public function updateServiceRequest(Request $request){
+        $request->validate([
+            'deny_remark'=> 'required',
+        ]);
+        
+        $new_service = new_service::find($request->id);
+        $new_service->deny_remark = $request->deny_remark;
+        $new_service->status = 2;
+        $new_service->save();
+        return response()->json('successfully update'); 
+    }
 
 
 

@@ -8,6 +8,9 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css/pages/app-chat.css">
     <!-- END: Page CSS-->
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY"></script>
+    <script src="/js/map-script.js"></script>
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/select/select2.min.css">
 </head>
 <!-- END: Head-->
 
@@ -105,7 +108,12 @@
                                             <span class="avatar-status-away"></span> -->
                                         </div>
                                         <div class="chat-sidebar-name">
-                                            <h6 class="mb-0">{{$row->salon_name}}</h6><span class="text-muted"> {{$row->phone}}</span>
+                                            @if($row->salon_name != "")
+                                            <h6 class="mb-0">{{$row->salon_name}}</h6>
+                                            @else
+                                            <h6 class="mb-0">{{$row->name}}</h6>
+                                            @endif
+                                            <span class="text-muted"> {{$row->phone}}</span>
                                         </div>
                                     </div>
                                     </a>
@@ -146,7 +154,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="workers" data-toggle="tab" href="#workers" aria-controls="workers" role="tab"
+            <a class="nav-link" id="workers-tab" data-toggle="tab" href="#workers" aria-controls="workers" role="tab"
               aria-selected="false">
               <i class="bx bx-user align-middle"></i>
               <span class="align-middle">Our Specialist</span>
@@ -159,6 +167,15 @@
               <span class="align-middle">Service</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" id="service-package-tab" data-toggle="tab" href="#service-package" aria-controls="service-package" role="tab"
+              aria-selected="false">
+              <i class="bx bx-message-square align-middle"></i>
+              <span class="align-middle">Service Package</span>
+            </a>
+          </li>
+
           <li class="nav-item">
             <a class="nav-link" id="working-hours-tab" data-toggle="tab" href="#working-hours" aria-controls="working-hours" role="tab"
               aria-selected="false">
@@ -183,13 +200,13 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" id="appointment-tab" data-toggle="tab" href="#appointment" aria-controls="appointment" role="tab"
               aria-selected="false">
               <i class="bx bx-message-square align-middle"></i>
               <span class="align-middle">Appointment</span>
             </a>
-          </li>
+          </li> -->
 
           <li class="nav-item">
             <a class="nav-link" id="gallery-tab" data-toggle="tab" href="#gallery" aria-controls="gallery" role="tab"
@@ -264,7 +281,13 @@
                     <tbody>
                     @foreach($salon_service as $row)
                         <tr>
-                            <td>{{$row->service_id}}</td>
+                            <td>
+                            @foreach($service as $ser)
+                            @if($ser->id == $row->service_id)
+                            {{$ser->service_name_english}}
+                            @endif
+                            @endforeach
+                            </td>
                             <td>{{$row->price}}</td>
                             <td>{{$row->duration}}</td>
                             <td><div class="dropdown">
@@ -284,6 +307,61 @@
                             <th>Service</th>
                             <th>Price</th>
                             <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+          </div>
+
+
+          <div class="tab-pane" id="service-package" aria-labelledby="service-package-tab" role="tabpanel">
+            
+            <button id="add_new_package" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
+              <i class="bx bx-plus"></i>
+              <span>Service Package</span>
+            </button>
+
+            <div class="table-responsive">
+                <table class="table zero-configuration1">
+                <thead>
+                        <tr>
+                        <th>#</th>
+                            <th>Package English</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($package as $key => $row)
+                        <tr>
+                            <td>{{$key + 1}}</td>
+                            <td>{{$row->package_name_english}}</td>
+                            <td>{{$row->price}}</td>
+                            <td>
+                              <img style="width:200px;height:150px;" src="/upload_files/{{$row->image}}">
+                            </td>
+                            <td>
+                              <div class="dropdown">
+                                <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                <a onclick="EditPackage({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Edit</a>
+                                <a onclick="DeletePackage({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> Delete</a>
+                                </div>
+                              </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>#</th>
+                            <th>Package English</th>
+                            <th>Price</th>
+                            <th>Image</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -374,7 +452,23 @@
                     </div>
                 </div>
             </form>
-            <div id="googleMap" style="width:100%;height:400px;"></div>
+            <!-- <div id="googleMap" style="width:100%;height:400px;"></div> -->
+                  <div class="map-column col-md-4 col-sm-12 col-xs-12">
+                    <div class="inner-column">
+                          <div class="map-outer">
+                            <div class="map-canvas"
+                                data-zoom="16"
+                                data-lat="{{$salon->latitude}}"
+                                data-lng="{{$salon->longitude}}"
+                                data-type="roadmap"
+                                data-hue="#ffc400"
+                                data-title="Branch"
+                                data-icon-path="images/icons/map-marker.png"
+                                data-content="{{$salon->name}}">
+                            </div>
+                         </div>
+                      </div>
+                  </div>
           </div>
 
 
@@ -414,7 +508,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                          <th>Invoice ID</th>
+                            <th>Invoice ID</th>
                             <th>Salon Name</th>
                             <th>Customer Name</th>
                             <th>Comments</th>
@@ -468,52 +562,13 @@
         <div class="tab-pane" id="gallery" aria-labelledby="gallery-tab" role="tabpanel">
 
             <div class="row">
-                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
-                    data-image="https://images.pexels.com/photos/853168/pexels-photo-853168.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                    data-target="#image-gallery">
-                        <img class="img-thumbnail"
-                            src="https://images.pexels.com/photos/853168/pexels-photo-853168.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                            alt="Another alt text">
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
-                    data-image="https://images.pexels.com/photos/158971/pexels-photo-158971.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                    data-target="#image-gallery">
-                        <img class="img-thumbnail"
-                            src="https://images.pexels.com/photos/158971/pexels-photo-158971.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                            alt="Another alt text">
-                    </a>
-                </div>
-
-                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
-                    data-image="https://images.pexels.com/photos/305070/pexels-photo-305070.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                    data-target="#image-gallery">
-                        <img class="img-thumbnail"
-                            src="https://images.pexels.com/photos/305070/pexels-photo-305070.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                            alt="Another alt text">
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title="Test1"
-                    data-image="https://images.pexels.com/photos/853168/pexels-photo-853168.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                    data-target="#image-gallery">
-                        <img class="img-thumbnail"
-                            src="https://images.pexels.com/photos/853168/pexels-photo-853168.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                            alt="Another alt text">
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title="Im so nice"
-                    data-image="https://images.pexels.com/photos/158971/pexels-photo-158971.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                    data-target="#image-gallery">
-                        <img class="img-thumbnail"
-                            src="https://images.pexels.com/photos/158971/pexels-photo-158971.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                            alt="Another alt text">
-                    </a>
-                </div>
+            @foreach($gallery as $key => $row)
+              <div class="col-lg-3 col-md-3 col-xs-3 thumb">
+                <a class="thumbnail" href="#">
+                  <img style="width:150px;height:150px;" class="img-responsive img-thumbnail" src="/upload_gallery/{{$row->image}}" alt="{{$row->name}}">
+                </a>
+              </div>
+            @endforeach  
             </div>
 
         </div>
@@ -542,6 +597,59 @@
  
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="package_modal" tabindex="-1" role="dialog" aria-labelledby="package_modal" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-grey-dark-5">
+                <h6 class="modal-title" id="modal-title">Add New</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="package_form" method="POST" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                  <input type="hidden" name="package_id" id="package_id">
+                   <div class="form-group">
+                        <label>Package Name English</label>
+                        <input autocomplete="off" type="text" id="package_name_english" name="package_name_english" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Package Name Arabic</label>
+                        <input autocomplete="off" type="text" id="package_name_arabic" name="package_name_arabic" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input autocomplete="off" type="text" id="price" name="price" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Package Image</label>
+                        <input autocomplete="off" type="file" id="image" name="image" class="form-control">
+                    </div>
+                    <div class="form-group customershow">
+                        <label>Select Services</label>
+                        <select id="service_ids" name="service_ids[]" class="form-control select2" multiple="multiple">
+                        	<option value="">SELECT</option>
+                        	@foreach($service as $row)
+                        	<option value="{{$row->id}}">{{$row->service_name_english}}</option>
+                        	@endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button onclick="SavePackage()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Bootstrap Modal -->
 
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="time_modal" tabindex="-1" role="dialog" aria-labelledby="popup_modal" aria-hidden="true">
@@ -681,27 +789,38 @@ $time = array('12:00 AM','12:30 AM','01:00 AM','01:30 AM','02:00 AM','02:30 AM',
 
 @include('admin.footer')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
-    <!-- END: Page Vendor JS-->
+
     <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
     
     <script src="/app-assets/js/scripts/pages/app-chat.js"></script>
+
+    <script src="/app-assets/js/scripts/forms/select/form-select2.js"></script>
+    <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>                                     
     
 
 <script type="text/javascript">
 $('.salon').addClass('active');
 var action_type;
+var package_type;
 $('#add_hours').click(function(){
     $('#time_modal').modal('show');
     $("#time_form")[0].reset();
     $('#saveButton').text('Update');
     $('#modal-title').text('Add Hours');
+});
+
+$(".select2").select2({
+    dropdownAutoWidth: true,
+    width: '100%',
+    //color:'#fff';
+});
+
+$('#add_new_package').click(function(){
+    $('#package_modal').modal('show');
+    $("#package_form")[0].reset();
+    package_type = 1;
+    $('#saveButton').text('Save');
+    $('#modal-title').text('Add Service Package');
 });
 
 $('#add_new').click(function(){
@@ -843,6 +962,103 @@ function Delete(id){
     } 
 }
 
+function SavePackage(){
+  var formData = new FormData($('#package_form')[0]);
+  if(package_type == 1){
+    $.ajax({
+        url : '/admin/save-service-package',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {                
+            $("#package_form")[0].reset();
+            $('#package_modal').modal('hide');
+            $('.zero-configuration1').load(location.href+' .zero-configuration1');
+            toastr.success(data, 'Successfully Save');
+        },error: function (data) {
+            var errorData = data.responseJSON.errors;
+            $.each(errorData, function(i, obj) {
+            toastr.error(obj[0]);
+      });
+    }
+    });
+  }else{
+    $.ajax({
+      url : '/admin/update-service-package',
+      type: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      dataType: "JSON",
+      success: function(data)
+      {
+        console.log(data);
+          $("#package_form")[0].reset();
+           $('#package_modal').modal('hide');
+           $('.zero-configuration1').load(location.href+' .zero-configuration1');
+           toastr.success(data, 'Successfully Update');
+      },error: function (data) {
+        var errorData = data.responseJSON.errors;
+        $.each(errorData, function(i, obj) {
+          toastr.error(obj[0]);
+        });
+      }
+    });
+  }
+}
+
+function EditPackage(id){
+  $.ajax({
+    url : '/admin/service-package/'+id,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data)
+    {
+      $('#modal-title').text('Update Service Package');
+      $('#save').text('Save Change');
+      $('input[name=package_name_english]').val(data.package_name_english);
+      $('input[name=package_name_arabic]').val(data.package_name_arabic);
+      $('input[name=price]').val(data.price);
+      $('input[name=package_id]').val(id);
+      
+       get_services(data.id);
+
+      $('#package_modal').modal('show');
+      package_type = 2;
+    }
+  });
+}
+
+function get_services(id)
+{
+    $.ajax({        
+        url : '/admin/get_package_services/'+id,
+        type: "GET",
+        success: function(data)
+        {
+           $('#service_ids').html(data);
+        }
+   });
+}
+
+function DeletePackage(id){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/admin/service-package-delete/'+id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Delete');
+          $('.zero-configuration').load(location.href+' .zero-configuration');
+        }
+      });
+    } 
+}
 </script>
 
 <script>

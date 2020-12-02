@@ -13,6 +13,8 @@ use App\push_notification;
 use App\salon_password;
 use App\salon_package;
 use App\used_package;
+use App\package;
+use App\gallery;
 use Hash;
 use DB;
 use Mail;
@@ -26,13 +28,15 @@ class SalonController extends Controller
     public function viewSalon($id){
         $salon_id = $id;
         $salon = User::find($id);
-        $salon_worker = User::where('id',$id)->where('role_id','!=','admin')->get();
-        $all_salon = User::all();
+        $salon_worker = User::where('user_id',$id)->where('role_id','!=','admin')->get();
+        $gallery = gallery::where('salon_id',$id)->get();
+        $all_salon = User::where('role_id','admin')->get();
         $review = review::all();
         $service = service::all();
         $service_time = service_time::where('salon_id',$id)->get();
         $salon_service = salon_service::where('salon_id',$id)->get();
-        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker'));
+        $package = package::where('salon_id',$id)->get();
+        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker','gallery','package'));
     }
 
     public function saveSalon(Request $request){
@@ -62,9 +66,10 @@ class SalonController extends Controller
         $salon->nationality = $request->nationality;
         $salon->salon_id = $request->salon_id;
         $salon->emirates_id = $request->emirates_id;
+        $salon->trade_license_no = $request->trade_license_no;
+        $salon->vat_certificate_no = $request->vat_certificate_no;
         $salon->passport_number = $request->passport_number;
         $salon->city = $request->city;
-        $salon->area = $request->area;
         $salon->address = $request->address;
         $salon->salon_package = $request->salon_package;
         $salon->salon_commission = $request->salon_commission;
@@ -155,7 +160,7 @@ class SalonController extends Controller
         $all = $salon_password::find($salon_password->id);
         Mail::send('mail.salon_send_mail',compact('all'),function($message) use($all){
             $message->to($all['email'])->subject('Create your Own Password');
-            $message->from('aravind.0216@gmail.com','I-Salon Website');
+            $message->from('contact@lrbinfotech.com','I-Salon Website');
         });
 
         return response()->json('successfully save'); 
@@ -179,7 +184,8 @@ class SalonController extends Controller
      //    $salon->password = Hash::make($request->password);
         // }
         $salon->city = $request->city;
-        $salon->area = $request->area;
+        $salon->trade_license_no = $request->trade_license_no;
+        $salon->vat_certificate_no = $request->vat_certificate_no;
         $salon->address = $request->address;
         $salon->salon_name = $request->salon_name;
         $salon->nationality = $request->nationality;
@@ -344,6 +350,18 @@ class SalonController extends Controller
         return response()->json(['message'=>'Successfully Update'],200); 
     }
 
+    public function updateNotificationRequest(Request $request){
+        $request->validate([
+            'deny_remark'=> 'required',
+        ]);
+        
+        $push_notification = push_notification::find($request->id);
+        $push_notification->deny_remark = $request->deny_remark;
+        $push_notification->status = 2;
+        $push_notification->save();
+        return response()->json('successfully update'); 
+    }
+
 
     public function getPackagePlan($id){ 
     
@@ -401,6 +419,114 @@ foreach ($data as $key => $value) {
 
         return response()->json('successfully save'); 
     }
+
+
+    public function saveServicePackage(Request $request){
+        $request->validate([
+            'package_name_english'=> 'required',
+            'package_name_arabic'=> 'required',
+            'price'=> 'required',
+            //'service_ids'=> 'required',
+        ]);
+
+        $service_ids='';
+        $service_id;
+        foreach($request->service_ids as $row){
+            $service_id[]=$row;
+        }
+        $service_ids = collect($service_id)->implode(',');
+
+        $package = new package;
+        $package->salon_id = Auth::user()->user_id;
+        $package->service_ids = $service_ids;
+        $package->price = $request->price;
+        $package->package_name_english = $request->package_name_english;
+        $package->package_name_arabic = $request->package_name_arabic;
+        if($request->file('image')!=""){
+            $old_image = "upload_files/".$profile->image;
+            if (file_exists($old_image)) {
+                @unlink($old_image);
+            }
+            $fileName = null;
+            $image = $request->file('image');
+            $fileName = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload_files/'), $fileName);
+        $package->image = $fileName;
+        }
+        $package->save();
+
+        return response()->json('successfully save'); 
+    }
+
+    public function updateServicePackage(Request $request){
+        $request->validate([
+            'package_name_english'=> 'required',
+            'package_name_arabic'=> 'required',
+            //'service_ids.*'=> 'required',
+        ]);
+
+        $service_ids='';
+        $service_id;
+        foreach($request->service_ids as $row){
+            $service_id[]=$row;
+        }
+        $service_ids = collect($service_id)->implode(',');
+
+        $package = package::find($request->package_id);
+        $package->service_ids = $service_ids;
+        $package->price = $request->price;
+        $package->package_name_english = $request->package_name_english;
+        $package->package_name_arabic = $request->package_name_arabic;
+        if($request->file('image')!=""){
+            $old_image = "upload_files/".$package->image;
+            if (file_exists($old_image)) {
+                @unlink($old_image);
+            }
+            $fileName = null;
+            $image = $request->file('image');
+            $fileName = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload_files/'), $fileName);
+        $package->image = $fileName;
+        }
+        $package->save();
+        return response()->json('successfully update'); 
+    }
+
+    public function editServicePackage($id){
+        $package = package::find($id);
+        return response()->json($package); 
+    }
+    
+    public function deleteServicePackage($id){
+        $package = package::find($id);
+        $package->delete();
+        return response()->json(['message'=>'Successfully Delete'],200); 
+    }
+
+    public function getPackageServices($id){ 
+        $data  = package::find($id);
+
+        $service = service::all();
+
+      $arraydata=array();
+      foreach(explode(',',$data->service_ids) as $service_id){
+        $arraydata[]=$service_id;
+      }
+      $output = '';
+        foreach ($service as $value){
+            if(in_array($value->id , $arraydata))
+            {
+                $output .='<option selected="true" value="'.$value->id.'">'.$value->service_name_english.'</option>'; 
+            }
+            else{
+                $output .='<option value="'.$value->id.'">'.$value->service_name_english.'</option>'; 
+            }
+        }
+      
+      echo $output;
+      
+    }
+
 
 
 }

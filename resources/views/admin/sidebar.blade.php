@@ -2,7 +2,7 @@
     <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
         <div class="navbar-header">
             <ul class="nav navbar-nav flex-row">
-                <li class="nav-item mr-auto"><a class="navbar-brand" href="/html/ltr/vertical-menu-template-dark/index.html">
+                <li class="nav-item mr-auto"><a class="navbar-brand" href="/admin/dashboard">
                         <div class="brand-logo"><img class="logo" src="/images/logo/logo.png" /></div>
                         <h2 class="brand-text mb-0">I-SALON</h2>
                     </a></li>
@@ -41,12 +41,12 @@
                 </li>
                 @endif
                 @if($role->category_read == 'on')
-                <li class="category nav-item">
+                <!-- <li class="category nav-item">
                     <a href="/admin/category">
                         <i class="menu-livicon" data-icon="morph-folder"></i>
                         <span class="menu-title" data-i18n="Email">Categories</span>
                     </a>
-                </li>
+                </li> -->
                 @endif
                 @if($role->salon_package_read == 'on')
                 <li class="package nav-item">
@@ -65,11 +65,18 @@
                     </a>
                 </li>
                 @endif
+
                 <li class="navigation-header"><span>About Us</span></li>
                 <li class="app-terms nav-item">
                     <a href="/admin/app-terms">
                         <i class="menu-livicon" data-icon="morph-folder"></i>
                         <span class="menu-title" data-i18n="Email">App Terms & Conditions</span>
+                    </a>
+                </li>
+                <li class="app-about nav-item">
+                    <a href="/admin/app-about">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App About</span>
                     </a>
                 </li>
                 <li class="app-privacy nav-item">
@@ -136,7 +143,7 @@
 
                 @if($role->booking_read == 'on')
                  <li class="booking nav-item">
-                    <a href="#">
+                    <a href="/admin/booking">
                         <i class="menu-livicon" data-icon="calendar"></i>
                         <span class="menu-title" data-i18n="Email">Booking</span>
                     </a>
@@ -165,23 +172,23 @@
                  <li class="chat-to-customer nav-item">
                     <a href="/admin/chat-to-customer">
                         <i class="menu-livicon" data-icon="comments"></i>
-                        <span class="menu-title" data-i18n="Chat">Chat to Customers</span>
+                        <span class="menu-title" data-i18n="Chat">Chat View</span>
                     </a>
                 </li>
                 @endif
                 <li class=" navigation-header"><span>Reports</span></li>
 
                 @if($role->revenue_reports_read == 'on')
-                <li class=" nav-item">
-                    <a href="#">
+                <li class="revenue-report nav-item">
+                    <a href="/admin/revenue-report">
                         <i class="menu-livicon" data-icon="pie-chart"></i>
                         <span class="menu-title" data-i18n="Email">Revenue Reports</span>
                     </a>
                 </li>
                 @endif
                 @if($role->settlement_reports_read == 'on')
-                <li class=" nav-item">
-                    <a href="#">
+                <li class="settlement-report nav-item">
+                    <a href="/admin/settlement-report">
                         <i class="menu-livicon" data-icon="notebook"></i>
                         <span class="menu-title" data-i18n="Email">Settlement Reports</span>
                     </a>

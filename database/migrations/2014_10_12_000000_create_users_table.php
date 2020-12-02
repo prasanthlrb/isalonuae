@@ -29,6 +29,8 @@ class CreateUsersTable extends Migration
             $table->string('address',5000)->nullable();
             $table->string('nationality')->nullable();
             $table->string('emirates_id')->nullable();
+            $table->string('trade_license_no')->nullable();
+            $table->string('vat_certificate_no')->nullable();
             $table->string('passport_number')->nullable();
             $table->string('salon_package')->nullable();
             $table->string('used_package_id')->nullable();
@@ -49,6 +51,12 @@ class CreateUsersTable extends Migration
             $table->string('user_id')->nullable();
             $table->string('role_id')->nullable();
             $table->string('service_ids')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('iban_number')->nullable();
+            $table->string('swift_code')->nullable();
+            $table->string('account_name')->nullable();
+
             $table->timestamps();
         });
     }
