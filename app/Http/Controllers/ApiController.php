@@ -1356,7 +1356,7 @@ if(count($coupon)>0){
         $postData->firstName = $customer->name; 
         $postData->email = $customer->email; 
         $postData->merchantAttributes = new StdClass();
-        $postData->merchantAttributes->redirectUrl = "http://86.97.176.102:6700/payment-success";
+        $postData->merchantAttributes->redirectUrl = "http://15.184.21.73/payment-success";
         $postData->amount = new StdClass();
         $postData->amount->currencyCode = "AED"; 
         $postData->amount->value = $amount; 
