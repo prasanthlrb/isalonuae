@@ -1423,20 +1423,23 @@ if(count($coupon)>0){
        $payment_id = str_replace('urn:payment:','',$payment_referrance_id);;
        
        $booking->payment_id = $payment_id;
-    //    if($status == "SUCCESS"){
-    //     $booking->payment_status = 1;
-    //    }
+       if($status == "SUCCESS"){
+        $booking->payment_status = 1;
+       }
+       else{
+        $booking->payment_status = 0;
+       }
        $booking->save();
 
       curl_close($curl);
       
-      if ($err) {
-        echo "cURL Error #:" . $err;
-      } else {
-        //echo $response;
-        //echo $output;
-        return response()->json(['message' => 'Save Successfully'], 200);
-      }
+    //   if ($err) {
+    //     echo "cURL Error #:" . $err;
+    //   } else {
+    //     //echo $response;
+    //     //return $status;
+    //     //return response()->json(['message' => 'Save Successfully'], 200);
+    //   }
 
 
     }
@@ -1508,7 +1511,7 @@ if(count($coupon)>0){
         //return response()->json($request);
 
         $this->sendBookNotification($booking->id);
-
+        
         $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
 
         //$this->send_sms($customer->phone,$msg);
@@ -1538,7 +1541,7 @@ if(count($coupon)>0){
             $booking_item->service_id = $request->service_id;
             $booking_item->price = $request->price;
             $booking_item->save();
-
+            //$this->getRetrivePayment($request->booking_id);
         return response()->json(
             ['message' => 'Save Successfully'],
              200);
@@ -1555,7 +1558,7 @@ if(count($coupon)>0){
             $booking_package->package_name = $request->package_name;
             $booking_package->price = $request->price;
             $booking_package->save();
-
+            //$this->getRetrivePayment($request->booking_id);
         return response()->json(
             ['message' => 'Save Successfully'],
              200);
