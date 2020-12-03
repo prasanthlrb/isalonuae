@@ -1,3 +1,19 @@
+<html>
+<head>
+    <style>
+        /* @font-face {
+            font-family: 'Firefly';
+            font-style: normal;
+            font-weight: normal;
+            src: url(http://example.com/fonts/firefly.ttf) format('truetype');
+        } */
+        body{
+            font-family: DejaVu Sans;
+        }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
 <table width="789">
 <tbody>
 <tr style="height: 35px;">
@@ -45,19 +61,29 @@
 </tr>
 <tr style="height: 160px;">
 <td style="height: 160px;" width="399">
-<p>(1) I Salon, represented by <strong>Tariq</strong><strong>Darwish Mohammed Khamis</strong><strong> Al Qubaisi </strong>referred to as the &ldquo;First Party&rdquo;), and (2) ________________________, Represented by</p>
-<p><strong>Trade licenceNo:</strong><strong> .................................</strong></p>
-<p><strong>Emirates ID No</strong><strong>....................................:</strong></p>
-<p><strong>VAT certificate No:</strong><strong> ..............................</strong></p>
-<p><strong>ContactNumber:</strong><strong>.......................................</strong>.</p>
+<p>(1) I Salon, represented by <strong>Tariq</strong><strong>Darwish Mohammed Khamis</strong><strong> Al Qubaisi </strong>referred to as the &ldquo;First Party&rdquo;), and (2) 
+@if($user->salon_name != '')
+{{$user->salon_name}}
+@else
+{{$user->name}}
+@endif, Represented by</p>
+<p><strong>Trade licenceNo:</strong><strong> {{$user->trade_license_no}}</strong></p>
+<p><strong>Emirates ID No</strong><strong> {{$user->emirates_id}}</strong></p>
+<p><strong>VAT certificate No:</strong><strong> {{$user->vat_certificate_no}}</strong></p>
+<p><strong>ContactNumber:</strong><strong> {{$user->phone}}</strong>.</p>
 </td>
 <td style="height: 160px;" width="390">
 <p>1- I Salon ويمثله السيد/ <strong>طارق</strong><strong>درويش محمد خميس</strong><strong> القبيسى</strong> المُشار إليه باسم "الطرف الأول" و</p>
-<p>2- --------------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ويمثله ------------</p>
-<p><strong>رقم الرخصة التجارية</strong><strong>:.........................................</strong></p>
-<p><strong>رقم الهوية الإماراتية </strong><strong>:.........................................</strong></p>
-<p><strong>الرقم الضريبي</strong><strong>:..................................................</strong></p>
-<p><strong>رقم الهاتف:...................................................</strong></p>
+<p>2- ويمثله 
+@if($user->salon_name != '')
+{{$user->salon_name}}
+@else
+{{$user->name}}
+@endif</p>
+<p><strong>رقم الرخصة التجارية</strong><strong>: {{$user->trade_license_no}}</strong></p>
+<p><strong>رقم الهوية الإماراتية </strong><strong>: {{$user->emirates_id}}</strong></p>
+<p><strong>الرقم الضريبي</strong><strong>: {{$user->vat_certificate_no}}</strong></p>
+<p><strong>رقم الهاتف: {{$user->phone}}</strong></p>
 </td>
 </tr>
 <tr style="height: 35px;">
@@ -386,23 +412,25 @@
 <tr style="height: 182px;">
 <td style="height: 182px;" width="399">
 <p><strong>The Second Party Signature:</strong></p>
-<p>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.</p>
+<p><strong><img style="width:200px;height:80px;" src="{{$user->signature_data}}"></strong></p>
 <p><strong>&nbsp;</strong></p>
 <p><strong>The Second Party&rsquo;s Email:</strong></p>
-<p><strong>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;</strong></p>
+<p><strong>{{$user->email}}</strong></p>
 <p><strong>Contract signing date : </strong></p>
-<p>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;</p>
+<p>{{$user->date}}</p>
 </td>
 <td style="height: 182px;" width="390">
 <p><strong>توقيع الطرف الثاني</strong><strong>:</strong></p>
-<p><strong>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..</strong></p>
+<p><strong><img style="width:200px;height:80px;" src="{{$user->signature_data}}"></strong></p>
 <p><strong>&nbsp;</strong></p>
 <p><strong>البريد الالكتروني للطرف الثاني</strong><strong>:</strong></p>
-<p><strong>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..</strong></p>
+<p><strong>{{$user->email}}</strong></p>
 <p><strong>تا</strong><strong>ريخ توقيع العقد</strong><strong>:&nbsp;&nbsp; </strong></p>
-<p>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..</p>
+<p>{{$user->date}}</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p><strong>&nbsp;</strong></p>
+</body>
+</html>

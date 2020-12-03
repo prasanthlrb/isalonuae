@@ -40,7 +40,32 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/forms/wizard.min.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('toastr/toastr.css')}}">
     <meta name="_token" content="{{ csrf_token() }}"/>
-
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY&sensor=false&libraries=places"></script>
+<style type="text/css">
+    .input-controls {
+      margin-top: 10px;
+      border: 1px solid transparent;
+      border-radius: 2px 0 0 2px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      height: 32px;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    #searchInput {
+      background-color: #fff;
+      font-family: Roboto;
+      font-size: 15px;
+      font-weight: 300;
+      margin-left: 12px;
+      padding: 0 11px 0 13px;
+      text-overflow: ellipsis;
+      width: 50%;
+    }
+    #searchInput:focus {
+      border-color: #4d90fe;
+    }
+</style>
   </head>
   <!-- END: Head-->
 
@@ -144,64 +169,26 @@
                     </div>
                   </div>
 
-                  <div class="col-sm-4">
+                  <div class="col-sm-6">
                     <div class="form-group">
                         <label>Emirates ID</label>
                         <input type="text" id="emirates_id" name="emirates_id" class="form-control">
                     </div>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-6">
                     <div class="form-group">
                         <label>Passport Number</label>
                         <input type="text" id="passport_number" name="passport_number" class="form-control">
                     </div>
                   </div>
 
-                  <div class="col-sm-4">
-                    <div class="form-group">
-                        <label>City</label>
-                        <select onchange="getArea()" id="city" name="city" class="form-control">
-                            <option value="">SELECT</option>
-                            @foreach($city as $row)
-                            <option value="{{$row->id}}">{{$row->area}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                  </div>
+                  
 
 
                 </div>
 
                 <hr>
 
-                <div class="row">
-                  <div class="col-12">
-                    <h6 class="py-50">Contact Details</h6>
-                  </div>
-
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Nationality</label>
-                        <select id="nationality" name="nationality" class="form-control">
-                            <option value="">SELECT</option>
-                            <option value="1">United Arab Emirates</option>
-                            <option value="2">India</option>
-                            <option value="3">Russia</option>
-                            <option value="4">Pakistan</option>
-                        </select>
-                    </div>
-                  </div>
-                
-
-                  <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <textarea id="address" name="address" class="form-control"></textarea>
-                    </div>
-                  </div>
-
-                </div>
-                <hr>
                 <div class="row">
                   <div class="col-12">
                     <h6 class="py-50">Id Proof</h6>
@@ -258,6 +245,91 @@
                   </div>
 
                 </div>
+              </fieldset>
+              <!-- body content of step 1 end-->
+              <!-- Step 1 -->
+              <h6>
+                <i class="step-icon"></i>
+                <span class="fonticon-wrap">
+                  <i class="livicon-evo" data-options="name:user.svg; size: 50px; style:lines; strokeColor:#adb5bd;"></i>
+                </span>
+                <span>Contact Details</span>
+              </h6>
+              <!-- Step 1 end-->
+              <!-- body content of step 1 -->
+              <fieldset>
+                <div class="row">
+                  <div class="col-12">
+                    <h6 class="py-50">Contact Details</h6>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Nationality</label>
+                        <select id="nationality" name="nationality" class="form-control">
+                            <option value="">SELECT</option>
+                            <option value="1">United Arab Emirates</option>
+                            <option value="2">India</option>
+                            <option value="3">Russia</option>
+                            <option value="4">Pakistan</option>
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>City</label>
+                        <select onchange="getArea()" id="city" name="city" class="form-control">
+                            <option value="">SELECT</option>
+                            @foreach($city as $row)
+                            <option value="{{$row->id}}">{{$row->area}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Enter a location</label>
+                        <input id="searchInput" class="input-controls form-control" type="text" placeholder="Enter a location">
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                  <div class="map" id="map" style="width: 100%; height: 300px;"></div>
+                  </div>
+
+
+                </div>
+
+                <hr>
+
+                <div class="row">
+                  <div class="col-12">
+                    <h6 class="py-50">Contact Details</h6>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="address" name="address" class="form-control"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Latitude</label>
+                        <input readonly type="text" id="latitude" name="latitude" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Longitude</label>
+                        <input readonly type="text" id="longitude" name="longitude" class="form-control">
+                    </div>
+                  </div>
+
+                </div>
+                <hr>
               </fieldset>
               <!-- body content of step 1 end-->
               <!-- Step 2-->
@@ -380,6 +452,72 @@
     <script src="{{ asset('toastr/toastr.min.js')}}"></script>
 
     <script src="/app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+
+    <script>
+/* script */
+function initialize() {
+   var latlng = new google.maps.LatLng(24.453884,54.3773438);
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: latlng,
+      zoom: 13
+    });
+    var marker = new google.maps.Marker({
+      map: map,
+      position: latlng,
+      draggable: true,
+      anchorPoint: new google.maps.Point(0, -29)
+   });
+    var input = document.getElementById('searchInput');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var geocoder = new google.maps.Geocoder();
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+    var infowindow = new google.maps.InfoWindow();   
+    autocomplete.addListener('place_changed', function() {
+        infowindow.close();
+        marker.setVisible(false);
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            window.alert("Autocomplete's returned place contains no geometry");
+            return;
+        }
+  
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+       
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);          
+    
+        bindDataToForm(place.formatted_address,place.geometry.location.lat(),place.geometry.location.lng());
+        infowindow.setContent(place.formatted_address);
+        infowindow.open(map, marker);
+       
+    });
+    // this function will work on marker move event into map 
+    google.maps.event.addListener(marker, 'dragend', function() {
+        geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[0]) {        
+              bindDataToForm(results[0].formatted_address,marker.getPosition().lat(),marker.getPosition().lng());
+              infowindow.setContent(results[0].formatted_address);
+              infowindow.open(map, marker);
+          }
+        }
+        });
+    });
+}
+function bindDataToForm(address,lat,lng){
+   document.getElementById('address').value = address;
+   document.getElementById('latitude').value = lat;
+   document.getElementById('longitude').value = lng;
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 
     <script type="text/javascript">
 // $('.salon').addClass('active');
@@ -622,9 +760,6 @@ function validateForm() {
   var phone = $('#phone').val();
   var trade_license_no = $('#trade_license_no').val();
   var vat_certificate_no = $('#vat_certificate_no').val();
-  var city = $('#city').val();
-  var nationality = $('#nationality').val();
-  var address = $('#address').val();
 
   if (busisness_type != "") {
     if (name != "") {
@@ -632,25 +767,7 @@ function validateForm() {
         if (phone != "") {
           if (trade_license_no != "") {
             if (vat_certificate_no != "") {
-              if (city != "") {
-                if (address != "") {
-                  if (nationality != "") {
-                    return true;
-                  }
-                  else{
-                    toastr.error("Nationality must be filled out");
-                    return false;
-                  }
-                }
-                else{
-                  toastr.error("Address must be filled out");
-                  return false;
-                }
-              }
-              else{
-                toastr.error("City must be filled out");
-                return false;
-              }
+              return true;
             }
             else{
               toastr.error("Vat Certificate No must be filled out");
@@ -684,6 +801,32 @@ function validateForm() {
 
 }
 
+function validateForm1() {
+  var city = $('#city').val();
+  var nationality = $('#nationality').val();
+  var address = $('#address').val();
+
+  if (city != "") {
+    if (address != "") {
+      if (nationality != "") {
+        return true;
+      }
+      else{
+        toastr.error("Nationality must be filled out");
+        return false;
+      }
+    }
+    else{
+      toastr.error("Address must be filled out");
+      return false;
+    }
+  }
+  else{
+    toastr.error("City must be filled out");
+    return false;
+  }
+}
+
 $(".wizard-horizontal").steps({
     headerTag: "h6",
     bodyTag: "fieldset",
@@ -713,7 +856,12 @@ $(".wizard-horizontal").steps({
           return true;
         }
       }
-      else if (newIndex == '2')
+      else if(newIndex == '2') {
+        if(validateForm1() == true){
+          return true;
+        }
+      }
+      else if (newIndex == '3')
       {
         if($('#agree').is(":checked") ){
           return true;

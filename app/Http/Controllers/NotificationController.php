@@ -20,11 +20,34 @@ class NotificationController extends Controller
             'title'=>'required',
         ]);
 
+        $customer_id='';
+        if($request->send_to == '4'){
+            $customer1;
+            foreach($request->customer_id as $row){
+                $customer1[]=$row;
+            }
+            $customer_id = collect($customer1)->implode(',');
+        }
+        $salon_id='';
+        if($request->send_to == '3'){
+            $salon1;
+            foreach($request->salon_id as $row){
+                $salon1[]=$row;
+            }
+            $salon_id = collect($salon1)->implode(',');
+        }
+
         $push_notification = new push_notification;
         $push_notification->salon_id = 'admin';
         $push_notification->title = $request->title;
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
+        if($request->send_to == '4'){
+        $push_notification->customer_ids = $customer_id;
+        }
+        if($request->send_to == '3'){
+        $push_notification->salon_ids = $salon_id;
+        }
         $push_notification->status = 1;
         $push_notification->save();
 
@@ -111,10 +134,32 @@ class NotificationController extends Controller
             'title'=> 'required',
         ]);
         
+        $customer_id='';
+        if($request->send_to == '4'){
+            $customer1;
+            foreach($request->customer_id as $row){
+                $customer1[]=$row;
+            }
+            $customer_id = collect($customer1)->implode(',');
+        }
+        $salon_id='';
+        if($request->send_to == '3'){
+            $salon1;
+            foreach($request->salon_id as $row){
+                $salon1[]=$row;
+            }
+            $salon_id = collect($salon1)->implode(',');
+        }
         $push_notification = push_notification::find($request->id);
         $push_notification->title = $request->title;
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
+        if($request->send_to == '4'){
+        $push_notification->customer_ids = $customer_id;
+        }
+        if($request->send_to == '3'){
+        $push_notification->salon_ids = $salon_id;
+        }
         $push_notification->save();
 
         $this->sendNotification($push_notification->id);
@@ -271,7 +316,6 @@ public function getNotificationSalon($id){
   $output .='</optgroup>';
   
   echo $output;
-  
 }
 
 public function getNotificationCustomer($id){ 

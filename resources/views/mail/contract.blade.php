@@ -288,7 +288,7 @@
 						<td class="w580" width="580" style="width: 580px;">
 							<!-- Main content start -->
 
-							<table class="widget w580" cellpadding="0" cellspacing="0" border="0" align="center" style="width: 580px;">
+							<!-- <table class="widget w580" cellpadding="0" cellspacing="0" border="0" align="center" style="width: 580px;">
 								<tr class="widget-header">
 									<td height="55" style="border-bottom: 5px #2d87ba solid;">
 										<h1 style="color: #2d87ba;font-family: Helvetica, Arial, sans-serif;font-size: 20px;font-weight: bold;text-transform: uppercase;line-height: 36px;padding-right: 20px;margin: 0;">Order Details</h1>
@@ -303,7 +303,7 @@
 								<tr>
 									<td class="spacer" height="40" style="font-size: 1px;line-height: 1px;">&nbsp;</td>
 								</tr>
-							</table>
+							</table> -->
 							<!-- / .widget -->
 							
 							<!-- Main content end -->

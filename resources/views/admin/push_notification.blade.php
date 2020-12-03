@@ -54,29 +54,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($push_notification as $row)
-                            <tr>
-                                <td>{{$row->title}}</td>
-                                <td>{{$row->description}}</td>
-                                <td>
-                                @if($row->send_to == 1)
-                                    Salon
-                                @else
-                                    Customer
-                                @endif
-                                </td>
-                                <td>{{$row->created_at}}</td>
-                <td><div class="dropdown">
-                <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
-                </span>
-                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
-                  <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
-                  <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
-                  <a onclick="SendNotification({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
-                </div>
-              </div></td>
+                  @foreach($push_notification as $row)
+                    <tr>
+                      <td>{{$row->title}}</td>
+                      <td>{{$row->description}}</td>
+                      <td>
+                      @if($row->send_to == 1)
+                      All Salon
+                      @elseif($row->send_to == 2)
+                      All Customer
+                      @elseif($row->send_to == 3)
+                      Selected Salon
+                      @else
+                      Selected Customer
+                      @endif
+                      </td>
+                      <td>{{$row->created_at}}</td>
+                      <td>
+                      <div class="dropdown">
+                        <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
+                        </span>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                          <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
+                          <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
+                          <a onclick="SendNotification({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
+                        </div>
+                      </div>
+                      </td>
                     </tr>
-                 @endforeach
+                  @endforeach
                 </tbody>
                 <tfoot>
                     <tr>

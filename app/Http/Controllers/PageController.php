@@ -18,6 +18,7 @@ use Hash;
 use DB;
 use Mail;
 use PDF;
+use App;
 
 class PageController extends Controller
 {
@@ -90,6 +91,8 @@ public function send_sms($phone,$msg)
         //$salon->member_license = $request->member_license;
         $salon->salon_commission = $request->salon_commission;
         $salon->city = $request->city;
+        $salon->latitude = $request->latitude;
+        $salon->longitude = $request->longitude;
         $salon->address = $request->address;
         $salon->trade_license = $fileName;
         if($request->file('passport_copy')!=""){
@@ -127,7 +130,6 @@ public function send_sms($phone,$msg)
         $user->role_id = 'admin';
         $user->user_id = $salon->id;
         $user->save();
-
 
         $days = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
             for ($i = 0; $i < 7; $i++) {
@@ -237,12 +239,18 @@ public function send_sms($phone,$msg)
 
     private function contractSendMail($id){
         $user = User::find($id);
-
-        $pdf = PDF::loadView('pdf.contract',compact('user'));
+        //$pdf = PDF::loadView('pdf.contract',compact('user'), [], ['mode' => 'utf-8']);
+        
+        $view = view('pdf.contract',compact('user'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->stream('invoice');
 
         try{
-            Mail::send('mail.contract', compact('user'), function($message)use($user) {
+            Mail::send('mail.contract', compact('user'), function($message)use($user,$pdf) {
             $message->to($user->email)->subject('I-Salon Website Contract');
+            //$message->cc('info@isalonuae.com')->subject('I-Salon Website Contract');
             $message->from('contact@lrbinfotech.com','I-Salon Website');
             $message->attachData($pdf->output(), 'contract'.$user->id.'.pdf');
             });
@@ -253,9 +261,7 @@ public function send_sms($phone,$msg)
         if (Mail::failures()) {
              $this->statusdesc  =   "Error sending mail";
              $this->statuscode  =   "0";
-
         }else{
-
            $this->statusdesc  =   "Mail sent Succesfully";
            $this->statuscode  =   "1";
         }

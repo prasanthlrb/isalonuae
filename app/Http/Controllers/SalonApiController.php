@@ -258,6 +258,40 @@ class SalonApiController extends Controller
         }
     }
 
+    public function getPushNotification($id){
+        $data = push_notification::where('status',1)->where('send_to',1)->get();
+        $data1 = push_notification::where('status',1)->where('send_to',3)->get();
+        foreach ($data as $key => $value) {
+            $data = array(
+                'title' => $value->title,
+                'description' => '',
+            );
+            if($value->description != null){
+                $data['description'] = $value->description;
+            }
+            $datas[] = $data;
+        }   
+        
+        foreach ($data1 as $key => $value) {
+            $arraydata=array();
+            foreach(explode(',',$value->salon_ids) as $salon1){
+                $arraydata[]=$salon1;
+            }
+            if(in_array($id , $arraydata))
+            {
+                $data = array(
+                    'title' => $value->title,
+                    'description' => '',
+                );
+                if($value->description != null){
+                    $data['description'] = $value->description;
+                }
+                $datas[] = $data;
+            }
+        }   
+        return response()->json($datas); 
+    }
+
 
     public function uodateBookingStatus(Request $request)
     {

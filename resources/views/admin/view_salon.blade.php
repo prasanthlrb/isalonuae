@@ -8,9 +8,34 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css/pages/app-chat.css">
     <!-- END: Page CSS-->
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
-    <script src="http://maps.google.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY"></script>
-    <script src="/js/map-script.js"></script>
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/select/select2.min.css">
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY&sensor=false&libraries=places"></script>
+    <style type="text/css">
+        .input-controls {
+          margin-top: 10px;
+          border: 1px solid transparent;
+          border-radius: 2px 0 0 2px;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          height: 32px;
+          outline: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        #searchInput {
+          background-color: #fff;
+          font-family: Roboto;
+          font-size: 15px;
+          font-weight: 300;
+          margin-left: 12px;
+          padding: 0 11px 0 13px;
+          text-overflow: ellipsis;
+          width: 50%;
+        }
+        #searchInput:focus {
+          border-color: #4d90fe;
+        }
+    </style>
 </head>
 <!-- END: Head-->
 
@@ -452,23 +477,8 @@
                     </div>
                 </div>
             </form>
-            <!-- <div id="googleMap" style="width:100%;height:400px;"></div> -->
-                  <div class="map-column col-md-4 col-sm-12 col-xs-12">
-                    <div class="inner-column">
-                          <div class="map-outer">
-                            <div class="map-canvas"
-                                data-zoom="16"
-                                data-lat="{{$salon->latitude}}"
-                                data-lng="{{$salon->longitude}}"
-                                data-type="roadmap"
-                                data-hue="#ffc400"
-                                data-title="Branch"
-                                data-icon-path="images/icons/map-marker.png"
-                                data-content="{{$salon->name}}">
-                            </div>
-                         </div>
-                      </div>
-                  </div>
+            <input id="searchInput" class="input-controls" type="text" placeholder="Enter a location">
+            <div class="map" id="map" style="width: 100%; height: 300px;"></div>
           </div>
 
 
@@ -479,7 +489,6 @@
                     <thead>
                         <tr>
                             <th>Invoice ID</th>
-                            <th>Salon Name</th>
                             <th>Customer Name</th>
                             <th>Comments</th>
                             <th>Reviews</th>
@@ -490,18 +499,57 @@
                     @foreach($review as $row)
                     <tr>
                         <td>#{{$row->invoice_id}}</td>
-                        <td>{{$row->salon_name}}</td>
-                        <td>{{$row->customer_name}}</td>
-                        <td>{{$row->comments}}</td>
                         <td>
-                            <div class="mb-1 font-small-2">
-                              <i class="cursor-pointer bx bxs-star text-warning"></i>
-                              <i class="cursor-pointer bx bxs-star text-warning"></i>
-                              <i class="cursor-pointer bx bxs-star text-warning"></i>
-                              <i class="cursor-pointer bx bxs-star text-warning"></i>
-                              <i class="cursor-pointer bx bx-star text-muted"></i>
-                            </div>
+                        @foreach($customer as $cus)
+                        @if($cus->id == $row->customer_id)
+                        {{$cus->name}}
+                        @endif
+                        @endforeach
                         </td>
+                        <td>{{$row->comments}}</td>
+                <td>
+                @if($row->reviews == '1')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '2')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '3')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '4')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bx-star text-muted"></i>
+                    </div>
+                @elseif($row->reviews == '5')
+                    <div class="mb-1 font-small-2">
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                      <i class="cursor-pointer bx bxs-star text-warning"></i>
+                    </div>
+                @endif
+                </td>
                         <td>{{$row->created_at}}</td>
                     </tr>
                     @endforeach
@@ -509,7 +557,6 @@
                     <tfoot>
                         <tr>
                             <th>Invoice ID</th>
-                            <th>Salon Name</th>
                             <th>Customer Name</th>
                             <th>Comments</th>
                             <th>Reviews</th>
@@ -786,10 +833,81 @@ $time = array('12:00 AM','12:30 AM','01:00 AM','01:30 AM','02:00 AM','02:30 AM',
 </div>
 <!-- /Bootstrap Modal -->
 
+<script>
+/* script */
+function initialize() {
+   var latlng = new google.maps.LatLng(24.453884,54.3773438);
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: latlng,
+      zoom: 13
+    });
+    var marker = new google.maps.Marker({
+      map: map,
+      position: latlng,
+      draggable: true,
+      anchorPoint: new google.maps.Point(0, -29)
+   });
+    var input = document.getElementById('searchInput');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var geocoder = new google.maps.Geocoder();
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+    var infowindow = new google.maps.InfoWindow();   
+    autocomplete.addListener('place_changed', function() {
+        infowindow.close();
+        marker.setVisible(false);
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            window.alert("Autocomplete's returned place contains no geometry");
+            return;
+        }
+  
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+       
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);          
+    
+        bindDataToForm(place.formatted_address,place.geometry.location.lat(),place.geometry.location.lng());
+        infowindow.setContent(place.formatted_address);
+        infowindow.open(map, marker);
+       
+    });
+    // this function will work on marker move event into map 
+    google.maps.event.addListener(marker, 'dragend', function() {
+        geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[0]) {        
+              bindDataToForm(results[0].formatted_address,marker.getPosition().lat(),marker.getPosition().lng());
+              infowindow.setContent(results[0].formatted_address);
+              infowindow.open(map, marker);
+          }
+        }
+        });
+    });
+}
+function bindDataToForm(address,lat,lng){
+  // document.getElementById('location').value = address;
+   document.getElementById('latitude').value = lat;
+   document.getElementById('longitude').value = lng;
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 
 @include('admin.footer')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-
+    <script src="/app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
     <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
     
     <script src="/app-assets/js/scripts/pages/app-chat.js"></script>
@@ -797,6 +915,7 @@ $time = array('12:00 AM','12:30 AM','01:00 AM','01:30 AM','02:00 AM','02:30 AM',
     <script src="/app-assets/js/scripts/forms/select/form-select2.js"></script>
     <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>                                     
     
+
 
 <script type="text/javascript">
 $('.salon').addClass('active');
@@ -879,7 +998,7 @@ function Save(){
   }
 }
 
-updateLocation
+//updateLocation
 function updateLocation(){
   var formData = new FormData($('#location_form')[0]);
     $.ajax({

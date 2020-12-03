@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\review;
+use App\customer;
+use App\booking;
 use App\area;
 use App\User;
 use App\service;
@@ -28,6 +30,7 @@ class SalonController extends Controller
     public function viewSalon($id){
         $salon_id = $id;
         $salon = User::find($id);
+        $customer = customer::all();
         $salon_worker = User::where('user_id',$id)->where('role_id','!=','admin')->get();
         $gallery = gallery::where('salon_id',$id)->get();
         $all_salon = User::where('role_id','admin')->get();
@@ -36,7 +39,8 @@ class SalonController extends Controller
         $service_time = service_time::where('salon_id',$id)->get();
         $salon_service = salon_service::where('salon_id',$id)->get();
         $package = package::where('salon_id',$id)->get();
-        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker','gallery','package'));
+        $booking = booking::where('salon_id',$id)->get();
+        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker','gallery','package','customer','booking'));
     }
 
     public function saveSalon(Request $request){

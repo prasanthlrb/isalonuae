@@ -413,8 +413,9 @@ class ApiController extends Controller
         return response()->json($data); 
     }
 
-    public function getPushNotification(){
-        $data = push_notification::where('status',1)->where('send_to',2)->select('title','description')->get();
+    public function getPushNotification($id){
+        $data = push_notification::where('status',1)->where('send_to',2)->get();
+        $data1 = push_notification::where('status',1)->where('send_to',4)->get();
         foreach ($data as $key => $value) {
             $data = array(
                 'title' => $value->title,
@@ -424,6 +425,24 @@ class ApiController extends Controller
                 $data['description'] = $value->description;
             }
             $datas[] = $data;
+        }   
+        
+        foreach ($data1 as $key => $value) {
+            $arraydata=array();
+            foreach(explode(',',$value->customer_ids) as $customer1){
+                $arraydata[]=$customer1;
+            }
+            if(in_array($id , $arraydata))
+            {
+                $data = array(
+                    'title' => $value->title,
+                    'description' => '',
+                );
+                if($value->description != null){
+                    $data['description'] = $value->description;
+                }
+                $datas[] = $data;
+            }
         }   
         return response()->json($datas); 
     }
@@ -1172,6 +1191,23 @@ class ApiController extends Controller
         return response()->json($data); 
     }
 
+    public function chatReadCount($id){
+        date_default_timezone_set("Asia/Dubai");
+        date_default_timezone_get();
+        $chat = salon_customer::where('booking_id',$id)->orderBy('id','DESC')->get();
+        $chat_count=0;
+
+        foreach ($chat as $key => $value) {
+            if($value->message_from == 0){
+            break;
+            }
+            $chat_count++;
+        }   
+        return response()->json([
+            'chat_count'=>$chat_count
+        ], 200);
+    }
+
 
     public function getChatBooking($id){
         date_default_timezone_set("Asia/Dubai");
@@ -1382,7 +1418,7 @@ if(count($coupon)>0){
       
        $output = json_decode(curl_exec($curl)); 
        $payment_referrance_id = $output->_embedded->payment[0]->_id;
-       //$status = $output->_embedded->payment[0]->{'3ds'}->status; 
+       $status = $output->_embedded->payment[0]->{'3ds'}->status; 
        
        $payment_id = str_replace('urn:payment:','',$payment_referrance_id);;
        
@@ -1398,9 +1434,8 @@ if(count($coupon)>0){
         echo "cURL Error #:" . $err;
       } else {
         //echo $response;
-        //echo $status;
-        return response()->json(
-            ['message' => 'Save Successfully'], 200);
+        //echo $output;
+        return response()->json(['message' => 'Save Successfully'], 200);
       }
 
 
@@ -1535,7 +1570,9 @@ if(count($coupon)>0){
         $data =array();
         foreach ($booking as $key => $value) {
            // $salon = User::where('id',$booking->salon_id)->first();
-            if($value->payment_type != 1 || $value->payment_status != 0){
+            if($value->payment_type == '1' && $value->payment_status == '0'){
+            }
+            else{
             $salon = User::find($value->salon_id);
             // return response()->json($salon); 
             $data = array(

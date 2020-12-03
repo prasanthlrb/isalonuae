@@ -91,7 +91,9 @@ Route::get('/get-package-services/{id}', 'ApiController@getPackageServices');
 
 Route::get('/coupon-code-apply/{customer_id}/{code}/{value}/{salon_id}', 'ApiController@couponModule');
 
-Route::get('/get-push-notification', 'ApiController@getPushNotification');
+Route::get('/get-push-notification/{id}', 'ApiController@getPushNotification');
+
+Route::get('/get-push-notification-shop/{id}', 'SalonApiController@getPushNotification');
 
 
 
@@ -102,7 +104,7 @@ Route::get('/get-retrive-payment/{id}', 'ApiController@getRetrivePayment');
 //chat
 Route::get('/get-chat-booking/{id}', 'ApiController@getChatBooking');
 Route::post('/save-chat-booking', 'ApiController@saveChatBooking');
-Route::get('/chat-init/{id}', 'ApiController@chatInit');
+Route::get('/chat-read-count/{id}', 'ApiController@chatReadCount');
 
 
 //review
