@@ -186,11 +186,28 @@
                     </a>
                 </li>
                 @endif
-                @if($role->settlement_reports_read == 'on')
-                <li class="settlement-report nav-item">
+                
+                <!-- <li class="settlement-report nav-item">
                     <a href="/admin/settlement-report">
                         <i class="menu-livicon" data-icon="notebook"></i>
                         <span class="menu-title" data-i18n="Email">Settlement Reports</span>
+                    </a>
+                </li> -->
+                
+                @if($role->settlement_reports_read == 'on')
+                <li class=" navigation-header"><span>Settlement Reports</span></li>
+
+                <li class="payments-in-report nav-item">
+                    <a href="/admin/payments-in-report">
+                        <i class="menu-livicon" data-icon="pie-chart"></i>
+                        <span class="menu-title" data-i18n="Email">Payments In</span>
+                    </a>
+                </li>
+
+                <li class="payments-out-report nav-item">
+                    <a href="/admin/payments-out-report">
+                        <i class="menu-livicon" data-icon="pie-chart"></i>
+                        <span class="menu-title" data-i18n="Email">Payments Out</span>
                     </a>
                 </li>
                 @endif

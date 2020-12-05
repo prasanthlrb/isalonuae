@@ -46,7 +46,8 @@ Route::get('/', 'PageController@SalonRegister');
 Route::get('/send-sms/{id}/{id1}', 'PageController@send_sms');
 Route::get('/salon-register', 'PageController@SalonRegister');
 Route::POST('/save-salon-register', 'PageController@saveSalonRegister');
-Route::POST('/salon-validate', 'PageController@SalonValidate');
+Route::POST('/salon-basic-validate', 'PageController@SalonBasicValidate');
+Route::POST('/salon-contact-validate', 'PageController@SalonContactValidate');
 Route::get('/salon-create-password/{id}', 'PageController@salonCreatePassword');
 Route::POST('/salon-update-password', 'PageController@salonUpdatePassword');
 Route::POST('/update-login', 'PageController@updateLogin');
@@ -72,7 +73,17 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/dashboard', 'AdminController@dashboard')->name('admin.dashboard');
 
 	Route::get('/revenue-report', 'ReportController@revenueReport');
-	Route::get('/settlement-report', 'ReportController@settlementReport');
+	Route::post('/get-booking/{date1}/{date2}', 'ReportController@getBooking');
+	
+	Route::get('/payments-in-report', 'ReportController@paymentsInReport');
+	Route::post('/get-payments-in-report/{date1}/{date2}', 'ReportController@getPaymentsInReport');
+
+	Route::get('/payments-out-report', 'ReportController@paymentsOutReport');
+	Route::post('/get-payments-out-report/{date1}/{date2}', 'ReportController@getPaymentsOutReport');
+
+	Route::post('/date-revenue-report', 'ReportController@dateRevenueReport');
+	Route::post('/date-payments-in-report', 'ReportController@datePaymentsInReport');
+	Route::post('/date-payments-out-report', 'ReportController@datePaymentsOutReport');
 
 	Route::get('/app-terms', 'AdminController@appTerms');
 	Route::POST('/update-app-terms', 'AdminController@updateAppTerms');
@@ -134,6 +145,7 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/salon-package-delete/{id}', 'PackageController@deleteSalonPackage');
 	
 	Route::get('/get-salon-package-item/{id}', 'PackageController@getSalonPackageItem');
+
 
 
 	//service

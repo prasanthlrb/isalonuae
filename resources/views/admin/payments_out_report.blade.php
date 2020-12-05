@@ -29,6 +29,7 @@
     <div class="row">
     <div class="col-12">
     <div class="card">
+
     <form action="#" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
     <div class="card-header">
@@ -49,38 +50,30 @@
         </div>
     </div>
     </form>
+
         <div class="card-content">
             <div class="card-body card-dashboard">
                 
                 <div class="table-responsive">
-                    <table id="datatable" class="table zero-configuration">
+                    <table class="table zero-configuration">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Salon Name</th>
-                                <th>Customer</th>
-                                <th>Total Services /
-                                <br>Packages</br></th>
-                                <th>Transaction /
-                                <br>Mode</br></th>
-                                <th>Total Amount</th>
+                                <th>Payment</br></th>
+                                <th>Transaction /<br>Mode</th>
                             </tr>
                         </thead>
                         <tbody>
-                        
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Salon Name</th>
-                                <th>Customer</th>
-                                <th>Total Services /
-                                <br>Packages</br></th>
-                                <th>Transaction /
-                                <br>Mode</br></th>
-                                <th>Total Amount</th>
+                                <th>Payment</br></th>
+                                <th>Transaction /<br>Mode</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -99,6 +92,7 @@
 @endsection
 @section('js')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+                    <!-- BEGIN: Page Vendor JS-->
     <script src="/app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
     <script src="/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
     <script src="/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
@@ -106,13 +100,11 @@
     <script src="/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
     <script src="/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
     <script src="/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
-    <!-- <script src="/app-assets/js/scripts/datatables/datatable.js"></script> -->
-
-    <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script> -->
+    <!-- END: Page Vendor JS-->
+    <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
 
 <script type="text/javascript">
-$('.revenue-report').addClass('active');
+$('.payments-out-report').addClass('active');
 
 
 var orderPageTable = $('#datatable').DataTable({
@@ -120,19 +112,17 @@ var orderPageTable = $('#datatable').DataTable({
     "serverSide": true,
     //"pageLength": 50,
     "ajax":{
-        "url": "/admin/get-booking/1/1",
+        "url": "/admin/get-payments-out-report/1/1",
         "dataType": "json",
         "type": "POST",
         "data":{ _token: "{{csrf_token()}}"}
     },
     "columns": [
-        { data: 'booking_id', name: 'booking_id' },
-        { data: 'booking_date', name: 'booking_date' },
+        { data: 'id', name: 'id' },
+        { data: 'date', name: 'date' },
         { data: 'salon_details', name: 'salon_details' },
-        { data: 'customer_details', name: 'customer_details' },
-        { data: 'total_services', name: 'total_services' },
         { data: 'payment_type', name: 'payment_type' },
-        { data: 'total_amount', name: 'total_amount' },
+        { data: 'payment', name: 'payment' },
     ]
 });
 
@@ -154,11 +144,9 @@ $('#search').click(function(){
       tdate = '1';
     }
 
-    var new_url = '/admin/get-booking/'+fdate+'/'+tdate;
+    var new_url = '/admin/get-payments-out-report/'+fdate+'/'+tdate;
     orderPageTable.ajax.url(new_url).load();
     //orderPageTable.draw();
 });
-
-
 </script>
 @endsection

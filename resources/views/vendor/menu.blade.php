@@ -46,7 +46,7 @@
             @if($role->service == 'on')
             <li class="service dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Service</span></a>
                 <ul class="dropdown-menu">
-                    <li data-menu=""><a class="service-payment dropdown-item align-items-center" href="/vendor/service-payment" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Service Payment</a>
+                    <li data-menu=""><a class="service-payment dropdown-item align-items-center" href="/vendor/service-payment" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>New Service Payment</a>
                     </li>
                     <li data-menu=""><a class="service-package dropdown-item align-items-center" href="/vendor/service-package" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Service Package</a>
                     </li>
@@ -123,7 +123,7 @@
 
             <li class="service dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Service</span></a>
                 <ul class="dropdown-menu">
-                    <li data-menu=""><a class="service-payment dropdown-item align-items-center" href="/vendor/service-payment" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Service Payment</a>
+                    <li data-menu=""><a class="service-payment dropdown-item align-items-center" href="/vendor/service-payment" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>New Service Payment</a>
                     </li>
                     <li data-menu=""><a class="service-package dropdown-item align-items-center" href="/vendor/service-package" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Service Package</a>
                     </li>

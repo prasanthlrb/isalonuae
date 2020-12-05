@@ -55,8 +55,13 @@ class CreateUsersTable extends Migration
             $table->string('bank_name')->nullable();
             $table->string('iban_number')->nullable();
             $table->string('swift_code')->nullable();
+            $table->string('salon_pay')->nullable();
+            $table->string('salon_paid')->nullable();
+            $table->string('salon_balance')->nullable();
+            $table->string('admin_pay')->nullable();
+            $table->string('admin_paid')->nullable();
+            $table->string('admin_balance')->nullable();
             $table->string('account_name')->nullable();
-
             $table->timestamps();
         });
     }

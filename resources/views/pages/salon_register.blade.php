@@ -720,12 +720,13 @@ function init_Sign_Canvas() {
 </script>
 
 <script type="text/javascript">
-var resultInLogin='';
-function SaveValidate(){
+var resultInLogin;
+var resultInLogin1;
+function BasicValidate(){
     var formData = new FormData($('#form')[0]);
     window.resultInLogin;
     $.ajax({
-        url : '/salon-validate',
+        url : '/salon-basic-validate',
         type: "POST",
         data: formData,
         contentType: false,
@@ -734,9 +735,8 @@ function SaveValidate(){
         success: function(data)
         {    
           console.log(data);   
-          resultInLogin = 'true';
+          resultInLogin = true;
           //alert(resultInLogin);
-          return resultInLogin;
         },
         error: function (data) 
         {
@@ -744,13 +744,41 @@ function SaveValidate(){
           $.each(errorData, function(i, obj) {
             toastr.error(obj[0]);
           });
-          resultInLogin = 'false';
+          resultInLogin = false;
           //alert(resultInLogin);
-          return resultInLogin;
         }
     });
 
-    //return resultInLogin;
+    return resultInLogin;
+}
+function ContactValidate(){
+    var formData = new FormData($('#form')[0]);
+    window.resultInLogin1;
+    $.ajax({
+        url : '/salon-contact-validate',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "JSON",
+        success: function(data)
+        {    
+          console.log(data);   
+          resultInLogin1 = true;
+          //alert(resultInLogin);
+        },
+        error: function (data) 
+        {
+          var errorData = data.responseJSON.errors;
+          $.each(errorData, function(i, obj) {
+            toastr.error(obj[0]);
+          });
+          resultInLogin1 = false;
+          //alert(resultInLogin);
+        }
+    });
+
+    return resultInLogin1;
 }
 
 function validateForm() {
@@ -836,28 +864,22 @@ $(".wizard-horizontal").steps({
     finish: 'Submit'
     },
     onStepChanging: function (event, currentIndex, newIndex) {
-      // alert(currentIndex);
-      // alert(newIndex);
-      //return true;
+      //alert(currentIndex);
+      //alert(newIndex);
+      window.resultInLogin;
+      window.resultInLogin1;
       if(newIndex == '1') {
-        //var res = SaveValidate();
-        //resultInLogin='';
-        //alert(res);
-        //return true;
-        if(validateForm() == true){
+        if(BasicValidate() == true){
           return true;
         }
       }
       else if(newIndex == '0') {
-        // var res1 = SaveValidate();
-        // resultInLogin='';
-        // alert(res1);
-        if(validateForm() == true){
+        if(BasicValidate() == true){
           return true;
         }
       }
       else if(newIndex == '2') {
-        if(validateForm1() == true){
+        if(ContactValidate() == true){
           return true;
         }
       }
@@ -870,6 +892,10 @@ $(".wizard-horizontal").steps({
           toastr.error('Please Agree the Terms and Conditions');
         }
       }
+      // else if (currentIndex == '3')
+      // {
+      //     return false;
+      // }
     },
     onFinished: function (event, currentIndex) {
         fun_submit();

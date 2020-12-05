@@ -159,10 +159,29 @@ public function send_sms($phone,$msg)
         return response()->json('successfully save'); 
     }
 
-    public function SalonValidate(Request $request){
+    public function SalonBasicValidate(Request $request){
         $request->validate([
-            'email'=> 'required|unique:users',
+            'email'=> 'required|email|unique:users',
+            'phone'=> 'required|numeric|digits:9|unique:users',
             'name'=>'required',
+            'trade_license_no'=>'required',
+            'vat_certificate_no'=>'required',
+            'busisness_type'=>'required',
+            'cover_image'=>'required',
+            'profile_image'=>'required',
+            'passport_copy'=>'required',
+            'emirated_id_copy'=>'required',
+        ]);
+        
+        return response()->json(true); 
+        //return response()->json(['error' => false, 'success' => true]);
+    }
+
+    public function SalonContactValidate(Request $request){
+        $request->validate([
+            'city'=>'required',
+            'nationality'=>'required',
+            'address'=>'required',
         ]);
         
         return response()->json(true); 

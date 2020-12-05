@@ -301,6 +301,14 @@ class SalonApiController extends Controller
             $booking->payment_status = 1;
             $booking->save();
 
+            $bookid = 'book'.$booking->id;
+            $message =  array(
+                'payment_status'=> $booking->payment_status,
+                'channel_name'=> $bookid,
+            );
+            //event(new MyEvent($message));
+            event(new ChatEvent($message));
+
             return response()->json(['message' => 'Booking Paid Successfully'], 200);
         }else{
             return response()->json(['message' => 'booking id not found'], 400);
