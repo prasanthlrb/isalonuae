@@ -40,12 +40,16 @@
                                                         <th>Customer Name</th>
                                                         <th>Appointment Date/Time</th>
                                                         <th>Amount</th>
+                                                        <th>Payment Mode</th>
+                                                        <th>Paid / Un Paid</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($booking as $row)
+                                                @if($row->payment_type == '1' && $row->payment_status == '0')
+                                                @else
                                                     <tr>
                                                         <td>#{{$row->id}}</td>
                                                         <td>
@@ -57,6 +61,18 @@
                                                         </td>
                                                         <td>{{$row->appointment_date}} / {{$row->appointment_time}}</td>
                                                         <td>{{$row->total}} AED</td>
+                                                        <td>
+                                                        @if($row->payment_type == 0)
+                                                        Cash
+                                                        @else
+                                                        Card
+                                                        @endif
+                                                        <td>
+                                                        @if($row->payment_status == 0)
+                                                        Un Paid
+                                                        @else
+                                                        Paid
+                                                        @endif
                                                         <td>
                                                         @if($row->booking_status == 0)
                                                         Un Visit
@@ -72,11 +88,15 @@
                 @if($row->booking_status == 0)
                   <a href="/vendor/chat-to-customer/{{$row->id}}" class="dropdown-item"><i class="bx bx-edit-alt mr-1"></i> Chat</a>
                 @endif
+                @if($row->payment_status == 0)
+                    <a onclick="Paid({{$row->id}})" href="#" class="dropdown-item"><i class="bx bx-edit-alt mr-1"></i> Paid</a>
+                @endif
                   <a onclick="OTP({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Verified Otp</a>
                 </div>
             </div>
                                                         </td>
                                                     </tr>
+                                                    @endif
                                                     @endforeach
                                                 </tbody>
                                                 <tfoot>
@@ -85,6 +105,8 @@
                                                         <th>Customer Name</th>
                                                         <th>Appointment Date/Time</th>
                                                         <th>Amount</th>
+                                                        <th>Payment Mode</th>
+                                                        <th>Paid / Un Paid</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -178,6 +200,22 @@ function updateOTP(){
 function OTP(id){
     $('input[name=id]').val(id);
     $('#otp_modal').modal('show');
+}
+
+function Paid(id){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/vendor/update-payment-status/'+id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Paid');
+          $('.zero-configuration').load(location.href+' .zero-configuration');
+        }
+      });
+    } 
 }
 
 </script>

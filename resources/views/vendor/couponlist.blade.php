@@ -80,15 +80,16 @@
 								                      @endif
 								                    </td>
 								                    <td>{{$row->amount}}</td>
-                                                    <td>
-                                                        @if($row->status == 1)
-                                                        Approved
-                                                        @elseif($row->status == 2)
-                                                        Denied
-                                                        @else
-                                                        Pending
-                                                        @endif
-                                                    </td>
+                                    <td>
+                                        @if($row->status == 1)
+                                        Approved
+                                        @elseif($row->status == 2)
+                                        Denied<br>
+                                        Remark : {{$row->deny_remark}}
+                                        @else
+                                        Pending
+                                        @endif
+                                    </td>
 								                    <td><div class="dropdown">
 								                        <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
 								                        </span>

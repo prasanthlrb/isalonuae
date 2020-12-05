@@ -892,10 +892,6 @@ $(".wizard-horizontal").steps({
           toastr.error('Please Agree the Terms and Conditions');
         }
       }
-      // else if (currentIndex == '3')
-      // {
-      //     return false;
-      // }
     },
     onFinished: function (event, currentIndex) {
         fun_submit();

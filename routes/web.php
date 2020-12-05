@@ -81,7 +81,7 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/payments-out-report', 'ReportController@paymentsOutReport');
 	Route::post('/get-payments-out-report/{date1}/{date2}', 'ReportController@getPaymentsOutReport');
 
-	Route::post('/date-revenue-report', 'ReportController@dateRevenueReport');
+	Route::post('/excel-revenue-report', 'ReportController@excelRevenueReport');
 	Route::post('/date-payments-in-report', 'ReportController@datePaymentsInReport');
 	Route::post('/date-payments-out-report', 'ReportController@datePaymentsOutReport');
 
@@ -357,8 +357,16 @@ Route::group(['prefix' => 'vendor'],function(){
 	Route::get('/calendar', function () {
     	return view('vendor.calendar');
 	});
+
 	Route::get('/get-booking', 'Vendor\ChatController@getBooking');
 	Route::post('/verified-otp', 'Vendor\ChatController@verifiedOtp');
+	Route::get('/update-payment-status/{id}', 'Vendor\ChatController@updatePaymentStatus');
+
+	Route::get('/bank-details', 'Vendor\ReviewController@bankDetails');
+	Route::POSt('/update-bank-details', 'Vendor\ReviewController@updateBankDetails');
+
+	Route::get('/store-time', 'Vendor\ReviewController@storeTime');
+	Route::POSt('/update-store-time', 'Vendor\ReviewController@updateStoreTime');
 
 	Route::get('/chat-to-customer/{id}', 'Vendor\ChatController@chatToCustomer');
 	Route::get('/get-customer-chat/{id}', 'Vendor\ChatController@getCustomerChat');

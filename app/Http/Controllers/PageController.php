@@ -76,6 +76,7 @@ public function send_sms($phone,$msg)
         }
 
         $salon = new User;
+        $salon->date = date('Y-m-d');
         $salon->busisness_type = $request->busisness_type;
         $salon->name = $request->name;
         $salon->email = $request->email;
@@ -260,11 +261,15 @@ public function send_sms($phone,$msg)
         $user = User::find($id);
         //$pdf = PDF::loadView('pdf.contract',compact('user'), [], ['mode' => 'utf-8']);
         
-        $view = view('pdf.contract',compact('user'))->render();
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadHTML($view);
-        $pdf->setPaper('a4', 'landscape');
-        $pdf->stream('invoice');
+        // $view = view('pdf.contract',compact('user'))->render();
+        // $pdf = \App::make('dompdf.wrapper');
+        // $pdf->loadHTML($view);
+        // $pdf->setPaper('legal', 'portrait');
+        // $pdf->stream('invoice');
+
+        $customPaper = array(0,0,720,1440);
+        $pdf = PDF::loadView('pdf.contract', compact('user'))->setPaper($customPaper, 'portrait');
+
 
         try{
             Mail::send('mail.contract', compact('user'), function($message)use($user,$pdf) {

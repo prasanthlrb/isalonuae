@@ -29,7 +29,7 @@
     <div class="row">
     <div class="col-12">
     <div class="card">
-    <form action="#" method="post" enctype="multipart/form-data">
+    <form id="form" action="/admin/excel-revenue-report" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
     <div class="card-header">
         <div class="row">
@@ -43,8 +43,11 @@
                 <input autocomplete="off" type="date" id="to_date" name="to_date" class="form-control">
             </div>
 
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
                 <button id="search" class="btn btn-primary btn-block mr-10" type="button">Search</button>
+            </div>
+            <div class="form-group col-md-2">
+                <button id="downloadexcel" class="btn btn-primary btn-block mr-10" type="submit">Excel</button>
             </div>
         </div>
     </div>
@@ -158,6 +161,29 @@ $('#search').click(function(){
     orderPageTable.ajax.url(new_url).load();
     //orderPageTable.draw();
 });
+
+
+// $('#downloadexcel').click(function(){
+//   var formData = new FormData($('#form')[0]);
+//     $.ajax({
+//         url : '/admin/excel-revenue-report',
+//         type: "POST",
+//         data: formData,
+//         contentType: false,
+//         processData: false,
+//         dataType: "JSON",
+//         success: function(data)
+//         {                
+//             $("#form")[0].reset();
+//             toastr.success(data, 'Successfully Export');
+//         },error: function (data) {
+//             var errorData = data.responseJSON.errors;
+//             $.each(errorData, function(i, obj) {
+//             toastr.error(obj[0]);
+//       });
+//     }
+//     });
+// });
 
 
 </script>

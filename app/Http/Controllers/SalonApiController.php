@@ -334,6 +334,7 @@ class SalonApiController extends Controller
                 'subtotal' => $value->subtotal,
                 'total' => $value->total,
                 'coupon' => '',
+                'address_id' => (int)$value->address_id,
                 'discount' => 0.0,
             );
 
@@ -341,6 +342,10 @@ class SalonApiController extends Controller
                 $data['customer_name'] = $customer->name;
                 $data['customer_phone'] = $customer->phone;
                 $data['customer_email'] = $customer->email;
+            }
+
+            if($value->address_id !=null){
+                $data['address_id'] = 0;
             }
             
             if($value->coupon !=null){

@@ -20,6 +20,8 @@ use App\salon_service;
 use session;
 use Auth;
 use Yajra\DataTables\Facades\DataTables;
+use App\Exports\BookingExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -248,18 +250,16 @@ class ReportController extends Controller
 
 
 
-    public function dateRevenueReport(Request $request){
+    public function excelRevenueReport(Request $request){
+        // $request->validate([
+        //     'from_date'=>'required',
+        //     'to_date'=>'required',
+        // ]);
         $fdate = date('Y-m-d', strtotime($request->from_date));
         $tdate = date('Y-m-d', strtotime($request->to_date));
 
-        if($fdate != '1970-01-01' && $tdate != '1970-01-01'){
-            $booking = booking::whereBetween('date', [$fdate, $tdate])->get();
-        }else{
-            $booking = booking::orderBy('id','desc')->get();
-        }
-        $customer = customer::all();
-        $salon = User::all();
-        return view('admin.revenue_report',compact('booking','customer','salon'));
+        return Excel::download(new BookingExport($fdate,$tdate), 'report.xlsx');
+        //return (new BookingExport($fdate,$tdate))->download('report.xlsx');
     }
 
     public function datePaymentsInReport(Request $request){

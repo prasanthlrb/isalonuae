@@ -61,6 +61,7 @@ class SalonController extends Controller
         }
 
         $salon = new User;
+        $salon->date = date('Y-m-d');
         $salon->busisness_type = $request->busisness_type;
         $salon->name = $request->name;
         $salon->email = $request->email;
