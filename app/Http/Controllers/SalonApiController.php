@@ -398,6 +398,7 @@ class SalonApiController extends Controller
     public function getBookingTransaction($id){
         $booking = booking::where('customer_id',$id)->get();
         $data =array();
+        $datas=array();
         foreach ($booking as $key => $value) {
             if($value->payment_type == '1' && $value->payment_status == '0'){
             }
