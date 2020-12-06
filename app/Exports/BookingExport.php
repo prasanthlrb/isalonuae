@@ -106,7 +106,7 @@ class BookingExport implements FromCollection, ShouldAutoSize , WithHeadings , W
 
         $payment_type = '';
         if ($booking->payment_type == 0) {
-            $payment_type='C.O.D';
+            $payment_type='Cash';
         } else {
             $payment_type='Card Payment';
         }

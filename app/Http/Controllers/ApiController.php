@@ -1426,6 +1426,14 @@ if(count($coupon)>0){
        if($status == "SUCCESS"){
         $booking->payment_status = 1;
         $this->sendBookNotification($booking->id);
+
+        $salon = User::find($booking->salon_id);
+        $customer=customer::find($booking->customer_id);        
+        $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
+        $this->send_sms($customer->phone,$msg);
+        $service_amount = (6 / 100) * ($booking->total);
+        $salon->salon_pay = $salon->salon_pay + $service_amount;
+        $salon->save();
        }
        else{
         $booking->payment_status = 0;
@@ -1514,7 +1522,7 @@ if(count($coupon)>0){
         
         $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
 
-        //$this->send_sms($customer->phone,$msg);
+        
         if($request->payment_type == 1){
             return response()->json(
             ['message' => 'Save Successfully',
@@ -1524,6 +1532,10 @@ if(count($coupon)>0){
             ], 200);
         }
         else{
+            $this->send_sms($customer->phone,$msg);
+            $service_amount = (6 / 100) * ($booking->total);
+            $salon->admin_pay = $salon->admin_pay + $service_amount;
+            $salon->save();
             $this->sendBookNotification($booking->id);
             return response()->json(
                 ['message' => 'Save Successfully',
@@ -1675,13 +1687,13 @@ if(count($coupon)>0){
             $data = array(
                 'booking_id' => $value->id,
                 'date' => $dateTime->diffForHumans(),
-                'payment_id' => 0,
+                'payment_id' => '0',
                 'total' => $value->total,
                 'payment_type' => (int)$value->payment_type,
                 'payment_status' => (int)$value->payment_status,
             );
             if($value->payment_id == 0){
-                $data['payment_id'] = 0;
+                $data['payment_id'] = '0';
             }
             if($value->payment_id == 1){
                 $data['payment_id'] = $value->order_id;

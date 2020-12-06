@@ -59,7 +59,7 @@ class ReportController extends Controller
             })
             ->addColumn('payment_type', function ($booking) {
                 if ($booking->payment_type == 0) {
-                    return '<td>C.O.D</td>';
+                    return '<td>Cash</td>';
                 } else {
                     return '<td>Card Payment</td>';
                 }
