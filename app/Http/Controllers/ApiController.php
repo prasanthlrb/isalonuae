@@ -1665,7 +1665,7 @@ if(count($coupon)>0){
     }
 
     public function getBookingTransaction($id){
-        $booking = booking::where('customer_id',$id)->orderBy('id',DESC)->get();
+        $booking = booking::where('customer_id',$id)->orderBy('id','DESC')->get();
         $data =array();
         foreach ($booking as $key => $value) {
             if($value->payment_type == '1' && $value->payment_status == '0'){
@@ -1675,11 +1675,17 @@ if(count($coupon)>0){
             $data = array(
                 'booking_id' => $value->id,
                 'date' => $dateTime->diffForHumans(),
-                'payment_id' => $value->payment_id,
+                'payment_id' => 0,
                 'total' => $value->total,
                 'payment_type' => (int)$value->payment_type,
                 'payment_status' => (int)$value->payment_status,
             );
+            if($value->payment_id == 0){
+                $data['payment_id'] = 0;
+            }
+            if($value->payment_id == 1){
+                $data['payment_id'] = $value->order_id;
+            }
             $datas[] = $data;
             }
         }   
