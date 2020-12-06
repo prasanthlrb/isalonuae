@@ -1433,13 +1433,14 @@ if(count($coupon)>0){
 
       curl_close($curl);
       
-    //   if ($err) {
-    //     echo "cURL Error #:" . $err;
-    //   } else {
-    //     //echo $response;
-    //     //return $status;
-    //     //return response()->json(['message' => 'Save Successfully'], 200);
-    //   }
+      if ($err) {
+        echo "cURL Error #:" . $err;
+      } else {
+        //echo $response;
+        //return $status;
+        $this->sendBookNotification($booking->id);
+        return response()->json(['message' => 'Save Successfully'], 200);
+      }
 
 
     }
@@ -1509,8 +1510,6 @@ if(count($coupon)>0){
         $salon = User::find($request->salon_id);
         $customer=customer::find($request->customer_id);
         //return response()->json($request);
-
-        $this->sendBookNotification($booking->id);
         
         $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
 
@@ -1524,6 +1523,7 @@ if(count($coupon)>0){
             ], 200);
         }
         else{
+            $this->sendBookNotification($booking->id);
             return response()->json(
                 ['message' => 'Save Successfully',
                 'booking_id'=>$booking->id,
@@ -1541,7 +1541,6 @@ if(count($coupon)>0){
             $booking_item->service_id = $request->service_id;
             $booking_item->price = $request->price;
             $booking_item->save();
-            //$this->getRetrivePayment($request->booking_id);
         return response()->json(
             ['message' => 'Save Successfully'],
              200);
@@ -1558,7 +1557,6 @@ if(count($coupon)>0){
             $booking_package->package_name = $request->package_name;
             $booking_package->price = $request->price;
             $booking_package->save();
-            //$this->getRetrivePayment($request->booking_id);
         return response()->json(
             ['message' => 'Save Successfully'],
              200);
@@ -1669,14 +1667,20 @@ if(count($coupon)>0){
         $booking = booking::where('customer_id',$id)->get();
         $data =array();
         foreach ($booking as $key => $value) {
+            if($value->payment_type == '1' && $value->payment_status == '0'){
+            }
+            else{
              $dateTime = new Carbon($value->updated_at, new \DateTimeZone('Asia/Dubai'));
             $data = array(
                 'booking_id' => $value->id,
                 'date' => $dateTime->diffForHumans(),
                 'payment_id' => $value->payment_id,
                 'total' => $value->total,
+                'payment_type' => (int)$value->payment_type,
+                'payment_status' => (int)$value->payment_status,
             );
             $datas[] = $data;
+            }
         }   
         return response()->json($datas); 
     }

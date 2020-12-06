@@ -6,6 +6,9 @@
         body {
             font-family: "DejaVu Sans", "Times New Roman" !important;
         }
+        /* p.ar{
+            text-align:right;
+        } */
     </style>
 </head>
 <body>
@@ -51,7 +54,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     يوفر (I<strong>Salon)</strong>
                     <strong>
                         Isalon Financial Services- One man Company L.L.C
@@ -77,7 +80,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     يُحدد هذا المستند (المُشار إليه فيما يلي باسم "اتفاقية
                     تجريبية" شروط وأحكام النسخة التجريبية المجانية التي يوفرها
                     الطرف الأول والتي تكفل للطرف الثاني إمكانية الدخول إلى جميع
@@ -97,10 +100,10 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     حُررت الاتفاقية التجريبية في يوم
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     و وتسري اعتباراً من وتم ابرامها بين كل من:
                 </p>
             </td>
@@ -136,37 +139,37 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
 1- I Salon ويمثله السيد/ <strong>طارق</strong>                    
 <strong>درويش محمد خميس</strong><strong> القبيسى</strong>
                     المُشار إليه باسم "الطرف الأول" و
                 <!-- </p>
-                <p dir="RTL"> -->
+                <p dir="RTL" class="ar"> -->
                     2- @if($user->salon_name != '')
 {{$user->salon_name}}
 @else
 {{$user->name}}
 @endif ويمثله 
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>رقم الرخصة التجارية</strong>
                     <strong>:</strong>
                     <strong>{{$user->trade_license_no}}</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>رقم الهوية الإماراتية </strong>
                     <strong>:</strong>
                     <strong>{{$user->emirates_id}}</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>الرقم الضريبي</strong>
                     <strong>:</strong>
                     <strong>{{$user->vat_certificate_no}}</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>رقم الهاتف:</strong>
                     <strong>+971-509310222</strong>
                 </p>
@@ -179,7 +182,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     المُشار إليه باسم "الطرف الثاني"
                 </p>
             </td>
@@ -195,7 +198,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     تُصبح جميع الشروط والأحكام الواردة أدناه في هيئة بنود
 وفقرات ملحقة بها ملزمة على الأطراف المحددة بالاتفاقية.                    <a name="_GoBack"></a>
                 </p>
@@ -210,7 +213,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1</strong>
                     <strong>- </strong>
                     <strong>البند الأول</strong>
@@ -239,7 +242,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     عند توقيع هذه الاتفاقية
                 </p>
             </td>
@@ -258,7 +261,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-1</strong>
                     يوافق الطرف الثاني على أن يكون هو مزود الخدمة في هذه
                     الاتفاقية
@@ -281,7 +284,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-2</strong>
                     يلتزم الطرف الثاني بتقديم التطبيق وتزويد الطرف الأول بقائمة
                     شاملة بالخدمات التي يقدمها والفئات التي تندرج تحتها هذه
@@ -309,7 +312,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-3</strong>
                     يلتزم الطرف الثاني باستقبال الحجز وقبوله عبر التطبيق وتقديم
                     الخدمات للحجوزات المقبولة في موعدها المحدد، إذا تم إلغاء
@@ -336,7 +339,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-4</strong>
                     <strong> يلتزم</strong>
                     الطرف الثاني أمام الطرف الاول في القيام بتنفيذ الاعمال
@@ -359,7 +362,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-5</strong>
                     يلتزم الطرف الثاني بتوحيد أسعار الخدمات داخل التطبيق أو
                     خارجه.
@@ -385,7 +388,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-6</strong>
                     يوافق الطرف الثاني على التعاون مع الطرف الأول - وفقاً
                     لتقدير الأخير وحده - فيما يخص الاعلان عن الخدمات التي
@@ -436,7 +439,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-7</strong>
                     في حال قيام المستخدم بدفع مبلغ الحجز نقداً عبر التطبيق،
                     يقوم الطرف الثاني باستلام مبلغ الحجز نقداً على عنوانه. وفي
@@ -445,7 +448,7 @@
                     مبلغ الحجز. على أن يتحمل الطرف الثاني أية استقطاعات قد تتم
                     من خلال البطاقات الائتمانية .
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     يتفهم الطرف الثاني أن جميع المبالغ سيتم إيداعها في حساب
                     الطرف الأول قبل تحويل المبلغ الاجمالي في نهاية الشهر على
                     حساب الطرف الثاني.
@@ -462,7 +465,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>1-8</strong>
                     يلتزم الطرف الثاني بإبلاغ الطرف الأول ومستخدمي التطبيق عن
                     فرض ضريبة القيمة المضافة VAT – عند الاقتضاء - وفقاً
@@ -485,7 +488,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>2</strong>
                     <strong>- </strong>
                     <strong>البند الثاني</strong>
@@ -525,7 +528,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>2-1</strong>
                     في حال رغبة الطرف الثاني في التوقف عن تقديم الخدمة قبل
                     انتهاء المدة المجانية، يتعين عليه أنه يقوم بإخطار الطرف
@@ -559,7 +562,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>2-2</strong>
                     يحق للطرف الثاني أن يطلب تمديد الفترة التجريبية من خلال
                     إرسال إشعار خطي للطرف الأول قبل مهاية مدته بشهرين على الاقل
@@ -584,7 +587,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>2-3</strong>
                     بعد انتهاء فترة الاتفاقية التجريبية، تخضع جميع أشكال
                     التمديد لشروط وأحكام عقد آخر خارج نطاق هذه الاتفاقية.
@@ -608,7 +611,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>2-4</strong>
                     في حال نشوء أي نزاع بموجب هذه الإتفاقية وعدم توصل الطرفين
                     إلى اتفاق ودي بينهم، يتم إحالة النزاع إلى محاكم أبو ظبي
@@ -640,16 +643,16 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>البند الثالث</strong>
                     <strong>: </strong>
                     <strong>إنهاء العقد</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     3-1 في حال تسبب الطرف الثاني في حدوث خلل وتقاعسه عن
                     معالجته، يحتفظ الطرف الأول بحقه في إنهاء العقد بعد أن يتم
                     إخطار الطرف الثاني كتابياً.
@@ -671,7 +674,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     3-2 يلتزم الطرف الأول بإرسال أي اشعار للطرف الثاني على
                     عنوان البريد الالكتروني الذي يحمل اسم الطرف الثاني.
                 </p>
@@ -692,7 +695,7 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     حُرر هذا العقد من نسختين متطابقتين بيد كل طرف نسخة منه
                     لاستخدامها عند الضرورة
                 </p>
@@ -717,20 +720,20 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>توقيع الطرف الأول</strong>
                     <strong>:</strong>
                     <strong>………………………………..</strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>البريد الالكتروني للطرف الأول</strong>
                     <strong>:</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <a href="mailto:info@isalonuae.com">
                         <strong>info@isalonuae.com</strong>
                     </a>
@@ -773,31 +776,31 @@
                 </p>
             </td>
             <td style="width:50%;" valign="top">
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>توقيع الطرف الثاني</strong>
                     <strong>:</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong><img style="width:200px;height:80px;" src="{{$user->signature_data}}"></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>البريد الالكتروني للطرف الثاني</strong>
                     <strong>:</strong>
                     <strong></strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>{{$user->email}}</strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                     <strong>تا</strong>
                     <strong>ريخ توقيع العقد</strong>
                     <strong>: </strong>
                 </p>
-                <p dir="RTL">
+                <p dir="RTL" class="ar">
                 {{$user->date}}
                 </p>
             </td>

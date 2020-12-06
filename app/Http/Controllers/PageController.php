@@ -257,7 +257,7 @@ public function send_sms($phone,$msg)
       
     }
 
-    private function contractSendMail($id){
+    public function contractSendMail($id){
         $user = User::find($id);
         //$pdf = PDF::loadView('pdf.contract',compact('user'), [], ['mode' => 'utf-8']);
         
