@@ -14,6 +14,13 @@
 <body>
 <table cellspacing="0" cellpadding="0" style="width:100%;">
     <tbody>
+    <tr>
+    <td colspan="2">
+    <center>
+    <img style="width:100px;height:100px;" src="http://15.184.21.73/images/logo/logo1.png">
+    </center>
+    </td>
+    </tr>
         <tr>
             <td style="width:50%;" valign="top">
                 <p align="center">
@@ -112,7 +119,27 @@
             <td style="width:50%;" valign="top">
                 <p>
 (1) I Salon, represented by <strong>Tariq</strong><strong>Darwish Mohammed Khamis</strong>                    <strong> Al Qubaisi </strong>referred to as the “First
-                    Party”), and (2) @if($user->salon_name != '')
+                    Party”), </p>
+                <p>
+                    <strong></strong>
+                </p>
+                <p>
+                    <strong>Trade licenceNo:</strong>
+                    <strong>CN-2697445</strong>
+                </p>
+                <p>
+                    <strong>Emirates ID No:</strong>
+                    <strong>754-1990-3607696-8</strong>
+                </p>
+                <p>
+                    <strong>VAT certificate No:</strong>
+                    <strong></strong>
+                </p>
+                <p>
+                    <strong>ContactNumber:</strong>
+                    <strong>+971-509310222</strong>
+                </p>
+                    <p>and (2) @if($user->salon_name != '')
 {{$user->salon_name}}
 @else
 {{$user->name}}
@@ -143,8 +170,30 @@
 1- I Salon ويمثله السيد/ <strong>طارق</strong>                    
 <strong>درويش محمد خميس</strong><strong> القبيسى</strong>
                     المُشار إليه باسم "الطرف الأول" و
-                <!-- </p>
-                <p dir="RTL" class="ar"> -->
+                </p>
+                <p dir="RTL" class="ar">
+                    <strong>رقم الرخصة التجارية</strong>
+                    <strong>:</strong>
+                    <strong>CN-2697445</strong>
+                    <strong></strong>
+                </p>
+                <p dir="RTL" class="ar">
+                    <strong>رقم الهوية الإماراتية </strong>
+                    <strong>:</strong>
+                    <strong>754-1990-3607696-8</strong>
+                    <strong></strong>
+                </p>
+                <p dir="RTL" class="ar">
+                    <strong>الرقم الضريبي</strong>
+                    <strong>:</strong>
+                    <strong></strong>
+                    <strong></strong>
+                </p>
+                <p dir="RTL" class="ar">
+                    <strong>رقم الهاتف:</strong>
+                    <strong>+971-509310222</strong>
+                </p>
+                <p dir="RTL" class="ar">
                     2- @if($user->salon_name != '')
 {{$user->salon_name}}
 @else
@@ -171,7 +220,7 @@
                 </p>
                 <p dir="RTL" class="ar">
                     <strong>رقم الهاتف:</strong>
-                    <strong>+971-509310222</strong>
+                    <strong>{{$user->phone}}</strong>
                 </p>
             </td>
         </tr>

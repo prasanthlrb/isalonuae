@@ -53,7 +53,7 @@ Route::POST('/salon-update-password', 'PageController@salonUpdatePassword');
 Route::POST('/update-login', 'PageController@updateLogin');
 Route::get('/get-area/{id}', 'PageController@getArea');
 
-Route::get('/contractSendMail/{id}', 'PageController@contractSendMail');
+//Route::get('/contractSendMail/{id}', 'PageController@contractSendMail');
 
 Route::get('/customer-create-password/{id}', 'PageController@customerCreatePassword');
 Route::POST('/customer-update-password', 'PageController@customerUpdatePassword');
