@@ -160,6 +160,9 @@ class SalonApiController extends Controller
                     if($exist[0]->salon_name != null){
                         $salon_name = $exist[0]->salon_name;
                     }
+                    else{
+                        $salon_name = $exist[0]->name;
+                    }
                 return response()->json(['message' => 'Login Successfully',
                 'name'=>$exist[0]->name,
                 'email'=>$exist[0]->email,
@@ -334,7 +337,7 @@ class SalonApiController extends Controller
                 'subtotal' => $value->subtotal,
                 'total' => $value->total,
                 'coupon' => '',
-                'address_id' => (int)$value->address_id,
+                'address_id' => 0,
                 'discount' => 0.0,
             );
 
@@ -345,7 +348,7 @@ class SalonApiController extends Controller
             }
 
             if($value->address_id !=null){
-                $data['address_id'] = 0;
+                $data['address_id'] = (int)$value->address_id;
             }
             
             if($value->coupon !=null){

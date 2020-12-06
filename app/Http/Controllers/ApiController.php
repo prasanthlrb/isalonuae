@@ -1608,7 +1608,7 @@ if(count($coupon)>0){
                 'total' => $value->total,
                 'coupon' => '',
                 'discount' => 0.0,
-                'address_id'=> (int)$value->address_id
+                'address_id'=> (int)$value->address_id,
             );
             if($salon->latitude != null){
                 $data['latitude'] = $salon->latitude;
