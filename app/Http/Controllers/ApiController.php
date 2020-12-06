@@ -1425,6 +1425,7 @@ if(count($coupon)>0){
        $booking->payment_id = $payment_id;
        if($status == "SUCCESS"){
         $booking->payment_status = 1;
+        $this->sendBookNotification($booking->id);
        }
        else{
         $booking->payment_status = 0;
@@ -1438,7 +1439,7 @@ if(count($coupon)>0){
       } else {
         //echo $response;
         //return $status;
-        $this->sendBookNotification($booking->id);
+        
         return response()->json(['message' => 'Save Successfully'], 200);
       }
 
@@ -1664,7 +1665,7 @@ if(count($coupon)>0){
     }
 
     public function getBookingTransaction($id){
-        $booking = booking::where('customer_id',$id)->get();
+        $booking = booking::where('customer_id',$id)->orderBy('id',DESC)->get();
         $data =array();
         foreach ($booking as $key => $value) {
             if($value->payment_type == '1' && $value->payment_status == '0'){
