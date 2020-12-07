@@ -142,6 +142,7 @@ class SalonApiController extends Controller
             // if($exist[0]->status == 1){
                 if(Hash::check($request->password,$exist[0]->password)){
                     $salon = User::find($exist[0]->id);
+                    $salon1 = User::find($exist[0]->user_id);
                     $salon->fcm_token = $request->fcm_token;
                     $salon->save();
                     $user_type;
@@ -153,15 +154,15 @@ class SalonApiController extends Controller
                     }
                     
                     $cover_image = '';
-                    if($exist[0]->cover_image != null){
-                        $cover_image = $exist[0]->cover_image;
+                    if($salon1->cover_image != null){
+                        $cover_image = $salon1->cover_image;
                     }
                     $salon_name = '';
-                    if($exist[0]->salon_name != null){
-                        $salon_name = $exist[0]->salon_name;
+                    if($salon1->salon_name != null){
+                        $salon_name = $salon1->salon_name;
                     }
                     else{
-                        $salon_name = $exist[0]->name;
+                        $salon_name = $salon1->name;
                     }
                 return response()->json(['message' => 'Login Successfully',
                 'name'=>$exist[0]->name,
@@ -320,7 +321,13 @@ class SalonApiController extends Controller
 
 
     public function getBooking($id){
-        $booking = booking::where('salon_id',$id)->orderBy('id','DESC')->get();
+        $user=User::find($id);
+        if($user->role_id == 'admin'){
+            $booking = booking::where('salon_id',$user->user_id)->orderBy('id','DESC')->get();
+        }
+        else{
+            $booking = booking::where('salon_id',$user->user_id)->where('workers_id',$id)->orderBy('id','DESC')->get();
+        }
         
         $data =array();
         foreach ($booking as $key => $value) {
@@ -426,7 +433,7 @@ class SalonApiController extends Controller
 
 
     public function getDashboard($id){    
-        
+        $user=User::find($id);
         $today = date('Y-m-d');
         $cfdate = date('Y-m-d',strtotime('first day of this month'));
         $cldate = date('Y-m-d',strtotime('last day of this month'));
@@ -434,17 +441,17 @@ class SalonApiController extends Controller
         $sevendays = date('Y-m-d',strtotime("$today -7 day"));
         $thirtydays = date('Y-m-d',strtotime("$today -30 day"));
     
-        $total_booking = booking::where('salon_id',$id)->count();
-        $today_booking = booking::where('salon_id',$id)->where('date', $today)->count();
-        $open_booking = booking::where('salon_id',$id)->where('booking_status', 0)->count();
+        $total_booking = booking::where('salon_id',$user->user_id)->count();
+        $today_booking = booking::where('salon_id',$user->user_id)->where('date', $today)->count();
+        $open_booking = booking::where('salon_id',$user->user_id)->where('booking_status', 0)->count();
         
-        $today_value = booking::where('salon_id',$id)->where('date', $today)->get()->sum("total");
-        $current_month_value = booking::where('salon_id',$id)->whereBetween('date', [$cfdate, $cldate])->get()->sum("total");
+        $today_value = booking::where('salon_id',$user->user_id)->where('date', $today)->get()->sum("total");
+        $current_month_value = booking::where('salon_id',$user->user_id)->whereBetween('date', [$cfdate, $cldate])->get()->sum("total");
 
-        $last7days = booking::where('salon_id',$id)->whereBetween('date', [$sevendays, $today])->get()->sum("total");
-        $last30days = booking::where('salon_id',$id)->whereBetween('date', [$thirtydays, $today])->get()->sum("total");
+        $last7days = booking::where('salon_id',$user->user_id)->whereBetween('date', [$sevendays, $today])->get()->sum("total");
+        $last30days = booking::where('salon_id',$user->user_id)->whereBetween('date', [$thirtydays, $today])->get()->sum("total");
 
-        $total_services = salon_service::where('salon_id',$id)->count();    
+        $total_services = salon_service::where('salon_id',$user->user_id)->count();    
 
         $data = array(
             'total_booking' => $total_booking,
@@ -531,7 +538,8 @@ class SalonApiController extends Controller
 
 
     public function getSalonService($id){
-        $salon_service = salon_service::where('salon_id',$id)->get();
+        $user=User::find($id);
+        $salon_service = salon_service::where('salon_id',$user->user_id)->get();
         $data =array();
         foreach ($salon_service as $key => $value) {
             $service = service::find($value->service_id);
