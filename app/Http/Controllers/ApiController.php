@@ -1325,9 +1325,9 @@ if(count($coupon)>0){
 }
 
     private function getAccessToken(){
-        $apikey="YmZjY2MwZjktMjhjNS00Njk1LWFjN2UtNDJmNWJjYTBhOGExOjY2MWI3OWRjLTRkODgtNDAzYi05MWY0LTM0YTBhZjY3YTE5MA==";
+        //$apikey="YmZjY2MwZjktMjhjNS00Njk1LWFjN2UtNDJmNWJjYTBhOGExOjY2MWI3OWRjLTRkODgtNDAzYi05MWY0LTM0YTBhZjY3YTE5MA==";
         
-        //$apikey="YmE2MjU0YmQtMjZhMi00MjE3LWIxODMtN2IwODI5NGZlN2MyOjZkZjVjNDNiLTQ2NjktNDE5YS1iYTc0LTAyYjI1MzcyNTQ0Zg==";     
+        $apikey="YmE2MjU0YmQtMjZhMi00MjE3LWIxODMtN2IwODI5NGZlN2MyOjZkZjVjNDNiLTQ2NjktNDE5YS1iYTc0LTAyYjI1MzcyNTQ0Zg==";     
         // enter your API key here
         $ch = curl_init(); 
         curl_setopt($ch, CURLOPT_URL, "https://api-gateway.sandbox.ngenius-payments.com/identity/auth/access-token"); 
@@ -1361,7 +1361,7 @@ if(count($coupon)>0){
         $postData->amount->currencyCode = "AED"; 
         $postData->amount->value = $amount; 
         
-        $outlet = "ae35008c-52e8-485a-92c0-c3fa31350e36";
+        $outlet = "cb081997-96d7-4aaa-b399-865016a34ead";
         $token=$this->getAccessToken();
          
         $json = json_encode($postData);
@@ -1393,7 +1393,7 @@ if(count($coupon)>0){
     public function getRetrivePayment($id){
         $booking = booking::find($id);
         $orderID = $booking->order_id;
-        $outlet = "ae35008c-52e8-485a-92c0-c3fa31350e36";
+        $outlet = "cb081997-96d7-4aaa-b399-865016a34ead";
         $token=$this->getAccessToken();
       
       $curl = curl_init();
@@ -1447,7 +1447,6 @@ if(count($coupon)>0){
       } else {
         //echo $response;
         //return $status;
-        
         return response()->json(['message' => 'Save Successfully'], 200);
       }
 
