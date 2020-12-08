@@ -117,7 +117,7 @@ class ApiController extends Controller
         $customer->name = $request->name;
         $customer->email = $request->email;
         $customer->phone = $request->phone;
-        $customer->dob = $request->dob;
+        $customer->dob = date('Y-m-d',strtotime($request->dob));
         $customer->city = $request->city;
         $customer->firebase_key = $request->firebase_key;
         if($request->gender == 'male'){
@@ -178,7 +178,7 @@ class ApiController extends Controller
         }
 
         if(isset($request->dob)){
-            $customer->dob = $request->dob;
+            $customer->dob = date('Y-m-d',strtotime($request->dob));
         }
 
         if(isset($request->gender)){

@@ -269,6 +269,10 @@ Route::group(['prefix' => 'admin'],function(){
 
 	Route::get('/booking', 'AdminController@getBooking');
 
+	Route::get('/expired-salon', 'AdminController@expiredSalon');
+	Route::get('/cash-report', 'AdminController@cashReport');
+	Route::get('/card-report', 'AdminController@cardReport');
+
 
 	//roles
 	Route::POST('/save-role', 'RoleController@saveRole');

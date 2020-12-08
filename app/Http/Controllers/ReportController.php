@@ -143,7 +143,7 @@ class ReportController extends Controller
             ->addColumn('payment_type', function ($booking) {
                 if ($booking->payment_type == 0) {
                     return '<td>Cash</td>';
-                } else {
+                } else if ($booking->payment_type == 1) {
                     return '<td>Bank</td>';
                 }
             })
@@ -203,7 +203,7 @@ class ReportController extends Controller
             ->addColumn('payment_type', function ($booking) {
                 if ($booking->payment_type == 0) {
                     return '<td>Cash</td>';
-                } else {
+                } else if ($booking->payment_type == 1) {
                     return '<td>Bank</td>';
                 }
             })

@@ -35,13 +35,30 @@
                                 <ul class="search-list"></ul>
                             </div>
                         </li>
-                        <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon bx bx-bell bx-tada bx-flip-horizontal"></i><span class="badge badge-pill badge-danger badge-up">0</span></a>
+                        <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon bx bx-bell bx-tada bx-flip-horizontal"></i><span class="badge badge-pill badge-danger badge-up">{{$customer_count}}</span></a>
                             <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                                 <li class="dropdown-menu-header">
-                                    <div class="dropdown-header px-1 py-75 d-flex justify-content-between"><span class="notification-title">0 Notification</span><span class="text-bold-400 cursor-pointer">Mark all as read</span></div>
+                                    <div class="dropdown-header px-1 py-75 d-flex justify-content-between"><span class="notification-title">{{$customer_count}} Notification</span><span class="text-bold-400 cursor-pointer">Mark all as read</span></div>
+                                </li>
+                                <li class="scrollable-container media-list">
+                                @foreach($customer as $row)
+                                <a class="d-flex justify-content-between" href="javascript:void(0)">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-left pr-0">
+                                        <div class="avatar mr-1 m-0"><img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="39" width="39"></div>
+                                        </div>
+                                        <div class="media-body">
+                                        <h6 class="media-heading">
+                                        <span class="text-bold-500">Name : {{$row->name}} / Phone : +971 {{$row->phone}}</span> / Email : {{$row->email}}
+                                        </h6>
+                                        <small class="notification-text">Date of Birth : {{date('d-m-Y',strtotime($row->dob))}}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
                                 </li>
                                
-                                <li class="dropdown-menu-footer"><a class="dropdown-item p-50 text-primary justify-content-center" href="javascript:void(0)">Read all notifications</a></li>
+                                <!-- <li class="dropdown-menu-footer"><a class="dropdown-item p-50 text-primary justify-content-center" href="javascript:void(0)">Read all notifications</a></li> -->
                             </ul>
                         </li>
                         <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">

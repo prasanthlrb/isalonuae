@@ -55,7 +55,7 @@
             <div class="card-body card-dashboard">
                 
                 <div class="table-responsive">
-                    <table class="table zero-configuration">
+                    <table id="datatable" class="table zero-configuration">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -121,8 +121,8 @@ var orderPageTable = $('#datatable').DataTable({
         { data: 'id', name: 'id' },
         { data: 'date', name: 'date' },
         { data: 'salon_details', name: 'salon_details' },
-        { data: 'payment_type', name: 'payment_type' },
         { data: 'payment', name: 'payment' },
+        { data: 'payment_type', name: 'payment_type' },
     ]
 });
 

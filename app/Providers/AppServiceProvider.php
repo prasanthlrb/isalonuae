@@ -10,6 +10,7 @@ use App\salon_role;
 use App\User;
 use App\role;
 use App\admin;
+use App\customer;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -42,6 +43,22 @@ class AppServiceProvider extends ServiceProvider
             $role = role::where('id',Auth::guard('admin')->user()->role_id)->first();
            
             $view->with(compact('role'));
+        });
+
+        view()->composer('admin.header', function($view) {
+            $today = date('Y-m-d');
+            $tommorrow = date('Y-m-d',strtotime("$today +1 day"));
+            $sevendays = date('Y-m-d',strtotime("$today +7 day"));
+
+            $customer = customer::whereDate('dob','>=', $today)
+            ->whereDate( 'dob', '<=', $sevendays)
+            ->get();
+            $customer_count = customer::whereDate('dob','>=', $today)
+            ->whereDate( 'dob', '<=', $sevendays)
+            ->count();
+            //$customer = customer::whereBetween('dob', [$tommorrow, $sevendays])->get();
+           
+            $view->with(compact('customer','customer_count'));
         });
     }   
 }

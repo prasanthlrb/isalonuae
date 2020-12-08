@@ -16,10 +16,8 @@
                             <h5 class="content-header-title float-left pr-1 mb-0">Report</h5>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">Report
-                                    </li>
+                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a></li>
+                                    <li class="breadcrumb-item active">Report</li>
                                 </ol>
                             </div>
                         </div>
@@ -39,20 +37,41 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
-                                <th>Salon Name</th>
                                 <th>Payment</br></th>
                                 <th>Transaction /<br>Mode</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
+                        @foreach($booking as $row)
+                        <tr>
+                            <td>#{{$row->id}}</td>
+                            <td>{{$row->date}}</td>
+                            <td>AED {{$row->payment}}</td>
+                            <td>
+                            @if($row->payment_type == 0)
+                            Cash
+                            @elseif($row->payment_type == 1)
+                            Bank
+                            @endif
+                            </td>
+                            <td>
+                            @if($row->status == 0)
+                            Pending
+                            @elseif($row->status == 1)
+                            Paid
+                            @endif
+                            </td>
+                        </tr>
+                        @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
-                                <th>Salon Name</th>
                                 <th>Payment</br></th>
                                 <th>Transaction /<br>Mode</th>
+                                <th>Status</th>
                             </tr>
                         </tfoot>
                     </table>
