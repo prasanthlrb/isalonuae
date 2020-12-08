@@ -11,6 +11,8 @@ use App\User;
 use App\role;
 use App\admin;
 use App\customer;
+use Carbon\Carbon;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -50,13 +52,9 @@ class AppServiceProvider extends ServiceProvider
             $tommorrow = date('Y-m-d',strtotime("$today +1 day"));
             $sevendays = date('Y-m-d',strtotime("$today +7 day"));
 
-            $customer = customer::whereDate('dob','>=', $today)
-            ->whereDate( 'dob', '<=', $sevendays)
-            ->get();
-            $customer_count = customer::whereDate('dob','>=', $today)
-            ->whereDate( 'dob', '<=', $sevendays)
-            ->count();
-            //$customer = customer::whereBetween('dob', [$tommorrow, $sevendays])->get();
+            $customer = customer::whereRaw('DAYOFYEAR(curdate()) <= DAYOFYEAR(dob) AND DAYOFYEAR(curdate()) + 7 >=  dayofyear(dob)')->orderByRaw('DAYOFYEAR(dob)')->get();
+
+            $customer_count = customer::whereRaw('DAYOFYEAR(curdate()) <= DAYOFYEAR(dob) AND DAYOFYEAR(curdate()) + 7 >=  dayofyear(dob)')->orderByRaw('DAYOFYEAR(dob)')->count();
            
             $view->with(compact('customer','customer_count'));
         });
