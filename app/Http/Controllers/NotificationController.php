@@ -170,7 +170,7 @@ class NotificationController extends Controller
     public function Notification(){
         $push_notification = push_notification::all();
         $customer = customer::all();
-        $user = User::where('role_id','admin')->get();
+        $user = User::where('role_id','admin')->where('status',1)->get();
         return view('admin.push_notification',compact('push_notification','customer','user'));
     }
 

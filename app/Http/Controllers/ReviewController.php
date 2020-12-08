@@ -16,7 +16,7 @@ class ReviewController extends Controller
 
     public function Review(){
         $review = review::all();
-        $salon = User::where('role_id','admin')->get();
+        $salon = User::where('role_id','admin')->where('status',1)->get();
         $customer = customer::all();
         return view('admin.review',compact('review','customer','salon'));
     }

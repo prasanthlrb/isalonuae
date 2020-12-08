@@ -49,7 +49,6 @@
                                 <th>Salon Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
-                                <th>Total Booking</th>
                                 <th>Current Status</th>
                                 <th>Membership Plan</th>
                                 <th>Action</th>
@@ -62,21 +61,18 @@
                                 <td>{{$row->salon_name}}</td>
                                 <td>{{$row->name}}</td>
                                 <td>{{$row->phone}}</td>
-                                <td>200</td>
 
+                                
                                 <td>
-                                    <?php
-                                    $today = date('Y-m-d');
-                                    if($row->expiry_date > $today){
-                                        echo '<span class="text-success">Active</span>';
-                                    }
-                                    elseif($row->expiry_date < $today){
-                                        echo '<span class="text-danger">DeActive</span>';
-                                    }
-                                    elseif( $today >= $row->remind_date ){
-                                        echo '<span class="text-info">Active</span>';
-                                    }
-                                    ?>
+                                @if($row->status == '0')
+                                <span class="text-warning">New User</span>
+                                @elseif($row->status == '1')
+                                <span class="text-success">Active</span>
+                                @elseif($row->status == '2')
+                                <span class="text-danger">Pack Ecpired</span>
+                                @elseif($row->status == '3')
+                                <span class="text-danger">Blocked</span>
+                                @endif
                                 </td>
                                 <td>
                                     @foreach($salon_package as $package)
@@ -94,7 +90,17 @@
                                       <a onclick="UpgradePlan({{$row->id}})" class="dropdown-item"><i class="bx bxs-chat mr-1"></i> Upgrade Package</a>
                                       <a target="_blank" class="dropdown-item" href="/admin/salon-login/{{$row->id}}"><i class="bx bxs-chat mr-1"></i> Salon Login</a>
                                       <!-- <a class="dropdown-item" href="/admin/chat-to-salon"><i class="bx bxs-chat mr-1"></i> Chat</a> -->
-                                      <!-- <a class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a> -->
+                                    @if($row->status == '0')
+                                    <a onclick="ChangeStatus({{$row->id}},1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>
+                                    @elseif($row->status == '1')
+                                    <a onclick="ChangeStatus({{$row->id}},3)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a>
+                                    @elseif($row->status == '2')
+                                    <a onclick="UpgradePlan({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active New Plan</a>
+                                    @elseif($row->status == '3')
+                                    <a onclick="ChangeStatus({{$row->id}},1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>
+                                    @endif
+                                      
+
                                       <a class="dropdown-item" href="/admin/view-salon/{{$row->id}}"><i class="bx bx-show-alt mr-1"></i> See Profile</a>
                                     </div>
                                   </div>
@@ -108,7 +114,6 @@
                                 <th>Salon Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
-                                <th>Total Booking</th>
                                 <th>Current Status</th>
                                 <th>Membership Plan</th>
                                 <th>Action</th>
@@ -584,6 +589,22 @@ function Delete(id){
         success: function(data)
         {
           toastr.success(data, 'Successfully Delete');
+          $('.zero-configuration').load(location.href+' .zero-configuration');
+        }
+      });
+    } 
+}
+
+function ChangeStatus(id,id1){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/admin/ChangeStatus/'+id+'/'+id1,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Update');
           $('.zero-configuration').load(location.href+' .zero-configuration');
         }
       });

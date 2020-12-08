@@ -471,6 +471,7 @@ class ApiController extends Controller
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",1)
         ->where("users.city",$citys->id)
+        ->where('users.status',1)
         //->groupBy("users.id")
         ->get();
 
@@ -529,6 +530,7 @@ class ApiController extends Controller
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",2)
         ->where("users.city",$citys->id)
+        ->where('users.status',1)
         //->groupBy("users.id")
         ->get();
 
@@ -587,6 +589,7 @@ class ApiController extends Controller
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",3)
         ->where("users.city",$citys->id)
+        ->where('users.status',1)
         //->groupBy("users.id")
         ->get();
 
@@ -645,6 +648,7 @@ class ApiController extends Controller
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",4)
         ->where("users.city",$citys->id)
+        ->where('users.status',1)
         //->groupBy("users.id")
         ->get();
 
@@ -703,6 +707,7 @@ class ApiController extends Controller
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",5)
         ->where("users.city",$citys->id)
+        ->where('users.status',1)
         //->groupBy("users.id")
         ->get();
 
@@ -754,6 +759,7 @@ class ApiController extends Controller
         ->join('users as u', 'u.id', '=', 's.salon_id')
         ->where('u.role_id','admin')
         ->where('u.city',$citys->id)
+        ->where('u.status',1)
         ->select('u.id','u.cover_image','u.address','u.salon_name','u.name' , DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(u.latitude)) 
         * cos(radians(u.longitude) - radians(" . $lon . ")) 
@@ -762,7 +768,7 @@ class ApiController extends Controller
         ->orderBy('distance', 'ASC')
         //->groupBy('u.id')
         ->get();
-
+        $user = $user->unique('id')->values()->all();
         $data =array();
         $datas =array();
         foreach ($user as $key => $value) {

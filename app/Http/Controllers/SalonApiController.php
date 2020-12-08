@@ -137,40 +137,44 @@ class SalonApiController extends Controller
     }
 
     public function salonLogin(Request $request){
-        $exist = User::where('email',$request->email)->get();
+        $exist = User::where('email',$request->email)->where('status',1)->get();
         if(count($exist)>0){
             // if($exist[0]->status == 1){
                 if(Hash::check($request->password,$exist[0]->password)){
                     $salon = User::find($exist[0]->id);
                     $salon1 = User::find($exist[0]->user_id);
-                    $salon->fcm_token = $request->fcm_token;
-                    $salon->save();
-                    $user_type;
-                    if($salon->role_id == 'admin'){
-                        $user_type=1;
+                        if($salon1->status == 1){
+                        $salon->fcm_token = $request->fcm_token;
+                        $salon->save();
+                        $user_type;
+                        if($salon->role_id == 'admin'){
+                            $user_type=1;
+                        }
+                        else{
+                            $user_type=0;
+                        }
+                        
+                        $cover_image = '';
+                        if($salon1->cover_image != null){
+                            $cover_image = $salon1->cover_image;
+                        }
+                        $salon_name = '';
+                        if($salon1->salon_name != null){
+                            $salon_name = $salon1->salon_name;
+                        }
+                        else{
+                            $salon_name = $salon1->name;
+                        }
+                    return response()->json(['message' => 'Login Successfully',
+                    'name'=>$exist[0]->name,
+                    'email'=>$exist[0]->email,
+                    'user_type'=>$user_type,
+                    'cover_image'=>$cover_image,
+                    'salon_name'=>$salon_name,
+                    'salon_id'=>$exist[0]->id,'status'=>200], 200);
+                    }else{
+                        return response()->json(['message' => 'Your Account is Blocked','status'=>403], 403);
                     }
-                    else{
-                        $user_type=0;
-                    }
-                    
-                    $cover_image = '';
-                    if($salon1->cover_image != null){
-                        $cover_image = $salon1->cover_image;
-                    }
-                    $salon_name = '';
-                    if($salon1->salon_name != null){
-                        $salon_name = $salon1->salon_name;
-                    }
-                    else{
-                        $salon_name = $salon1->name;
-                    }
-                return response()->json(['message' => 'Login Successfully',
-                'name'=>$exist[0]->name,
-                'email'=>$exist[0]->email,
-                'user_type'=>$user_type,
-                'cover_image'=>$cover_image,
-                'salon_name'=>$salon_name,
-                'salon_id'=>$exist[0]->id,'status'=>200], 200);
                 }else{
                     return response()->json(['message' => 'Records Does not Match','status'=>403], 403);
                 }

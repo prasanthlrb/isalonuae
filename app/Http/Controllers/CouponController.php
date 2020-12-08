@@ -187,7 +187,7 @@ class CouponController extends Controller
 
     public function newCoupon(){
         $coupon = coupon::where('salon_id','!=','admin')->get();
-        $user = User::all();
+        $user = User::where('role_id','admin')->where('status',1)->get();
         return view('admin.new_coupon',compact('coupon','user'));
     }
 

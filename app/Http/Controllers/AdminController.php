@@ -15,6 +15,7 @@ use App\service;
 use App\salon_service;
 use session;
 use Auth;
+use DB;
 
 class AdminController extends Controller
 {
@@ -31,11 +32,41 @@ class AdminController extends Controller
     }
 
     public function dashboard(){
-        $salon_count = User::where('role_id','admin')->where('busisness_type',1)->count();
-        $spa_count = User::where('role_id','admin')->where('busisness_type',2)->count();
-        $makeup_count = User::where('role_id','admin')->where('busisness_type',3)->count();
-        $beauty_count = User::where('role_id','admin')->where('busisness_type',4)->count();
-        $home_count = User::where('role_id','admin')->where('busisness_type',5)->count();
+        $salon_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',1)->count();
+        $spa_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',2)->count();
+        $makeup_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',3)->count();
+        $beauty_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',4)->count();
+        $home_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',5)->count();
+
+        $salon_amount =DB::table('bookings as b')
+        ->join('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',1)
+        ->get()->sum("total");
+
+        $spa_amount =DB::table('bookings as b')
+        ->join('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',2)
+        ->get()->sum("total");
+
+        $makeup_amount =DB::table('bookings as b')
+        ->join('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',3)
+        ->get()->sum("total");
+
+        $beauty_amount =DB::table('bookings as b')
+        ->join('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',4)
+        ->get()->sum("total");
+
+        $home_amount =DB::table('bookings as b')
+        ->join('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',5)
+        ->get()->sum("total");
 
         $today = date('Y-m-d');
         $cfdate = date('Y-m-d',strtotime('first day of this month'));
@@ -56,7 +87,63 @@ class AdminController extends Controller
   
         $total_services = salon_service::count(); 
 
-        return view('admin.dashboard',compact('salon_count','spa_count','makeup_count','beauty_count','home_count','total_booking','today_booking','open_booking'));
+        $top_salon =DB::table('bookings as b')
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',1)
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(5)->get();
+
+        $top_spa =DB::table('bookings as b')
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',2)
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(5)->get();
+
+        $top_makeup =DB::table('bookings as b')
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',3)
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(5)->get();
+
+        $top_beauty =DB::table('bookings as b')
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',4)
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(5)->get();
+
+        $top_home =DB::table('bookings as b')
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->where('u.busisness_type',5)
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(5)->get();
+
+        $top_3 =DB::table('bookings as b')
+        ->whereBetween('b.date', [$cfdate, $cldate])
+        ->leftJoin('users as u', 'u.id', '=', 'b.salon_id')
+        ->where('u.role_id','admin')
+        ->select('u.profile_image','u.salon_name','u.name','u.phone',DB::raw('SUM(b.total) as total_amount'))
+        ->groupBy('u.salon_name','u.name','u.phone','u.profile_image')
+        ->orderBy('total_amount', 'DESC')
+        ->take(3)->get();
+
+        $new_user = User::where('role_id','admin')->where('status',0)->get();
+
+        return view('admin.dashboard',compact('salon_count','spa_count','makeup_count','beauty_count','home_count','total_booking','today_booking','open_booking','salon_amount','spa_amount','makeup_amount','beauty_amount','home_amount','last7days','last30days','top_salon','top_spa','top_beauty','top_makeup','top_home','top_3','new_user'));
     }
 
     

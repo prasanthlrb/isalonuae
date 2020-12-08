@@ -78,7 +78,7 @@ class SettingsController extends Controller
     public function Slider(){
         $slider = slider::all();
         $service = service::all();
-        $salon = User::where('role_id','admin')->get();
+        $salon = User::where('role_id','admin')->where('status',1)->get();
         return view('admin.slider',compact('slider','service','salon'));
     }
 

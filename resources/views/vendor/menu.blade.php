@@ -89,11 +89,17 @@
             </li>
 
             @if($role->reports == 'on')
-            <li class="report nav-item" data-menu="dropdown">
+            <!-- <li class="report nav-item" data-menu="dropdown">
             	<a class="dropdown-toggle nav-link" href="/vendor/report/">
             		<i class="menu-livicon" data-icon="notebook"></i>
             		<span data-i18n="Revenue Reports">Revenue Reports</span>
             	</a>
+            </li> -->
+            <li class="report dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Revenue Reports</span></a>
+                <ul class="dropdown-menu">
+                    <li data-menu=""><a class="payments-in-report dropdown-item align-items-center" href="/vendor/payments-in-report" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Payments In</a></li>
+                    <li data-menu=""><a class="payments-out-report dropdown-item align-items-center" href="/vendor/payments-out-report" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Payments Out</a></li>
+                </ul>
             </li>
             @endif
 
@@ -153,11 +159,17 @@
                 </ul>
             </li>
 
-            <li class="report nav-item" data-menu="dropdown">
+            <!-- <li class="report nav-item" data-menu="dropdown">
                 <a class="dropdown-toggle nav-link" href="/vendor/report/">
                     <i class="menu-livicon" data-icon="notebook"></i>
                     <span data-i18n="Revenue Reports">Revenue Reports</span>
                 </a>
+            </li> -->
+            <li class="report dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="menu-livicon" data-icon="comments"></i><span>Revenue Reports</span></a>
+                <ul class="dropdown-menu">
+                    <li data-menu=""><a class="payments-in-report dropdown-item align-items-center" href="/vendor/payments-in-report" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Payments In</a></li>
+                    <li data-menu=""><a class="payments-out-report dropdown-item align-items-center" href="/vendor/payments-out-report" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Payments Out</a></li>
+                </ul>
             </li>
             @endif
 

@@ -101,6 +101,8 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/salon', 'SalonController@Salon');
 	Route::get('/salon-delete/{id}', 'SalonController@deleteSalon');
 
+	Route::get('/ChangeStatus/{id}/{id1}', 'SalonController@ChangeStatus');
+
 	Route::get('/view-salon/{id}', 'SalonController@viewSalon');
 	Route::get('/salon-login/{id}', 'Vendor\HomeController@SalonLogin');
 	
@@ -346,6 +348,9 @@ Route::group(['prefix' => 'vendor'],function(){
 
 	Route::get('/review', 'Vendor\ReviewController@Review');
 	Route::get('/report', 'Vendor\ReportController@Report');
+
+	Route::get('/payments-in-report', 'Vendor\ReportController@PaymentsInReport');
+	Route::get('/payments-out-report', 'Vendor\ReportController@PaymentsOutReport');
 
 	//roles
 	Route::POST('/save-role', 'Vendor\RoleController@saveRole');

@@ -14,6 +14,8 @@ use App\salon_push_notification;
 use App\salon_password;
 use App\customer_password;
 use App\customer;
+use App\salon_package;
+use App\used_package;
 use Hash;
 use DB;
 use Mail;
@@ -148,6 +150,28 @@ public function send_sms($phone,$msg)
         $salon_password->owner_name = $salon->name;
         $salon_password->email = $salon->email;
         $salon_password->save();
+
+        $salon_package = salon_package::find(1);
+        $expiry_date = '';
+        if($salon_package->validity == '1'){
+            $expiry_days = $salon_package->validity_count;
+            $remind_days = $salon_package->validity_count - $salon_package->package_renewal_remember_days;
+            $expiry_date = date('Y-m-d', strtotime("+".$expiry_days." days"));
+            $remind_date = date('Y-m-d', strtotime("+".$remind_days." days"));
+        }
+        else{
+            $expiry_days = $salon_package->validity_count * 30;
+            $remind_days = $expiry_days - $salon_package->package_renewal_remember_days;
+            $expiry_date = date('Y-m-d', strtotime("+".$expiry_days." days"));
+            $remind_date = date('Y-m-d', strtotime("+".$remind_days." days"));
+        }
+
+        $used_package = new used_package;
+        $used_package->package_id = $salon->salon_package;
+        $used_package->active_date = date('Y-m-d');
+        $used_package->expiry_date = $expiry_date;
+        $used_package->remind_date = $remind_date;
+        $used_package->save();
 
         $all = $salon_password::find($salon_password->id);
         Mail::send('mail.salon_send_mail',compact('all'),function($message) use($all){

@@ -33,7 +33,7 @@ class SalonController extends Controller
         $customer = customer::all();
         $salon_worker = User::where('user_id',$id)->where('role_id','!=','admin')->get();
         $gallery = gallery::where('salon_id',$id)->get();
-        $all_salon = User::where('role_id','admin')->get();
+        $all_salon = User::where('role_id','admin')->where('status',1)->get();
         $review = review::all();
         $service = service::all();
         $service_time = service_time::where('salon_id',$id)->get();
@@ -78,6 +78,7 @@ class SalonController extends Controller
         $salon->address = $request->address;
         $salon->salon_package = $request->salon_package;
         $salon->salon_commission = $request->salon_commission;
+        $salon->status = 1;
         $salon->trade_license = $fileName;
 
         if($request->file('passport_copy')!=""){
@@ -199,6 +200,7 @@ class SalonController extends Controller
         $salon->passport_number = $request->passport_number;
         //$salon->salon_package = $request->salon_package;
         $salon->salon_commission = $request->salon_commission;
+        //$salon->status = 1;
         
         
         if($request->file('trade_license')!=""){
@@ -265,7 +267,7 @@ class SalonController extends Controller
         return response()->json('successfully update'); 
     }
     public function Salon(){
-        $salon = User::where('role_id','admin')->get();
+        $salon = User::where('role_id','admin')->where('status',1)->get();
         $city = area::where('parent_id',0)->get();
         $area = area::where('parent_id','!=',0)->get();
         $salon_package = salon_package::all();
@@ -284,6 +286,14 @@ class SalonController extends Controller
             @unlink($old_image);
         }
         $salon->delete();
+        return response()->json(['message'=>'Successfully Delete'],200); 
+    }
+
+
+    public function ChangeStatus($id,$status){
+        $salon = User::find($id);
+        $salon->status = 1;
+        $salon->save();
         return response()->json(['message'=>'Successfully Delete'],200); 
     }
 
@@ -420,6 +430,12 @@ foreach ($data as $key => $value) {
         $salon_update->active_date = date('Y-m-d');
         $salon_update->expiry_date = $expiry_date;
         $salon_update->remind_date = $remind_date;
+        if($salon_update->status == 2){
+            $salon_update->status == 1;
+        }
+        elseif($salon_update->status == 3){
+            $salon_update->status == 1;
+        }
         $salon_update->save();
 
         return response()->json('successfully save'); 
