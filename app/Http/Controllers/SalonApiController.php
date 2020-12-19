@@ -21,6 +21,7 @@ use App\push_notification;
 use App\salon_salon;
 use App\package;
 use App\salon_customer;
+use App\country;
 use Hash;
 use Auth;
 use DB;
@@ -33,8 +34,9 @@ use StdClass;
 
 class SalonApiController extends Controller
 {
-    private function send_sms($phone,$msg)
+    private function send_sms($phone,$msg,$country_id)
     {
+      $country = country::find($country_id);
       $requestParams = array(
         //'Unicode' => '0',
         //'route_id' => '2',
@@ -43,7 +45,7 @@ class SalonApiController extends Controller
         'password' => 'Ms5sbqBxif',
         'senderid' => 'ISalon UAE',
         'type' => 'text',
-        'to' => '+971'.$phone,
+        'to' => '+'.$country->country_code.$phone,
         'text' => $msg
       );
       
@@ -198,7 +200,7 @@ class SalonApiController extends Controller
 
         $msg= "Dear salon, Please use the code ".$salon->otp." to Change your password";
 
-        $this->send_sms($salon->phone,$msg);
+        $this->send_sms($salon->phone,$msg,$salon->country_id);
 
         // Mail::send('mail.forgetpasswordmail',compact('salon'),function($message) use($salon){
         //     $message->to($salon->email)->subject('Change Password Request');
@@ -259,7 +261,7 @@ class SalonApiController extends Controller
             $salon->otp = $randomid;
             $salon->save();
             $msg= "Dear salon, Please use the code ".$salon->otp." to verify your I-Salon Account";
-            $this->send_sms($salon->phone,$msg);
+            $this->send_sms($salon->phone,$msg,$salon->country_id);
             return response()->json(['message' => 'Otp Send Successfully'], 200);
         }else{
             return response()->json(['message' => 'salon id not found'], 400);

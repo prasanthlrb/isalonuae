@@ -27,6 +27,9 @@ class CreateCustomersTable extends Migration
             $table->string('password')->nullable();
             $table->string('membership_plan')->nullable();
             $table->string('reviews')->nullable();
+            $table->string('address_id')->nullable();
+            $table->string('country_id')->nullable();
+            $table->string('image')->nullable();
             $table->string('status')->default('0');
             $table->timestamps();
         });

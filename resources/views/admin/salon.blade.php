@@ -153,7 +153,7 @@
                 <input type="hidden" name="id" id="id">
 
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label>Busisness Type</label>
                         <select id="busisness_type" name="busisness_type" class="form-control">
                             <option value="">SELECT</option>
@@ -165,21 +165,42 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label>Owner Name</label>
                         <input autocomplete="off" type="text" id="name" name="name" class="form-control">
+                        <input type="hidden" id="salon_commission" name="salon_commission">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Email ID</label>
+                        <input autocomplete="off" type="email" id="email" name="email" class="form-control">
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6">
-                        <label>Email ID</label>
-                        <input autocomplete="off" type="email" id="email" name="email" class="form-control">
+                    <div class="form-group col-md-4">
+                        <label>Nationality</label>
+                        <select id="country_id" name="country_id" class="form-control">
+                            <option value="">SELECT</option>
+                            @foreach($country as $row)
+                            <option value="{{$row->id}}">{{$row->country_name_english}}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label>Phone Number</label>
                         <input autocomplete="off" type="text" id="phone" name="phone" class="form-control">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Salon Package</label>
+                        <select id="salon_package" name="salon_package" class="form-control">
+                            <option value="">SELECT</option>
+                            @foreach($salon_package as $row)
+                            <option value="{{$row->id}}">{{$row->package_name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <!-- <div class="row">
@@ -227,6 +248,7 @@
                         <input type="text" id="emirates_id" name="emirates_id" class="form-control">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label>Trade License No</label>
@@ -241,32 +263,6 @@
                         <input type="text" id="passport_number" name="passport_number" class="form-control">
                     </div>
                     
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-4">
-                        <label>Nationality</label>
-                        <select id="nationality" name="nationality" class="form-control">
-                            <option value="">SELECT</option>
-                            <option value="1">United Arab Emirates</option>
-                            <option value="2">India</option>
-                            <option value="3">Russia</option>
-                            <option value="4">Pakistan</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label>Salon Package</label>
-                        <select id="salon_package" name="salon_package" class="form-control">
-                            <option value="">SELECT</option>
-                            @foreach($salon_package as $row)
-                            <option value="{{$row->id}}">{{$row->package_name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label>Salon Comission (%)</label>
-                        <input type="text" id="salon_commission" name="salon_commission" class="form-control">
-                    </div>
                 </div>
 
                 <div class="row">
@@ -527,7 +523,7 @@ function Edit(id){
       $('input[name=trade_license_no]').val(data.trade_license_no);
       $('input[name=vat_certificate_no]').val(data.vat_certificate_no);
       $('input[name=passport_number]').val(data.passport_number);
-      $('select[name=nationality]').val(data.nationality);
+      $('select[name=country_id]').val(data.country_id);
       $('select[name=salon_package]').val(data.salon_package);
       $('select[name=city]').val(data.city);
       $('textarea[name=address]').val(data.address);

@@ -20,6 +20,7 @@ use App\booking_package;
 use App\push_notification;
 use App\salon_customer;
 use App\package;
+use App\country;
 use Hash;
 use Auth;
 use DB;
@@ -32,8 +33,9 @@ use StdClass;
 
 class ApiController extends Controller
 {
-    private function send_sms($phone,$msg)
+    private function send_sms($phone,$msg,$country_id)
     {
+      $country = country::find($country_id);
       $requestParams = array(
         //'Unicode' => '0',
         //'route_id' => '2',
@@ -42,7 +44,7 @@ class ApiController extends Controller
         'password' => 'Ms5sbqBxif',
         'senderid' => 'ISalon UAE',
         'type' => 'text',
-        'to' => '+971'.$phone,
+        'to' => '+'.$country->country_code.$phone,
         'text' => $msg
       );
       
@@ -119,30 +121,20 @@ class ApiController extends Controller
         $customer->phone = $request->phone;
         $customer->dob = date('Y-m-d',strtotime($request->dob));
         $customer->city = $request->city;
+        $customer->country_id = $request->country_id;
         $customer->firebase_key = $request->firebase_key;
         if($request->gender == 'male'){
-
             $customer->gender = 0;
         }else{
             $customer->gender = 1;
-
         }
         $customer->otp = $randomid;
         $customer->password = Hash::make($request->password);
         $customer->save();
 
-        // $manage_address = new manage_address;
-        // $manage_address->city = $request->city;
-        // $manage_address->customer_id = $customer->id;
-        // $manage_address->save();
-
-        // $cus = customer::find($customer->id);
-        // $cus->address_id = $manage_address->id;
-        // $cus->save();
-
         $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
 
-        $this->send_sms($customer->phone,$msg);
+        $this->send_sms($customer->phone,$msg,$customer->country_id);
         return response()->json(
             ['message' => 'Register Successfully',
             // 'name'=>$customer->name,
@@ -189,12 +181,25 @@ class ApiController extends Controller
             }
         }
 
+        if(isset($request->image)){
+            if($request->file('image')!=""){
+                $old_image = "upload_files/".$customer->banner_image;
+                if (file_exists($old_image)) {
+                    @unlink($old_image);
+                }
+            $image = $request->file('image');
+            $fileName = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload_files/'), $fileName);
+            $customer->image =  $fileName;
+           }
+        }
+
         if($request->phone != $customer->phone){
             $customer->phone = $request->phone;
             $customer->otp = $randomid;
             $customer->status = 0;
             $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
-            $this->send_sms($customer->phone,$msg);
+            $this->send_sms($customer->phone,$msg,$customer->country_id);
             $phone_status = 1;
         }
         // if(isset($request->password)){
@@ -271,7 +276,7 @@ class ApiController extends Controller
 
         $msg= "Dear Customer, Please use the code ".$customer->otp." to Change your password";
 
-        $this->send_sms($customer->phone,$msg);
+        $this->send_sms($customer->phone,$msg,$customer->country_id);
 
         // Mail::send('mail.forgetpasswordmail',compact('customer'),function($message) use($customer){
         //     $message->to($customer->email)->subject('Change Password Request');
@@ -333,7 +338,7 @@ class ApiController extends Controller
             $customer->otp = $randomid;
             $customer->save();
             $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
-            $this->send_sms($customer->phone,$msg);
+            $this->send_sms($customer->phone,$msg,$customer->country_id);
             return response()->json(['message' => 'Otp Send Successfully'], 200);
         }else{
             return response()->json(['message' => 'Customer id not found'], 400);
@@ -1007,6 +1012,47 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
+
+    public function getAllPackage($city){
+
+        $citys = area::where('area',$city)->first();
+        
+        $package = DB::table("users as u")
+        ->where('u.role_id','admin')
+        ->where('u.status',1)
+        ->where('u.city',$citys->id)
+        ->join('packages as p', 'u.id', '=', 'p.salon_id')
+        ->select('p.*','u.salon_name','u.name','u.user_id')
+        ->get();  
+
+        //$package = package::where('salon_id',$id)->get();
+        $data =array();
+        $datas =array();
+        foreach ($package as $key => $value) {
+            $data = array(
+                'package_id' => $value->id,
+                'salon_id' => $value->user_id,
+                'salon_name' => '',
+                'package_image' => $value->image,
+                'package_name_english' => $value->package_name_english,
+                'package_name_arabic' => '',
+                'price' => (double)$value->price,
+            );
+            if($value->package_name_arabic != null){
+                $data['package_name_arabic'] = $value->package_name_arabic;
+            }
+            if($value->salon_name != ''){
+                $data['salon_name'] = $value->salon_name;
+            }
+            else{
+                $data['salon_name'] = $value->name;
+            }
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
+
     public function getShopPackage($id){
         $package = package::where('salon_id',$id)->get();
         $data =array();
@@ -1233,6 +1279,65 @@ class ApiController extends Controller
         return response()->json($datas); 
     }
 
+    public function getCouponCode($id){
+        $coupon = coupon::where('status',1)->get();
+
+        $data =array();
+        $datas =array();
+        foreach ($coupon as $key => $value) {
+            if(empty($value->user_type) && date('Y-m-d') < $value->end_date){
+                $data = array(
+                    'coupon_id' => $value->id,
+                    'coupon_code' => $value->coupon_code,
+                    'description' => $value->description,
+                    'start_date' => $value->start_date,
+                    'end_date' => $value->end_date,
+                    'discount_type' => $value->discount_type,
+                    'amount' => $value->amount,
+                    'user_type' => 0,
+                );
+                $datas[] = $data;
+            }
+            else{
+                $coupon1  = coupon::find($value->id);
+                $arraydata=array();
+                foreach(explode(',',$coupon1->user_id) as $user1){
+                    if($user1 == $id && date('Y-m-d') < $value->end_date){
+                        $data = array(
+                            'coupon_id' => $value->id,
+                            'coupon_code' => $value->coupon_code,
+                            'description' => $value->description,
+                            'start_date' => $value->start_date,
+                            'end_date' => $value->end_date,
+                            'discount_type' => $value->discount_type,
+                            'amount' => $value->amount,
+                            'user_type' => 1,
+                        );
+                        $datas[] = $data;
+                    }
+                }
+            }
+        }   
+        return response()->json($datas); 
+    }
+
+    public function getAllNation(){
+        $country = country::all();
+        $data =array();
+        $datas =array();
+        foreach ($country as $key => $value) {
+            $data = array(
+                'id' => $value->id,
+                'country_code' => $value->country_code,
+                'country_name_english' => $value->country_name_english,
+                'country_name_arabic' => $value->country_name_arabic,
+                'image' => $value->image,
+            );
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
     public function couponModule($id,$code,$value,$salon_id){
         $coupon = coupon::where('coupon_code',$code)->where('status',1)->get();
 if(count($coupon)>0){
@@ -1436,7 +1541,7 @@ if(count($coupon)>0){
         $salon = User::find($booking->salon_id);
         $customer=customer::find($booking->customer_id);        
         $msg= "Dear Customer, Please use the code ".$booking->otp." to Approve your ".$salon->salon_name;
-        $this->send_sms($customer->phone,$msg);
+        $this->send_sms($customer->phone,$msg,$customer->country_id);
         $service_amount = (6 / 100) * ($booking->total);
         $salon->salon_pay = $salon->salon_pay + $service_amount;
         $salon->save();
@@ -1537,7 +1642,7 @@ if(count($coupon)>0){
             ], 200);
         }
         else{
-            $this->send_sms($customer->phone,$msg);
+            $this->send_sms($customer->phone,$msg,$customer->country_id);
             $service_amount = (6 / 100) * ($booking->total);
             $salon->admin_pay = $salon->admin_pay + $service_amount;
             $salon->save();

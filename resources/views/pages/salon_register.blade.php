@@ -130,13 +130,26 @@
                         <input autocomplete="off" type="text" id="name" name="name" class="form-control">
                     </div>
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-sm-4">
                     <div class="form-group">
                         <label>Email ID</label>
                         <input autocomplete="off" type="email" id="email" name="email" class="form-control">
                     </div>
                   </div>
-                  <div class="col-sm-6">
+
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Nationality</label>
+                        <select id="country_id" name="country_id" class="form-control">
+                            <option value="">SELECT</option>
+                            @foreach($country as $row)
+                            <option value="{{$row->id}}">{{$row->country_name_english}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
                     <div class="form-group">
                         <label>Phone Number</label>
                         <input autocomplete="off" type="text" id="phone" name="phone" class="form-control">
@@ -263,20 +276,7 @@
                     <h6 class="py-50">Contact Details</h6>
                   </div>
 
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Nationality</label>
-                        <select id="nationality" name="nationality" class="form-control">
-                            <option value="">SELECT</option>
-                            <option value="1">United Arab Emirates</option>
-                            <option value="2">India</option>
-                            <option value="3">Russia</option>
-                            <option value="4">Pakistan</option>
-                        </select>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-6">
+                  <div class="col-sm-12">
                     <div class="form-group">
                         <label>City</label>
                         <select onchange="getArea()" id="city" name="city" class="form-control">

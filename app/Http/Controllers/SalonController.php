@@ -17,6 +17,7 @@ use App\salon_package;
 use App\used_package;
 use App\package;
 use App\gallery;
+use App\country;
 use Hash;
 use DB;
 use Mail;
@@ -44,12 +45,38 @@ class SalonController extends Controller
     }
 
     public function saveSalon(Request $request){
-        $request->validate([
-            'email'=> 'required|unique:users',
+        $country = country::find($request->country_id);
+        $phone_count=0;
+        if(!empty($country)){
+            $phone_count = $country->phone_count;
+        }
+        $this->validate($request, [
+            'email'=> 'required|email|unique:users',
+            'country_id'=>'required',
+            'phone'=> 'required|numeric|digits:'.$phone_count.'|unique:users',
             'name'=>'required',
-            'city'=>'required',
-            //'area'=>'required',
-            'address'=>'required',
+            'trade_license_no'=>'required',
+            'vat_certificate_no'=>'required',
+            'busisness_type'=>'required',
+            'cover_image' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'profile_image' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'passport_copy' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'emirated_id_copy' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+          ],[
+            'country_id.required' => 'Nationality Field is required',
+            'name.required' => 'Owner Name Field is required',
+            'cover_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'cover_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'cover_image.required' => 'Cover Image Field is Required',
+            'profile_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'profile_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'profile_image.required' => 'Profile Image Field is Required',
+            'passport_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'passport_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'passport_copy.required' => 'Passport ID Proof  Field is Required',
+            'emirated_id_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'emirated_id_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'emirated_id_copy.required' => 'Emirated ID Proof Field is Required',
         ]);
 
         //image upload
@@ -68,7 +95,7 @@ class SalonController extends Controller
         $salon->phone = $request->phone;
         // $salon->password = Hash::make($request->password);
         $salon->salon_name = $request->salon_name;
-        $salon->nationality = $request->nationality;
+        $salon->country_id = $request->country_id;
         $salon->salon_id = $request->salon_id;
         $salon->emirates_id = $request->emirates_id;
         $salon->trade_license_no = $request->trade_license_no;
@@ -173,12 +200,38 @@ class SalonController extends Controller
     }
 
     public function updateSalon(Request $request){
-        $request->validate([
+        $country = country::find($request->country_id);
+        $phone_count=0;
+        if(!empty($country)){
+            $phone_count = $country->phone_count;
+        }
+        $this->validate($request, [
             'email'=>'required|unique:users,email,'.$request->id,
-            'name'=> 'required',
-            'city'=>'required',
-            //'area'=>'required',
-            'address'=>'required',
+            'country_id'=>'required',
+            'phone'=> 'required|numeric|digits:'.$phone_count.'|unique:users,phone,'.$request->id,
+            'name'=>'required',
+            'trade_license_no'=>'required',
+            'vat_certificate_no'=>'required',
+            'busisness_type'=>'required',
+            'cover_image' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'profile_image' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'passport_copy' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'emirated_id_copy' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+          ],[
+            'country_id.required' => 'Nationality Field is required',
+            'name.required' => 'Owner Name Field is required',
+            'cover_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'cover_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'cover_image.required' => 'Cover Image Field is Required',
+            'profile_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'profile_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'profile_image.required' => 'Profile Image Field is Required',
+            'passport_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'passport_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'passport_copy.required' => 'Passport ID Proof  Field is Required',
+            'emirated_id_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'emirated_id_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'emirated_id_copy.required' => 'Emirated ID Proof Field is Required',
         ]);
 
         $salon = User::find($request->id);
@@ -194,7 +247,7 @@ class SalonController extends Controller
         $salon->vat_certificate_no = $request->vat_certificate_no;
         $salon->address = $request->address;
         $salon->salon_name = $request->salon_name;
-        $salon->nationality = $request->nationality;
+        $salon->country_id = $request->country_id;
         $salon->salon_id = $request->salon_id;
         $salon->emirates_id = $request->emirates_id;
         $salon->passport_number = $request->passport_number;
@@ -267,11 +320,12 @@ class SalonController extends Controller
         return response()->json('successfully update'); 
     }
     public function Salon(){
-        $salon = User::where('role_id','admin')->where('status',1)->get();
+        $salon = User::where('role_id','admin')->get();
         $city = area::where('parent_id',0)->get();
         $area = area::where('parent_id','!=',0)->get();
+        $country = country::all();
         $salon_package = salon_package::all();
-        return view('admin.salon',compact('salon','salon_package','city','area'));
+        return view('admin.salon',compact('salon','salon_package','city','area','country'));
     }
 
     public function editSalon($id){
@@ -431,10 +485,10 @@ foreach ($data as $key => $value) {
         $salon_update->expiry_date = $expiry_date;
         $salon_update->remind_date = $remind_date;
         if($salon_update->status == 2){
-            $salon_update->status == 1;
+            $salon_update->status = 1;
         }
         elseif($salon_update->status == 3){
-            $salon_update->status == 1;
+            $salon_update->status = 1;
         }
         $salon_update->save();
 

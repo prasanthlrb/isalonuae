@@ -16,6 +16,7 @@ use App\customer_password;
 use App\customer;
 use App\salon_package;
 use App\used_package;
+use App\country;
 use Hash;
 use DB;
 use Mail;
@@ -58,7 +59,8 @@ public function send_sms($phone,$msg)
 		$city = area::where('parent_id',0)->get();
         $area = area::where('parent_id','!=',0)->get();
         $terms = terms_and_condition::first();
-        return view('pages.salon_register',compact('city','area','terms'));
+        $country = country::all();
+        return view('pages.salon_register',compact('city','area','terms','country'));
 	}
     public function saveSalonRegister(Request $request){
         $request->validate([
@@ -86,7 +88,7 @@ public function send_sms($phone,$msg)
         // $salon->password = Hash::make($request->password);
         $salon->salon_name = $request->salon_name;
         $salon->salon_id = $request->salon_id;
-        $salon->nationality = $request->nationality;
+        $salon->country_id = $request->country_id;
         $salon->emirates_id = $request->emirates_id;
         $salon->trade_license_no = $request->trade_license_no;
         $salon->vat_certificate_no = $request->vat_certificate_no;
@@ -185,17 +187,38 @@ public function send_sms($phone,$msg)
     }
 
     public function SalonBasicValidate(Request $request){
-        $request->validate([
+        $country = country::find($request->country_id);
+        $phone_count=0;
+        if(!empty($country)){
+            $phone_count = $country->phone_count;
+        }
+        $this->validate($request, [
             'email'=> 'required|email|unique:users',
-            'phone'=> 'required|numeric|digits:9|unique:users',
+            'country_id'=>'required',
+            'phone'=> 'required|numeric|digits:'.$phone_count.'|unique:users',
             'name'=>'required',
             'trade_license_no'=>'required',
             'vat_certificate_no'=>'required',
             'busisness_type'=>'required',
-            'cover_image'=>'required',
-            'profile_image'=>'required',
-            'passport_copy'=>'required',
-            'emirated_id_copy'=>'required',
+            'cover_image' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'profile_image' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'passport_copy' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+            'emirated_id_copy' => 'required|mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
+          ],[
+            'country_id.required' => 'Nationality Field is required',
+            'name.required' => 'Owner Name Field is required',
+            'cover_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'cover_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'cover_image.required' => 'Cover Image Field is Required',
+            'profile_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'profile_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'profile_image.required' => 'Profile Image Field is Required',
+            'passport_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'passport_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'passport_copy.required' => 'Passport ID Proof  Field is Required',
+            'emirated_id_copy.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'emirated_id_copy.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'emirated_id_copy.required' => 'Emirated ID Proof Field is Required',
         ]);
         
         return response()->json(true); 
@@ -205,7 +228,7 @@ public function send_sms($phone,$msg)
     public function SalonContactValidate(Request $request){
         $request->validate([
             'city'=>'required',
-            'nationality'=>'required',
+            //'nationality'=>'required',
             'address'=>'required',
         ]);
         

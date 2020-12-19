@@ -85,6 +85,39 @@
                         <span class="menu-title" data-i18n="Email">App Privacy Policy</span>
                     </a>
                 </li>
+
+                <li class="navigation-header"><span>Mobile App Home Page List</span></li>
+                <li class="app-salon nav-item">
+                    <a href="/admin/app-salon">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App Salon List</span>
+                    </a>
+                </li>
+                <li class="app-spa nav-item">
+                    <a href="/admin/app-spa">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App Spa List</span>
+                    </a>
+                </li>
+                <li class="app-beauty nav-item">
+                    <a href="/admin/app-beauty">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App Beauty Clinic List</span>
+                    </a>
+                </li>
+                <li class="app-makeup nav-item">
+                    <a href="/admin/app-makeup">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App Makeup Artist List</span>
+                    </a>
+                </li>
+                <li class="app-home nav-item">
+                    <a href="/admin/app-home">
+                        <i class="menu-livicon" data-icon="morph-folder"></i>
+                        <span class="menu-title" data-i18n="Email">App Home Services List</span>
+                    </a>
+                </li>
+
                 <li class="navigation-header"><span>Services</span></li>
 
                 @if($role->service_read == 'on')
@@ -157,6 +190,13 @@
                     </a>
                 </li>
                 @endif
+
+                <li class="country nav-item">
+                    <a href="/admin/country">
+                        <i class="menu-livicon" data-icon="map"></i>
+                        <span class="menu-title" data-i18n="Email">Country</span>
+                    </a>
+                </li>
 
                 <li class=" navigation-header"><span>Chat</span></li>
 

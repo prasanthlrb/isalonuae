@@ -1,4 +1,4 @@
- @section('css')
+@section('css')
      <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
  @endsection
  @extends('admin.layouts')
@@ -9,12 +9,12 @@
                 <div class="content-header-left col-12 mb-2 mt-1">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h5 class="content-header-title float-left pr-1 mb-0">Area List</h5>
+                            <h5 class="content-header-title float-left pr-1 mb-0">Country List</h5>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active">Area
+                                    <li class="breadcrumb-item active">Country
                                     </li>
                                 </ol>
                             </div>
@@ -33,7 +33,7 @@
         <!-- new task button -->
         <button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
           <i class="bx bx-plus"></i>
-          <span>New Area</span>
+          <span>New Country</span>
         </button>
         </div>
         <div class="card-content">
@@ -46,16 +46,23 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Areas</th>
+                            <th>Country Code</th>
+                            <th>Country Name English</th>
+                            <th>Country Name Arabic</th>
+                            <th>Image</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($area as $key => $row)
+                    @foreach($country as $key => $row)
                         <tr>
                             <td>{{$key + 1}}</td>
+                            <td>{{$row->country_code}}</td>
+                            <td>{{$row->country_name_english}}</td>
+                            <td>{{$row->country_name_arabic}}</td>
+                            
                             <td>
-                                {{$row->area}}
+                                <img style="width: 100px;height: 100px;" src="/upload_files/{{$row->image}}">
                             </td>
                 <td><div class="dropdown">
                 <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
@@ -72,7 +79,10 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Areas</th>
+                                <th>Country Code</th>
+                                <th>Country Name English</th>
+                                <th>Country Name Arabic</th>
+                                <th>Image</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -108,12 +118,28 @@
                 <form id="form" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id" id="id">
-
+                    
                     <div class="form-group">
-                        <label>Area</label>
-                        <input autocomplete="off" type="text" id="area" name="area" class="form-control">
+                        <label>Country Code</label>
+                        <input autocomplete="off" type="text" id="country_code" name="country_code" class="form-control">
                     </div>
 
+                    <div class="form-group">
+                        <label>Country Name English</label>
+                        <input autocomplete="off" type="text" id="country_name_english" name="country_name_english" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country Name Arabic</label>
+                        <input autocomplete="off" type="text" id="country_name_arabic" name="country_name_arabic" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image</label>
+                        <input type="file" id="image" name="image" class="form-control">
+                        <input type="hidden" id="image1" name="image1">
+                    </div>
+                    
                     <div class="form-group">
                         <button onclick="Save()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Add</button>
                     </div>
@@ -137,7 +163,7 @@
     <!-- END: Page Vendor JS-->
     <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
 <script type="text/javascript">
-$('.area').addClass('active');
+$('.country').addClass('active');
 
 var action_type;
 $('#add_new').click(function(){
@@ -145,14 +171,14 @@ $('#add_new').click(function(){
     $("#form")[0].reset();
     action_type = 1;
     $('#saveButton').text('Save');
-    $('#modal-title').text('Add City');
+    $('#modal-title').text('Add Country');
 });
 
 function Save(){
   var formData = new FormData($('#form')[0]);
   if(action_type == 1){
     $.ajax({
-        url : '/admin/save-city',
+        url : '/admin/save-country',
         type: "POST",
         data: formData,
         contentType: false,
@@ -173,7 +199,7 @@ function Save(){
     });
   }else{
     $.ajax({
-      url : '/admin/update-city',
+      url : '/admin/update-country',
       type: "POST",
       data: formData,
       contentType: false,
@@ -198,14 +224,17 @@ function Save(){
 
 function Edit(id){
   $.ajax({
-    url : '/admin/city/'+id,
+    url : '/admin/country/'+id,
     type: "GET",
     dataType: "JSON",
     success: function(data)
     {
-      $('#modal-title').text('Update City');
+      $('#modal-title').text('Update Country');
       $('#save').text('Save Change');
-      $('input[name=area]').val(data.area);
+      $('input[name=country_name_arabic]').val(data.country_name_arabic);
+      $('input[name=country_name_english]').val(data.country_name_english);
+      $('input[name=image1]').val(data.image);
+      $('input[name=country_code]').val(data.country_code);
       $('input[name=id]').val(id);
       $('#popup_modal').modal('show');
       action_type = 2;
@@ -217,7 +246,7 @@ function Delete(id){
     var r = confirm("Are you sure");
     if (r == true) {
       $.ajax({
-        url : '/admin/city-delete/'+id,
+        url : '/admin/country-delete/'+id,
         type: "GET",
         dataType: "JSON",
         success: function(data)

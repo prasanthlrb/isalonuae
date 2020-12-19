@@ -168,12 +168,43 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/city', 'AreaController@City');
 	Route::get('/city-delete/{id}', 'AreaController@deleteCity');
 
-	//area
-	Route::POST('/save-area', 'AreaController@saveArea');
-	Route::POST('/update-area', 'AreaController@updateArea');
-	Route::get('/edit-area/{id}', 'AreaController@editArea');
-	Route::get('/area/{id}', 'AreaController@Area');
-	Route::get('/area-delete/{id}', 'AreaController@deleteArea');
+	//country
+	Route::POST('/save-country', 'AreaController@saveCountry');
+	Route::POST('/update-country', 'AreaController@updateCountry');
+	Route::get('/country/{id}', 'AreaController@editCountry');
+	Route::get('/country', 'AreaController@Country');
+	Route::get('/country-delete/{id}', 'AreaController@deleteCountry');
+
+
+	//app-salon
+	Route::POST('/save-app-salon', 'AppController@saveAppSalon');
+	Route::POST('/update-app-salon', 'AppController@updateAppSalon');
+	Route::get('/app-salon', 'AppController@AppSalon');
+	Route::get('/app-salon-delete/{id}', 'AppController@deleteAppSalon');
+
+	//app-spa
+	Route::POST('/save-app-spa', 'AppController@saveAppSpa');
+	Route::POST('/update-app-spa', 'AppController@updateAppSpa');
+	Route::get('/app-spa', 'AppController@AppSpa');
+	Route::get('/app-spa-delete/{id}', 'AppController@deleteAppSpa');
+
+	//app-beauty
+	Route::POST('/save-app-beauty', 'AppController@saveAppBeauty');
+	Route::POST('/update-app-beauty', 'AppController@updateAppBeauty');
+	Route::get('/app-beauty', 'AppController@AppBeauty');
+	Route::get('/app-beauty-delete/{id}', 'AppController@deleteAppBeauty');
+
+	//app-makeup
+	Route::POST('/save-app-makeup', 'AppController@saveAppMakeup');
+	Route::POST('/update-app-makeup', 'AppController@updateAppMakeup');
+	Route::get('/app-makeup', 'AppController@AppMakeup');
+	Route::get('/app-makeup-delete/{id}', 'AppController@deleteAppMakeup');
+
+	//app-home
+	Route::POST('/save-app-home', 'AppController@saveAppHome');
+	Route::POST('/update-app-home', 'AppController@updateAppHome');
+	Route::get('/app-home', 'AppController@AppHome');
+	Route::get('/app-home-delete/{id}', 'AppController@deleteAppHome');
 
 	//user
 	Route::POST('/save-user', 'AdminController@saveUser');

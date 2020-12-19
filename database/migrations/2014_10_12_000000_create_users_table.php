@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('area')->nullable();
             $table->string('address',5000)->nullable();
             $table->string('nationality')->nullable();
+            $table->string('country_id')->nullable();
             $table->string('emirates_id')->nullable();
             $table->string('trade_license_no')->nullable();
             $table->string('vat_certificate_no')->nullable();

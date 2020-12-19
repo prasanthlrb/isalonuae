@@ -47,8 +47,7 @@
                                         <th>Phone</th>
                                         <th>E-mail</th>
                                         <th>Registered On</th>
-                                        <th>Current Status</th>
-                                        <th>Membership Plan</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -61,7 +60,6 @@
                                         <td>{{$row->email}}</td>
                                         <td>{{$row->created_at}}</td>
                                         <td>Active</td>
-                                        <td>Trial Plan</td>
                                         <td><div class="dropdown">
                 <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
                 </span>
@@ -84,8 +82,7 @@
                                         <th>Phone</th>
                                         <th>E-mail</th>
                                         <th>Registered On</th>
-                                        <th>Current Status</th>
-                                        <th>Membership Plan</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>

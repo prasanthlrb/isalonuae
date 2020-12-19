@@ -89,6 +89,10 @@ Route::get('/get-booking-transaction/{id}', 'ApiController@getBookingTransaction
 Route::get('/get-package/{id}', 'ApiController@getShopPackage');
 Route::get('/get-package-services/{id}', 'ApiController@getPackageServices');
 
+Route::get('/get-all-package/{city}', 'ApiController@getAllPackage');
+Route::get('/get-coupon-code/{customer_id}', 'ApiController@getCouponCode');
+Route::get('/get-all-nation', 'ApiController@getAllNation');
+
 Route::get('/coupon-code-apply/{customer_id}/{code}/{value}/{salon_id}', 'ApiController@couponModule');
 
 Route::get('/get-push-notification/{id}', 'ApiController@getPushNotification');

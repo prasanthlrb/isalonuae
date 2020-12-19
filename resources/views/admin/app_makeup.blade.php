@@ -1,5 +1,8 @@
- @section('css')
+@section('css')
      <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
+     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/select/select2.min.css">
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+     <meta name="csrf-token" content="{{ csrf_token() }}" />
  @endsection
  @extends('admin.layouts')
 @section('body-section')
@@ -9,12 +12,12 @@
                 <div class="content-header-left col-12 mb-2 mt-1">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h5 class="content-header-title float-left pr-1 mb-0">Area List</h5>
+                            <h5 class="content-header-title float-left pr-1 mb-0">App Makeup Artist List</h5>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active">Area
+                                    <li class="breadcrumb-item active">App Makeup Artist
                                     </li>
                                 </ol>
                             </div>
@@ -31,52 +34,44 @@
                             <div class="card">
                                 <div class="card-header">
         <!-- new task button -->
-        <button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
+        <button id="add_new" style="width: 300px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
           <i class="bx bx-plus"></i>
-          <span>New Area</span>
+          <span>New App Makeup Artist</span>
         </button>
         </div>
         <div class="card-content">
             <div class="card-body card-dashboard">
                 <!-- <p class="card-text">In this Table Show All type of Salon Information, Booking Details and Payment Details.</p> -->
-                                        
-            <div class="table-responsive">
-               
-                <table class="table zero-configuration">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Areas</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($area as $key => $row)
-                        <tr>
-                            <td>{{$key + 1}}</td>
-                            <td>
-                                {{$row->area}}
-                            </td>
-                <td><div class="dropdown">
-                <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
-                </span>
-                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
-                  <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
-                  <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
-                </div>
-              </div></td>
-                            </tr>
-
-                         @endforeach
-                        </tbody>
-                        <tfoot>
+                
+                <div class="table-responsive">
+                   
+                    <table id="draggable" class="table">
+                        <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Areas</th>
-                                <th>Action</th>
+                                <th>Position</th>
+                                <th>Busisness name</th>
+                                <th>Delete</th>
                             </tr>
-                        </tfoot>
-                    </table>
+                        </thead>
+                        <tbody>
+                  @foreach($app_makeup as $row)
+                    <tr id="<?php echo $row->id ?>" class="ui-draggable ui-draggable-handle ui-sortable-handle">
+                      <td>{{$row->order_id}}</td>
+                      <td>{{$row->salon_name}}
+                      </td>
+                      <td>
+                      <a onclick="Delete({{$row->id}})" href="#"><i class="bx bx-trash mr-1"></i> </a></td>
+                    </tr>
+                  @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Position</th>
+                        <th>Busisness name</th>
+                        <th>Delete</th>
+                    </tr>
+                </tfoot>
+            </table>
 
 
                                         </div>
@@ -109,13 +104,29 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="id" id="id">
 
-                    <div class="form-group">
-                        <label>Area</label>
-                        <input autocomplete="off" type="text" id="area" name="area" class="form-control">
-                    </div>
+                    <!-- <div class="form-group">
+                        <label>Title</label>
+                        <input autocomplete="off" type="text" id="title" name="title" class="form-control">
+                    </div> -->
 
                     <div class="form-group">
-                        <button onclick="Save()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Add</button>
+                      <label>Select the Makeup Artist</label>
+                      <select style="width:100% !imporatnt;" id="salon_id" name="salon_id" class="select2 form-control">
+                      <option value="">Choose One</option>
+                        <optgroup label="Select Salon">
+                        @foreach ($salon as $salon1)
+                          @if($salon1->salon_name != '')
+                          <option value="{{$salon1->id}}">{{$salon1->salon_name}}</option>
+                          @else
+                          <option value="{{$salon1->id}}">{{$salon1->name}}</option>
+                          @endif
+                        @endforeach
+                        </optgroup>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button onclick="Save()" id="saveButton" class="btn btn-primary btn-block mr-10" type="button">Save</button>
                     </div>
                 </form>
             </div>
@@ -136,8 +147,45 @@
     <script src="../../../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
     <!-- END: Page Vendor JS-->
     <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
+    <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="/app-assets/js/scripts/forms/select/form-select2.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  var $sortable = $( "#draggable > tbody" );
+  $sortable.sortable({
+      stop: function ( event, ui ) {
+          var parameters = $sortable.sortable( "toArray" );
+          $.ajax({
+            url : '/admin/update-app-makeup',
+            type: "POST",
+            data: {
+              value:parameters,
+              _token: '{{csrf_token()}}'
+            },
+            dataType: "JSON",
+            success: function(data)
+            {                
+              location.reload();
+            }
+          });
+      }
+  });
+</script>
+
 <script type="text/javascript">
-$('.area').addClass('active');
+$('.app-makeup').addClass('active');
+
+$('#salon_id').select2();
+// $(".select2").select2({
+//     dropdownAutoWidth: true,
+//     width: '100%',
+//     //color:'#fff';
+// });
+//     $('#salon_id').select2({
+//         dropdownParent: $('#popup_modal')
+//     });
+
 
 var action_type;
 $('#add_new').click(function(){
@@ -145,14 +193,15 @@ $('#add_new').click(function(){
     $("#form")[0].reset();
     action_type = 1;
     $('#saveButton').text('Save');
-    $('#modal-title').text('Add City');
+    $('#modal-title').text('Add App Makeup Artist');
+    $('#salon_id').select2();
 });
+
 
 function Save(){
   var formData = new FormData($('#form')[0]);
-  if(action_type == 1){
     $.ajax({
-        url : '/admin/save-city',
+        url : '/admin/save-app-makeup',
         type: "POST",
         data: formData,
         contentType: false,
@@ -162,7 +211,7 @@ function Save(){
         {                
             $("#form")[0].reset();
             $('#popup_modal').modal('hide');
-            $('.zero-configuration').load(location.href+' .zero-configuration');
+            $('.table').load(location.href+' .table');
             toastr.success(data, 'Successfully Save');
         },error: function (data) {
             var errorData = data.responseJSON.errors;
@@ -171,62 +220,25 @@ function Save(){
       });
     }
     });
-  }else{
-    $.ajax({
-      url : '/admin/update-city',
-      type: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      dataType: "JSON",
-      success: function(data)
-      {
-        console.log(data);
-          $("#form")[0].reset();
-           $('#popup_modal').modal('hide');
-           $('.zero-configuration').load(location.href+' .zero-configuration');
-           toastr.success(data, 'Successfully Update');
-      },error: function (data) {
-        var errorData = data.responseJSON.errors;
-        $.each(errorData, function(i, obj) {
-          toastr.error(obj[0]);
-        });
-      }
-    });
-  }
 }
 
-function Edit(id){
-  $.ajax({
-    url : '/admin/city/'+id,
-    type: "GET",
-    dataType: "JSON",
-    success: function(data)
-    {
-      $('#modal-title').text('Update City');
-      $('#save').text('Save Change');
-      $('input[name=area]').val(data.area);
-      $('input[name=id]').val(id);
-      $('#popup_modal').modal('show');
-      action_type = 2;
-    }
-  });
-}
+
 
 function Delete(id){
     var r = confirm("Are you sure");
     if (r == true) {
       $.ajax({
-        url : '/admin/city-delete/'+id,
+        url : '/admin/app-makeup-delete/'+id,
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
           toastr.success(data, 'Successfully Delete');
-          $('.zero-configuration').load(location.href+' .zero-configuration');
+          $('.table').load(location.href+' .table');
         }
       });
     } 
 }
+
 </script>
 @endsection
