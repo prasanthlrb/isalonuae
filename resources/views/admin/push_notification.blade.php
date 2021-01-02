@@ -50,6 +50,7 @@
                                 <th>Description</th>
                                 <th>Send To</th>
                                 <th>Date and Time</th>
+                                <th>Expiry Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -70,14 +71,25 @@
                       @endif
                       </td>
                       <td>{{$row->created_at}}</td>
+                      <td>{{$row->expiry_date}}</td>
                       <td>
                       <div class="dropdown">
                         <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
                         </span>
                         <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                          @if($row->expiry_date != '')
+                          @if($row->expiry_date >= date('Y-m-d'))
                           <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
                           <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
                           <a onclick="SendNotification({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
+                          @else
+                          <a class="dropdown-item" href="#">Expired</a>
+                          @endif
+                          @else
+                          <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
+                          <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
+                          <a onclick="SendNotification({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-chat mr-1"></i> Send</a>
+                          @endif
                         </div>
                       </div>
                       </td>
@@ -90,6 +102,7 @@
                         <th>Description</th>
                         <th>Send To</th>
                         <th>Date and Time</th>
+                        <th>Expiry Date</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -171,6 +184,11 @@
                         @endforeach
                         </optgroup>
                       </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input autocomplete="off" type="date" id="expiry_date" name="expiry_date" class="form-control">
                     </div>
                     
                     <div class="form-group">
@@ -350,6 +368,7 @@ function Edit(id){
       $('#modal-title').text('Update Notification');
       $('#save').text('Save Change');
       $('input[name=title]').val(data.title);
+      $('input[name=expiry_date]').val(data.expiry_date);
       $('textarea[name=description]').val(data.description);
       $('select[name=send_to]').val(data.send_to);
       $('input[name=id]').val(id);

@@ -17,7 +17,7 @@
 
 <section id="dashboard-analytics">
   <div class="row">
-
+@if(count($top_3) > 0)
 <div class="col-xl-4 col-md-6 col-12 dashboard-greetings">
 <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel">
   <!--Indicators-->
@@ -113,6 +113,31 @@
 </div>
 <!--/.Carousel Wrapper-->
 </div>
+@else
+    <div class="col-xl-4 col-md-6 col-12 dashboard-greetings">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="greeting-text">Congratulations I-Salon!</h3>
+          <p class="mb-0">Best seller of the month</p>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-end">
+              <div class="dashboard-content-left">
+                <h1 class="text-primary font-large-2 text-bold-500"></h1>
+                <p>You have done 0% more sales today.</p>
+                <button type="button" class="btn btn-primary glow">View Sales</button>
+              </div>
+              <div class="dashboard-content-right">
+                <img src="/app-assets/images/icon/cup.png" height="220" width="220" class="img-fluid"
+                  alt="Dashboard Ecommerce" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+@endif
 
     
 
@@ -709,11 +734,6 @@
 
             </div>
         </div>
-<script type="text/javascript">
-
-$('.dashboard').addClass('active');
-
-</script>
 @endsection
 
 @section('js')
@@ -721,13 +741,12 @@ $('.dashboard').addClass('active');
  <!-- BEGIN: Page Vendor JS-->
     <script src="/app-assets/vendors/js/charts/apexcharts.min.js"></script>
     <script src="/app-assets/vendors/js/extensions/swiper.min.js"></script>
-    <!-- END: Page Vendor JS-->
 
-
-    <!-- BEGIN: Page JS-->
     <script src="/app-assets/js/scripts/pages/dashboard-ecommerce.min.js"></script>
     <script src="/app-assets/js/scripts/pages/dashboard-analytics.min.js"></script>
 <script>
+  $('.dashboard').addClass('active');
+
     function ChangeStatus(id,id1){
     var r = confirm("Are you sure");
     if (r == true) {

@@ -155,7 +155,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Package Renewal Remember Days</label>
+                        <label>Package Renewal Reminder Days</label>
                         <input autocomplete="off" type="text" id="package_renewal_remember_days" name="package_renewal_remember_days" class="form-control">
                     </div>
 

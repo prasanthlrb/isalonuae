@@ -28,9 +28,11 @@ class SalonController extends Controller
     {
         $this->middleware('auth:admin');
     }
+    
     public function viewSalon($id){
         $salon_id = $id;
         $salon = User::find($id);
+        $salon_package = salon_package::find($salon->salon_package);
         $customer = customer::all();
         $salon_worker = User::where('user_id',$id)->where('role_id','!=','admin')->get();
         $gallery = gallery::where('salon_id',$id)->get();
@@ -41,7 +43,7 @@ class SalonController extends Controller
         $salon_service = salon_service::where('salon_id',$id)->get();
         $package = package::where('salon_id',$id)->get();
         $booking = booking::where('salon_id',$id)->get();
-        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker','gallery','package','customer','booking'));
+        return view('admin.view_salon',compact('salon','all_salon','service_time','salon_service','service','salon_id','review','salon_worker','gallery','package','customer','booking','salon_package'));
     }
 
     public function saveSalon(Request $request){

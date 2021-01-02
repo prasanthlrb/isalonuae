@@ -40,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
             }
             $view->with(compact('role'));
         });
+
+        view()->composer('vendor.dashboard', function($view) {
+            $role = array();
+            if(Auth::user()->role_id != 'admin'){
+            $role = salon_role::where('id',Auth::user()->role_id)->where('salon_id',Auth::user()->user_id)->first();
+            }
+            $view->with(compact('role'));
+        });
         
         view()->composer('admin.sidebar', function($view) {
             $role = role::where('id',Auth::guard('admin')->user()->role_id)->first();

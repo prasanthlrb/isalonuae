@@ -18,10 +18,15 @@ class WorkersController extends Controller
     }
     
     public function saveWorkers(Request $request){
-        $request->validate([
-            'name'=> 'required',
-            'email'=> 'required|unique:users',
-            'role_id'=> 'required',
+        $this->validate($request, [
+            'name'=>'required',
+            'email'=>'required|unique:users',
+            'role_id'=>'required',
+            'certification_image' => 'required|mimes:jpeg,jpg,png|max:1000', // max 1000kb
+          ],[
+            'certification_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'certification_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
+            'certification_image.required' => 'Certification Image Field is Required',
         ]);
 
         $service_ids='';
@@ -39,15 +44,26 @@ class WorkersController extends Controller
         $salon_worker->service_ids = $service_ids;
         $salon_worker->user_id = Auth::user()->user_id;
         $salon_worker->password = Hash::make($request->password);
+        if($request->file('certification_image')!=""){
+            $fileName = null;
+            $image = $request->file('certification_image');
+            $fileName = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload_files/'), $fileName);
+        $salon_worker->certification_image = $fileName;
+        }
         $salon_worker->save();
         return response()->json('successfully save'); 
     }
 
     public function updateWorkers(Request $request){
-        $request->validate([
-            'name'=> 'required',
+        $this->validate($request, [
+            'name'=>'required',
             'email'=>'required|unique:users,email,'.$request->id,
-            'role_id'=> 'required',
+            'role_id'=>'required',
+            'certification_image' => 'mimes:jpeg,jpg,png|max:1000', // max 1000kb
+          ],[
+            'certification_image.mimes' => 'Only jpeg, png and jpg images are allowed',
+            'certification_image.max' => 'Sorry! Maximum allowed size for an image is 1MB',
         ]);
 
         $service_ids='';
@@ -66,6 +82,17 @@ class WorkersController extends Controller
         if($request->password != ''){
         $salon_worker->password = Hash::make($request->password);
     	}
+        if($request->file('certification_image')!=""){
+            $old_image = "upload_files/".$salon_worker->certification_image;
+            if (file_exists($old_image)) {
+                @unlink($old_image);
+            }
+            $fileName = null;
+            $image = $request->file('certification_image');
+            $fileName = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload_files/'), $fileName);
+        $salon_worker->certification_image = $fileName;
+        }
         $salon_worker->save();
         return response()->json('successfully update'); 
     }

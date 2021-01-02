@@ -48,6 +48,7 @@
                                                         <th>Mobile</th>
                                                         <th>Email</th>
                                                         <th>Role</th>
+                                                        <th>Certification File</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -58,13 +59,14 @@
                                                         <td>{{$row->name}}</td>
                                                         <td>{{$row->phone}}</td>
                                                         <td>{{$row->email}}</td>
-                                                        <td>
+                                <td>
                                     @foreach($salon_role as $role1)
                                     @if($row->role_id == $role1->id)
                                     {{$role1->role_name}}
                                     @endif
                                     @endforeach
                                 </td>
+                                <td><img style="width:100px;height:100px;" src="/upload_files/{{$row->certification_image}}"></td>
                                                         <td>
             <div class="dropdown">
                 <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
@@ -84,6 +86,7 @@
                                                         <th>Name</th>
                                                         <th>Mobile</th>
                                                         <th>Email</th>
+                                                        <th>Certification File</th>
                                                         <th>Role</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -157,6 +160,11 @@
                         	<option value="{{$row->id}}">{{$row->service_name_english}}</option>
                         	@endforeach
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Certificate (Support Format .jpeg,jpg,png)</label>
+                        <input autocomplete="off" type="file" id="certification_image" name="certification_image" class="form-control">
                     </div>
                     
                     <div class="form-group">

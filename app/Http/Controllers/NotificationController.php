@@ -40,6 +40,7 @@ class NotificationController extends Controller
         $push_notification = new push_notification;
         $push_notification->salon_id = 'admin';
         $push_notification->title = $request->title;
+        $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
         if($request->send_to == '4'){
@@ -78,6 +79,7 @@ class NotificationController extends Controller
         $push_notification = new push_notification;
         $push_notification->salon_id = 'admin';
         $push_notification->title = $request->title;
+        $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
         if($request->send_to == '4'){
@@ -116,6 +118,7 @@ class NotificationController extends Controller
         }
         $push_notification = push_notification::find($request->id);
         $push_notification->title = $request->title;
+        $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
         if($request->send_to == '4'){
@@ -152,6 +155,7 @@ class NotificationController extends Controller
         }
         $push_notification = push_notification::find($request->id);
         $push_notification->title = $request->title;
+        $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
         $push_notification->send_to = $request->send_to;
         if($request->send_to == '4'){

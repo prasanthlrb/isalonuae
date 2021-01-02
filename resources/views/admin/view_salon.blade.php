@@ -248,6 +248,7 @@
             <ul class="list-unstyled">
               <li><i class="cursor-pointer bx bx-phone-call mb-1 mr-50"></i>{{$salon->phone}}</li>
               <li><i class="cursor-pointer bx bx-envelope mb-1 mr-50"></i>{{$salon->email}}</li>
+              <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>{{$salon->address}}</li>
             </ul>
 
               <div class="row">
@@ -275,14 +276,14 @@
                 </div> 
                 <div class="col-6">
                   <h6><small class="text-muted">Cover Image</small></h6>
-                  <p><img style="width:100px;height:100px;" src="/upload_files/{{$salon->cover_image}}"></p>
+                  <p><img style="width:200px;height:100px;" src="/upload_files/{{$salon->cover_image}}"></p>
                 </div>
                 
                 <div class="col-12">
                   <h6>Package Details</h6>
-                  <p>Package Name :</p>
-                  <p>Price :</p>
-                  <p>Validity :</p>
+                  <p>Package Name : {{$salon_package->package_name}}</p>
+                  <p>Price : {{$salon_package->price}} AED</p>
+                  <p>Validity : {{$salon_package->validity_count}}</p>
                 </div>
               </div>
           </div>
@@ -405,7 +406,7 @@
                     <thead>
                         <tr>
                             <th>Days</th>
-                            <th>Open/Closed</th>
+                            <th>Active/Not Active</th>
                             <th>Opening Time</th>
                             <th>Closing Time</th>
                         </tr>
@@ -416,9 +417,9 @@
                             <td>{{$row->days}}</td>
                             <td>
                                 @if($row->status == 1)
-                                Open
+                                Active
                                 @else
-                                Closed
+                                Not Active
                                 @endif
                             </td>
                             <td>{{$row->open_time}}</td>
@@ -438,18 +439,22 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Mobile</th>
                             <th>Email</th>
+                            <th>Certification Image</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($salon_worker as $key => $row)
                         <tr>
                             <td>{{$key + 1}}</td>
+                            <td><img style="width:100px;height:100px;" src="/upload_files/{{$row->profile_image}}"></td>
                             <td>{{$row->name}}</td>
                             <td>{{$row->phone}}</td>
                             <td>{{$row->email}}</td>
+                            <td><img style="width:100px;height:100px;" src="/upload_files/{{$row->certification_image}}"></td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -717,7 +722,7 @@
                         <thead>
                             <tr>
                                 <th>Days</th>
-                                <th>Open/Closed</th>
+                                <th>Active/Not Active</th>
                                 <th>Opening Time</th>
                                 <th>Closing Time</th>
                             </tr>
@@ -735,8 +740,8 @@ $time = array('12:00 AM','12:30 AM','01:00 AM','01:30 AM','02:00 AM','02:30 AM',
                                 <td>
                                     <select name="status[]" class="form-control">
                                         <option value="">SELECT</option>
-                                        <option {{$row->status == 1 ?'selected':''}} value="1">Open</option>
-                                        <option {{$row->status == 2 ?'selected':''}} value="2">Closed</option>
+                                        <option {{$row->status == 1 ?'selected':''}} value="1">Active</option>
+                                        <option {{$row->status == 2 ?'selected':''}} value="2">Not Active</option>
                                     </select>
                                 </td>
 

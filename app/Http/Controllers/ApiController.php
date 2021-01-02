@@ -30,6 +30,8 @@ use Carbon\Carbon;
 use App\Events\ChatEvent;
 use Illuminate\Http\Request;
 use StdClass;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
+
 
 class ApiController extends Controller
 {
@@ -114,8 +116,18 @@ class ApiController extends Controller
                 return response()->json(['message' => 'This Phone Number Has been Already Registered','status'=>403], 403);
            }
         $randomid = mt_rand(1000,9999); 
+
+        $config = [
+            'table' => 'customers',
+            'field' => 'c_id',
+            'length' => 10,
+            'prefix' => 'IS-'
+        ];
+        $c_id = IdGenerator::generate($config);
         
         $customer = new customer;
+        $customer->c_id = $c_id;
+        $customer->date = date('Y-m-d');
         $customer->name = $request->name;
         $customer->email = $request->email;
         $customer->phone = $request->phone;
@@ -1600,8 +1612,16 @@ if(count($coupon)>0){
 
     public function saveBooking(Request $request){
         try{
+        $config = [
+            'table' => 'bookings',
+            'field' => 'b_id',
+            'length' => 10,
+            'prefix' => 'IS-'
+        ];
+        $b_id = IdGenerator::generate($config);
         $randomid = mt_rand(1000,9999); 
         $booking = new booking;
+        $booking->b_id = $b_id;
         $booking->salon_id = $request->salon_id;
         $booking->date = date('Y-m-d');
         $booking->customer_id = $request->customer_id;
