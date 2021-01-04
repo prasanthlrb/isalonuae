@@ -134,6 +134,12 @@
                         <input autocomplete="off" type="text" id="country_name_arabic" name="country_name_arabic" class="form-control">
                     </div>
 
+                    
+                    <div class="form-group">
+                        <label>Phone Count</label>
+                        <input autocomplete="off" type="text" id="phone_count" name="phone_count" class="form-control">
+                    </div>
+
                     <div class="form-group">
                         <label>Image</label>
                         <input type="file" id="image" name="image" class="form-control">
@@ -233,6 +239,7 @@ function Edit(id){
       $('#save').text('Save Change');
       $('input[name=country_name_arabic]').val(data.country_name_arabic);
       $('input[name=country_name_english]').val(data.country_name_english);
+      $('input[name=phone_count]').val(data.phone_count);
       $('input[name=image1]').val(data.image);
       $('input[name=country_code]').val(data.country_code);
       $('input[name=id]').val(id);

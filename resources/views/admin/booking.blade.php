@@ -49,7 +49,7 @@
                                                 <tbody>
                                                 @foreach($booking as $row)
                                                     <tr>
-                                                        <td>#{{$row->id}}</td>
+                                                        <td>#{{$row->b_id}}</td>
                                                         <td>
                                                             @foreach($salon as $sal)
                                                             @if($sal->id == $row->salon_id)

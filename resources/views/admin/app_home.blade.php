@@ -17,7 +17,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active">App Home Services
+                                    <li class="breadcrumb-item active">{{$city->area}}
                                     </li>
                                 </ol>
                             </div>
@@ -103,6 +103,7 @@
                 <form id="form" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id" id="id">
+                <input value="{{$city->id}}" type="hidden" name="city_id" id="city_id">
 
                     <!-- <div class="form-group">
                         <label>Title</label>

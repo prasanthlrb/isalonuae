@@ -15,6 +15,7 @@ class CreateAppMakeupsTable extends Migration
     {
         Schema::create('app_makeups', function (Blueprint $table) {
             $table->id();
+            $table->string('city_id')->nullable();
             $table->string('order_id')->nullable();
             $table->string('salon_id')->nullable();
             $table->string('status')->default('0');

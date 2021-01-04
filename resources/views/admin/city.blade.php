@@ -9,12 +9,12 @@
                 <div class="content-header-left col-12 mb-2 mt-1">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h5 class="content-header-title float-left pr-1 mb-0">Area List</h5>
+                            <h5 class="content-header-title float-left pr-1 mb-0">City List</h5>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active">Area
+                                    <li class="breadcrumb-item active">City
                                     </li>
                                 </ol>
                             </div>
@@ -33,7 +33,7 @@
         <!-- new task button -->
         <button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
           <i class="bx bx-plus"></i>
-          <span>New Area</span>
+          <span>New City</span>
         </button>
         </div>
         <div class="card-content">
@@ -46,7 +46,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Areas</th>
+                            <th>City</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -72,7 +72,7 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Areas</th>
+                                <th>City</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -110,7 +110,7 @@
                 <input type="hidden" name="id" id="id">
 
                     <div class="form-group">
-                        <label>Area</label>
+                        <label>City</label>
                         <input autocomplete="off" type="text" id="area" name="area" class="form-control">
                     </div>
 

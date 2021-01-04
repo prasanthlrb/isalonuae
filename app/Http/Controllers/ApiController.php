@@ -21,6 +21,11 @@ use App\push_notification;
 use App\salon_customer;
 use App\package;
 use App\country;
+use App\app_beauty;
+use App\app_home;
+use App\app_makeup;
+use App\app_salon;
+use App\app_spa;
 use Hash;
 use Auth;
 use DB;
@@ -31,6 +36,9 @@ use App\Events\ChatEvent;
 use Illuminate\Http\Request;
 use StdClass;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Image;
+use Storage;
+use Str;
 
 
 class ApiController extends Controller
@@ -152,7 +160,7 @@ class ApiController extends Controller
             // 'name'=>$customer->name,
             // 'email'=>$customer->email,
             // 'phone'=>$customer->phone,
-            // 'city'=>$request->city,
+            'country_id'=>$request->country_id,
             'customer_id'=>$customer->id],
              200);
         }catch (\Exception $e) {
@@ -195,14 +203,19 @@ class ApiController extends Controller
 
         if(isset($request->image)){
             if($request->file('image')!=""){
-                $old_image = "upload_files/".$customer->banner_image;
+                $old_image = "upload_files/".$customer->image;
                 if (file_exists($old_image)) {
                     @unlink($old_image);
                 }
-            $image = $request->file('image');
-            $fileName = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('upload_files/'), $fileName);
-            $customer->image =  $fileName;
+                $image_64 = $request->image; //your base64 encoded data
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+                // find substring fro replace here eg: data:image/png;base64,
+                $image = str_replace($replace, '', $image_64); 
+                $image = str_replace(' ', '+', $image); 
+                $imageName = Str::random(10).'.'.$extension;
+                file_put_contents(public_path().'/upload_files/'.$imageName, base64_decode($image));            
+                $customer->image =  $imageName;
            }
         }
 
@@ -223,6 +236,10 @@ class ApiController extends Controller
         if($customer->city != ''){
             $city = $customer->city;
         }
+        $image='';
+        if($customer->image != ''){
+            $image = $customer->image;
+        }
         return response()->json(
             ['message' => 'Update Successfully',
             'name'=>$customer->name,
@@ -230,8 +247,48 @@ class ApiController extends Controller
             'phone'=>$customer->phone,
             'dob'=>$customer->dob,
             'gender'=>$customer->gender,
+            'country_id'=>$customer->country_id,
             'city'=>$city,
+            'image'=>$image,
             'phone_status'=>$phone_status,
+            'customer_id'=>$customer->id],
+        200);
+        }catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(),'status'=>400], 400);
+        } 
+    }
+
+
+
+    public function profileImageUpdate(Request $request){
+        return response()->json($request->image);
+        try{
+        $customer = customer::find($request->customer_id);
+        if(isset($request->image)){
+            if($request->image!=""){
+                $old_image = "upload_files/".$customer->image;
+                if (file_exists($old_image)) {
+                    @unlink($old_image);
+                }
+
+            $image_64 = $request->image; //your base64 encoded data
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+            $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+            // find substring fro replace here eg: data:image/png;base64,
+            $image = str_replace($replace, '', $image_64); 
+            $image = str_replace(' ', '+', $image); 
+            $imageName = Str::random(10).'.'.$extension;
+            file_put_contents(public_path().'/upload_files/'.$imageName, base64_decode($image));            
+            $customer->image =  $imageName;
+
+           }
+        }
+
+        $customer->save();
+
+        return response()->json(
+            ['message' => 'Update Successfully',
+            'image'=>$customer->image,
             'customer_id'=>$customer->id],
         200);
         }catch (\Exception $e) {
@@ -258,12 +315,18 @@ class ApiController extends Controller
                     if($customer->city != ''){
                         $city = $customer->city;
                     }
+                    $image='';
+                    if($customer->image != ''){
+                        $image = $customer->image;
+                    }
                 return response()->json(['message' => 'Login Successfully','name'=>$exist[0]->name,
                 'email'=>$exist[0]->email,
                 'phone'=>$exist[0]->phone,
                 'dob'=>$exist[0]->dob,
                 'gender'=>$exist[0]->gender,
+                'country_id'=>$exist[0]->country_id,
                 'city'=>$city,
+                'image'=>$image,
                 'customer_id'=>$exist[0]->id,'status'=>200], 200);
                 }else{
                     return response()->json(['message' => 'Records Does not Match','status'=>403], 403);
@@ -470,6 +533,130 @@ class ApiController extends Controller
         foreach($data as $row){
             $datas[]=$row->area;
         }
+        return response()->json($datas); 
+    }
+
+    public function getApiAllOtherServices($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        //->where("users.busisness_type",1)
+        ->where("users.city",$citys->id)
+        ->where('users.status',1)
+        //->groupBy("users.id")
+        ->get();
+
+        $data =array();
+        $datas =array();
+        foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
+            $data = array(
+                'review_count' => '',
+                'review_average' => '',
+                'salon_id' => $value->id,
+                'cover_image' => '',
+                'address' => '',
+                'salon_name' => $value->salon_name,
+                'distance' => $distance,
+            );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
+            if(empty($value->salon_name)){
+                $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
+            }
+            $q =DB::table('reviews as r');
+            $q->where('r.salon_id', '=', $value->id);
+            $q->groupBy('r.salon_id');
+            $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
+            $review = $q->first();
+
+            if(!empty($review)){
+                $data['review_count'] = $review->review_count;
+                $data['review_average'] = $review->review_average;
+            }
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
+    public function getApiOtherServices($city,$lat,$lon){
+        $citys = area::where('area',$city)->first();
+        //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
+
+        $user = DB::table("users")
+        ->select("users.*"
+        ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
+        * cos(radians(users.latitude)) 
+        * cos(radians(users.longitude) - radians(" . $lon . ")) 
+        + sin(radians(" .$lat. ")) 
+        * sin(radians(users.latitude))) AS distance"))
+        ->orderBy('distance', 'ASC')
+        ->where("users.role_id",'admin')
+        //->where("users.busisness_type",1)
+        ->where("users.city",$citys->id)
+        ->where('users.status',1)
+        //->groupBy("users.id")
+        ->inRandomOrder()->limit(10)->get();
+
+        $data =array();
+        $datas =array();
+        foreach ($user as $key => $value) {
+            $distance=0;
+            if(round($value->distance,3) > 0.999 ){
+                $distance = round($value->distance,3) . ' km';
+            }
+            else{
+                $distance = substr($value->distance,-3) . ' m';
+            }
+            $data = array(
+                'review_count' => '',
+                'review_average' => '',
+                'salon_id' => $value->id,
+                'cover_image' => '',
+                'address' => '',
+                'salon_name' => $value->salon_name,
+                'distance' => $distance,
+            );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
+            if(empty($value->salon_name)){
+                $data['salon_name'] = $value->name;
+            }
+            if(!empty($value->cover_image)){
+                $data['cover_image'] = $value->cover_image;
+            }
+            $q =DB::table('reviews as r');
+            $q->where('r.salon_id', '=', $value->id);
+            $q->groupBy('r.salon_id');
+            $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
+            $review = $q->first();
+
+            if(!empty($review)){
+                $data['review_count'] = $review->review_count;
+                $data['review_average'] = $review->review_average;
+            }
+            $datas[] = $data;
+        }   
         return response()->json($datas); 
     }
 
@@ -1043,7 +1230,7 @@ class ApiController extends Controller
         foreach ($package as $key => $value) {
             $data = array(
                 'package_id' => $value->id,
-                'salon_id' => $value->user_id,
+                'salon_id' => (int)$value->user_id,
                 'salon_name' => '',
                 'package_image' => $value->image,
                 'package_name_english' => $value->package_name_english,
@@ -1293,7 +1480,7 @@ class ApiController extends Controller
 
     public function getCouponCode($id){
         $coupon = coupon::where('status',1)->get();
-
+        //return response()->json($coupon); 
         $data =array();
         $datas =array();
         foreach ($coupon as $key => $value) {

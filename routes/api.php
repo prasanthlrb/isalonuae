@@ -40,11 +40,16 @@ Route::get('/get-terms/{id}', 'ApiController@getApiTerms');
 Route::get('/get-privacy/{id}', 'ApiController@getApiPrivacy');
 Route::get('/get-about/{id}', 'ApiController@getApiAbout');
 
+//homepage
 Route::get('/get-salon-details/{id}/{lat}/{lng}', 'ApiController@getApiSalonDetails');
 Route::get('/get-spa-details/{id}/{lat}/{lng}', 'ApiController@getApiSpaDetails');
 Route::get('/get-makeup-details/{id}/{lat}/{lng}', 'ApiController@getApiMakeupDetails');
 Route::get('/get-beauty-details/{id}/{lat}/{lng}', 'ApiController@getApiBeautyDetails');
 Route::get('/get-home-details/{id}/{lat}/{lng}', 'ApiController@getApiHomeDetails');
+
+//homepage others
+Route::get('/get-other-services/{city}/{lat}/{lng}', 'ApiController@getApiOtherServices');
+Route::get('/get-other-all-services/{city}/{lat}/{lng}', 'ApiController@getApiAllOtherServices');
 
 Route::get('/get-service-details/{id}/{city}/{lat}/{lng}', 'ApiController@getApiServiceDetails');
 
@@ -56,6 +61,8 @@ Route::get('/get-shop-status/{id}', 'ApiController@getApiShopStatus');
 
 Route::post('/profile-update', 'ApiController@profileUpdate');
 Route::post('/change-password', 'ApiController@changePassword');
+//app profile image upload to server
+Route::post('/profile-image-update', 'ApiController@profileImageUpdate');
 
 Route::post('/save-address', 'ApiController@saveAddress');
 Route::post('/update-address', 'ApiController@updateAddress');

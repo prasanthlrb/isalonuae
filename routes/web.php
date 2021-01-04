@@ -177,30 +177,35 @@ Route::group(['prefix' => 'admin'],function(){
 
 
 	//app-salon
+	Route::get('/get-app-salon/{id}', 'AppController@getAppSalon');
 	Route::POST('/save-app-salon', 'AppController@saveAppSalon');
 	Route::POST('/update-app-salon', 'AppController@updateAppSalon');
 	Route::get('/app-salon', 'AppController@AppSalon');
 	Route::get('/app-salon-delete/{id}', 'AppController@deleteAppSalon');
 
 	//app-spa
+	Route::get('/get-app-spa/{id}', 'AppController@getAppSpa');
 	Route::POST('/save-app-spa', 'AppController@saveAppSpa');
 	Route::POST('/update-app-spa', 'AppController@updateAppSpa');
 	Route::get('/app-spa', 'AppController@AppSpa');
 	Route::get('/app-spa-delete/{id}', 'AppController@deleteAppSpa');
 
 	//app-beauty
+	Route::get('/get-app-beauty/{id}', 'AppController@getAppBeauty');
 	Route::POST('/save-app-beauty', 'AppController@saveAppBeauty');
 	Route::POST('/update-app-beauty', 'AppController@updateAppBeauty');
 	Route::get('/app-beauty', 'AppController@AppBeauty');
 	Route::get('/app-beauty-delete/{id}', 'AppController@deleteAppBeauty');
 
 	//app-makeup
+	Route::get('/get-app-makeup/{id}', 'AppController@getAppMakeup');
 	Route::POST('/save-app-makeup', 'AppController@saveAppMakeup');
 	Route::POST('/update-app-makeup', 'AppController@updateAppMakeup');
 	Route::get('/app-makeup', 'AppController@AppMakeup');
 	Route::get('/app-makeup-delete/{id}', 'AppController@deleteAppMakeup');
 
 	//app-home
+	Route::get('/get-app-home/{id}', 'AppController@getAppHome');
 	Route::POST('/save-app-home', 'AppController@saveAppHome');
 	Route::POST('/update-app-home', 'AppController@updateAppHome');
 	Route::get('/app-home', 'AppController@AppHome');

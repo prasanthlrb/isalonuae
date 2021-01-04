@@ -59,6 +59,7 @@ class AreaController extends Controller
             'country_code'=>'required',
             'country_name_english'=>'required',
             'country_name_arabic'=>'required',
+            'phone_count'=>'required',
             'image' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
           ],[
             'image.mimes' => 'Only jpeg, png and jpg images are allowed',
@@ -70,7 +71,7 @@ class AreaController extends Controller
         $country->country_code = $request->country_code;
         $country->country_name_english = $request->country_name_english;
         $country->country_name_arabic = $request->country_name_arabic;
-
+        $country->phone_count = $request->phone_count;
         if($request->image!=""){
             if($request->file('image')!=""){
             $image = $request->file('image');
@@ -89,6 +90,7 @@ class AreaController extends Controller
             'country_code'=>'required',
             'country_name_english'=>'required',
             'country_name_arabic'=>'required',
+            'phone_count'=>'required',
             'image' => 'mimes:jpeg,jpg,png,pdf|max:1000', // max 1000kb
           ],[
             'image.mimes' => 'Only jpeg, png and jpg images are allowed',
@@ -100,6 +102,7 @@ class AreaController extends Controller
         $country->country_code = $request->country_code;
         $country->country_name_english = $request->country_name_english;
         $country->country_name_arabic = $request->country_name_arabic;
+        $country->phone_count = $request->phone_count;
         if($request->image!=""){
             $old_image = "upload_files/".$item->image;
             if (file_exists($old_image)) {

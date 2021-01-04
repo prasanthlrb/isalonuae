@@ -54,7 +54,7 @@
                                 <tbody>
                                 @foreach($customer as $key => $row)
                                     <tr>
-                                        <td>{{$key + 1}}</td>
+                                        <td>{{$c_id}}</td>
                                         <td>{{$row->name}}</td>
                                         <td>{{$row->phone}}</td>
                                         <td>{{$row->email}}</td>
@@ -71,7 +71,6 @@
                   <a class="dropdown-item" href="/admin/view-customer/{{$row->id}}"><i class="bx bx-show-alt mr-1"></i> See Profile</a>
                 </div>
               </div></td>
-
                                     </tr>
                                 @endforeach
                                 </tbody>

@@ -186,7 +186,7 @@
                 <li class="area nav-item">
                     <a href="/admin/city">
                         <i class="menu-livicon" data-icon="map"></i>
-                        <span class="menu-title" data-i18n="Email">Available Area</span>
+                        <span class="menu-title" data-i18n="Email">Available City</span>
                     </a>
                 </li>
                 @endif
