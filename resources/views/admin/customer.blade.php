@@ -54,7 +54,7 @@
                                 <tbody>
                                 @foreach($customer as $key => $row)
                                     <tr>
-                                        <td>{{$c_id}}</td>
+                                        <td>{{$row->c_id}}</td>
                                         <td>{{$row->name}}</td>
                                         <td>{{$row->phone}}</td>
                                         <td>{{$row->email}}</td>
