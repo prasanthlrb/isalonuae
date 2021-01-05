@@ -280,13 +280,14 @@
                   <h6><small class="text-muted">Cover Image</small></h6>
                   <p><img style="width:200px;height:100px;" src="/upload_files/{{$salon->cover_image}}"></p>
                 </div>
-                
+                @if(!empty($salon_package))
                 <div class="col-12">
                   <h6>Package Details</h6>
                   <p>Package Name : {{$salon_package->package_name}}</p>
                   <p>Price : {{$salon_package->price}} AED</p>
                   <p>Validity : {{$salon_package->validity_count}}</p>
                 </div>
+                @endif
               </div>
           </div>
 

@@ -36,58 +36,58 @@
                 <div class="table-responsive">
                    
                 <table class="table zero-configuration">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Order ID</th>
-                                                        <th>Salon Name</th>
-                                                        <th>Customer Name</th>
-                                                        <th>Appointment Date/Time</th>
-                                                        <th>Amount</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($booking as $row)
-                                                    <tr>
-                                                        <td>#{{$row->b_id}}</td>
-                                                        <td>
-                                                            @foreach($salon as $sal)
-                                                            @if($sal->id == $row->salon_id)
-                                                            {{$sal->salon_name}}
-                                                            @endif
-                                                            @endforeach
-                                                        </td>
-                                                        <td>
-                                                            @foreach($customer as $cus)
-                                                            @if($cus->id == $row->customer_id)
-                                                            {{$cus->name}}
-                                                            @endif
-                                                            @endforeach
-                                                        </td>
-                                                        <td>{{$row->appointment_date}} / {{$row->appointment_time}}</td>
-                                                        
-                                                        <td>{{$row->total}} AED</td>
-                                                        <td>
-                                                        @if($row->booking_status == 0)
-                                                        Un Visit
-                                                        @else
-                                                        Visited
-                                                        @endif
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th>Order ID</th>
-                                                        <th>Salon Name</th>
-                                                        <th>Customer Name</th>
-                                                        <th>Appointment Date/Time</th>
-                                                        <th>Amount</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Salon Name</th>
+                            <th>Customer Name</th>
+                            <th>Appointment Date/Time</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($booking as $row)
+                        <tr>
+                            <td>#{{$row->b_id}}</td>
+                            <td>
+                                @foreach($salon as $sal)
+                                @if($sal->id == $row->salon_id)
+                                {{$sal->salon_name}}
+                                @endif
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach($customer as $cus)
+                                @if($cus->id == $row->customer_id)
+                                {{$cus->name}}
+                                @endif
+                                @endforeach
+                            </td>
+                            <td>{{$row->appointment_date}} / {{$row->appointment_time}}</td>
+                            
+                            <td>{{$row->total}} AED</td>
+                            <td>
+                            @if($row->booking_status == 0)
+                            Un Visit
+                            @else
+                            Visited
+                            @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Salon Name</th>
+                            <th>Customer Name</th>
+                            <th>Appointment Date/Time</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
 
                                         </div>
                                         

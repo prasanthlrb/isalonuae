@@ -115,7 +115,7 @@ class AppController extends Controller
             //'salon_id'=>'required|unique:app_spas',
             'salon_id' => 'required|unique:app_spas,salon_id,NULL,id,city_id,'.$request->city_id
         ]); 
-        $count = app_spa::count();
+        $count = app_spa::where("city_id",$request->city_id)->count();
         $app_spa = new app_spa;
         $app_spa->order_id = $count + 1;
         $app_spa->city_id = $request->city_id;
@@ -165,7 +165,7 @@ class AppController extends Controller
             //'salon_id'=>'required|unique:app_beauties',
             'salon_id' => 'required|unique:app_beauties,salon_id,NULL,id,city_id,'.$request->city_id
         ]); 
-        $count = app_beauty::count();
+        $count = app_beauty::where("city_id",$request->city_id)->count();
         $app_beauty = new app_beauty;
         $app_beauty->order_id = $count + 1;
         $app_beauty->city_id = $request->city_id;
@@ -214,7 +214,7 @@ class AppController extends Controller
             //'salon_id'=>'required|unique:app_makeups',
             'salon_id' => 'required|unique:app_makeups,salon_id,NULL,id,city_id,'.$request->city_id
         ]); 
-        $count = app_makeup::count();
+        $count = app_makeup::where("city_id",$request->city_id)->count();
         $app_makeup = new app_makeup;
         $app_makeup->order_id = $count + 1;
         $app_makeup->city_id = $request->city_id;
@@ -263,7 +263,7 @@ class AppController extends Controller
             //'salon_id'=>'required|unique:app_homes',
             'salon_id' => 'required|unique:app_homes,salon_id,NULL,id,city_id,'.$request->city_id
         ]); 
-        $count = app_home::count();
+        $count = app_home::where("city_id",$request->city_id)->count();
         $app_home = new app_home;
         $app_home->order_id = $count + 1;
         $app_home->city_id = $request->city_id;

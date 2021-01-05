@@ -664,18 +664,20 @@ class ApiController extends Controller
         $citys = area::where('area',$city)->first();
         //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
 
-        $user = DB::table("users")
+        $user = DB::table("app_salons")
+        ->join('users', 'users.id', '=', 'app_salons.salon_id')
+        ->where("app_salons.city_id",$citys->id)
         ->select("users.*"
         ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(users.latitude)) 
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->orderBy('distance', 'ASC')
+        //->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",1)
-        ->where("users.city",$citys->id)
         ->where('users.status',1)
+        ->orderBy('app_salons.order_id', 'ASC')
         //->groupBy("users.id")
         ->get();
 
@@ -694,10 +696,13 @@ class ApiController extends Controller
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => '',
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
                 'distance' => $distance,
             );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
@@ -723,18 +728,20 @@ class ApiController extends Controller
         $citys = area::where('area',$city)->first();
         //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
 
-        $user = DB::table("users")
+        $user = DB::table("app_spas")
+        ->join('users', 'users.id', '=', 'app_spas.salon_id')
+        ->where("app_spas.city_id",$citys->id)
         ->select("users.*"
         ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(users.latitude)) 
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->orderBy('distance', 'ASC')
+        //->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",2)
-        ->where("users.city",$citys->id)
         ->where('users.status',1)
+        ->orderBy('app_spas.order_id', 'ASC')
         //->groupBy("users.id")
         ->get();
 
@@ -753,10 +760,13 @@ class ApiController extends Controller
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => '',
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
                 'distance' => $distance,
             );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
@@ -782,18 +792,20 @@ class ApiController extends Controller
         $citys = area::where('area',$city)->first();
         //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
 
-        $user = DB::table("users")
+        $user = DB::table("app_makeups")
+        ->join('users', 'users.id', '=', 'app_makeups.salon_id')
+        ->where("app_makeups.city_id",$citys->id)
         ->select("users.*"
         ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(users.latitude)) 
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->orderBy('distance', 'ASC')
+        //->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",3)
-        ->where("users.city",$citys->id)
         ->where('users.status',1)
+        ->orderBy('app_makeups.order_id', 'ASC')
         //->groupBy("users.id")
         ->get();
 
@@ -812,10 +824,13 @@ class ApiController extends Controller
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => '',
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
                 'distance' => $distance,
             );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
@@ -841,18 +856,20 @@ class ApiController extends Controller
         $citys = area::where('area',$city)->first();
         //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
 
-        $user = DB::table("users")
+        $user = DB::table("app_beauties")
+        ->join('users', 'users.id', '=', 'app_beauties.salon_id')
+        ->where("app_beauties.city_id",$citys->id)
         ->select("users.*"
         ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(users.latitude)) 
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->orderBy('distance', 'ASC')
+        //->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",4)
-        ->where("users.city",$citys->id)
         ->where('users.status',1)
+        ->orderBy('app_beauties.order_id', 'ASC')
         //->groupBy("users.id")
         ->get();
 
@@ -871,10 +888,13 @@ class ApiController extends Controller
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => '',
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
                 'distance' => $distance,
             );
+            if(!empty($value->address)){
+                $data['address'] = $value->address;
+            }
             if(empty($value->salon_name)){
                 $data['salon_name'] = $value->name;
             }
@@ -900,18 +920,20 @@ class ApiController extends Controller
         $citys = area::where('area',$city)->first();
         //$user = User::where('role_id','admin')->where('busisness_type',1)->where('city',$citys->id)->get();
 
-        $user = DB::table("users")
+        $user = DB::table("app_homes")
+        ->join('users', 'users.id', '=', 'app_homes.salon_id')
+        ->where("app_homes.city_id",$citys->id)
         ->select("users.*"
         ,DB::raw("6371 * acos(cos(radians(" . $lat . ")) 
         * cos(radians(users.latitude)) 
         * cos(radians(users.longitude) - radians(" . $lon . ")) 
         + sin(radians(" .$lat. ")) 
         * sin(radians(users.latitude))) AS distance"))
-        ->orderBy('distance', 'ASC')
+        //->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where("users.busisness_type",5)
-        ->where("users.city",$citys->id)
         ->where('users.status',1)
+        ->orderBy('app_homes.order_id', 'ASC')
         //->groupBy("users.id")
         ->get();
 
@@ -930,7 +952,7 @@ class ApiController extends Controller
                 'review_average' => '',
                 'salon_id' => $value->id,
                 'cover_image' => '',
-                'address' => $value->address,
+                'address' => '',
                 'salon_name' => $value->salon_name,
                 'distance' => $distance,
             );
@@ -1119,6 +1141,7 @@ class ApiController extends Controller
         $q->select('r.comments','r.reviews','c.name','r.updated_at');
         $reviews = $q->get();
         $data =array();
+        $datas = array();
         foreach ($reviews as $key => $value) {
             $dateTime = new Carbon($value->updated_at, new \DateTimeZone('Asia/Dubai'));
             $data = array(
@@ -1134,6 +1157,7 @@ class ApiController extends Controller
 
     public function getShopGallery($id){
         $gallery = gallery::where('salon_id',$id)->select('image')->where('status',0)->get();
+        $datas = array();
         if(count($gallery) > 0){
             foreach ($gallery as $key => $value) {            
                 $datas[] = $value->image;
