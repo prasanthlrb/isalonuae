@@ -160,7 +160,7 @@ class ApiController extends Controller
             // 'name'=>$customer->name,
             // 'email'=>$customer->email,
             // 'phone'=>$customer->phone,
-            'country_id'=>$request->country_id,
+            'country_id'=>(int)$request->country_id,
             'customer_id'=>$customer->id],
              200);
         }catch (\Exception $e) {
@@ -201,55 +201,71 @@ class ApiController extends Controller
             }
         }
 
-        if(isset($request->image)){
-            if($request->file('image')!=""){
-                $old_image = "upload_files/".$customer->image;
-                if (file_exists($old_image)) {
-                    @unlink($old_image);
-                }
-                $image_64 = $request->image; //your base64 encoded data
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-                // find substring fro replace here eg: data:image/png;base64,
-                $image = str_replace($replace, '', $image_64); 
-                $image = str_replace(' ', '+', $image); 
-                $imageName = Str::random(10).'.'.$extension;
-                file_put_contents(public_path().'/upload_files/'.$imageName, base64_decode($image));            
-                $customer->image =  $imageName;
-           }
-        }
+        // if(isset($request->image)){
+        //     if($request->file('image')!=""){
+        //         $old_image = "upload_files/".$customer->image;
+        //         if (file_exists($old_image)) {
+        //             @unlink($old_image);
+        //         }
+        //         // $image_64 = $request->image; //your base64 encoded data
+        //         // $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+        //         // $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+        //         // // find substring fro replace here eg: data:image/png;base64,
+        //         // $image = str_replace($replace, '', $image_64); 
+        //         // $image = str_replace(' ', '+', $image); 
+        //         // $imageName = Str::random(10).'.'.$extension;
+        //         // file_put_contents(public_path().'/upload_files/'.$imageName, base64_decode($image));            
+        //         // $customer->image =  $imageName;
+        //         $image = $request->image;
+        //         $image_name = $request->image_name;
+        //         $filename1='';
+        //         foreach(explode('.', $image_name) as $info){
+        //             $filename1 = $info;
+        //         }
+        //         $fileName = rand() . '.' . $filename1;
+        //         $realImage = base64_decode($image);
+        //         file_put_contents(public_path().'/upload_files/'.$fileName, $realImage);    
+        //         $customer->image =  $fileName;
+        //    }
+        // }
 
+        if(isset($request->country_id)){
+            $customer->country_id = $request->country_id;
+        }
         if($request->phone != $customer->phone){
             $customer->phone = $request->phone;
             $customer->otp = $randomid;
             $customer->status = 0;
             $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your I-Salon Account";
-            $this->send_sms($customer->phone,$msg,$customer->country_id);
+
+            $country_id = $customer->country_id;
+            if($request->country_id != $customer->country_id){
+                $country_id = $request->country_id;
+            }
+            $this->send_sms($customer->phone,$msg,$country_id);
             $phone_status = 1;
         }
-        // if(isset($request->password)){
-        //     $customer->password = Hash::make($request->password);
-        // }
+
         $customer->save();
 
         $city='';
         if($customer->city != ''){
             $city = $customer->city;
         }
-        $image='';
-        if($customer->image != ''){
-            $image = $customer->image;
-        }
+        // $image='';
+        // if($customer->image != ''){
+        //     $image = $customer->image;
+        // }
         return response()->json(
             ['message' => 'Update Successfully',
             'name'=>$customer->name,
             'email'=>$customer->email,
             'phone'=>$customer->phone,
-            'dob'=>$customer->dob,
+            'dob'=>date('d-m-Y', strtotime($customer->dob)),
             'gender'=>$customer->gender,
-            'country_id'=>$customer->country_id,
+            'country_id'=>(int)$customer->country_id,
             'city'=>$city,
-            'image'=>$image,
+            //'image'=>$image,
             'phone_status'=>$phone_status,
             'customer_id'=>$customer->id],
         200);
@@ -261,7 +277,6 @@ class ApiController extends Controller
 
 
     public function profileImageUpdate(Request $request){
-        return response()->json($request->image);
         try{
         $customer = customer::find($request->customer_id);
         if(isset($request->image)){
@@ -270,18 +285,20 @@ class ApiController extends Controller
                 if (file_exists($old_image)) {
                     @unlink($old_image);
                 }
+            
+                $image = $request->image;
+                $image_name = $request->image_name;
+                $filename1='';
+                foreach(explode('.', $image_name) as $info){
+                    $filename1 = $info;
+                }
+                $fileName = rand() . '.' . $filename1;
 
-            $image_64 = $request->image; //your base64 encoded data
-            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-            $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-            // find substring fro replace here eg: data:image/png;base64,
-            $image = str_replace($replace, '', $image_64); 
-            $image = str_replace(' ', '+', $image); 
-            $imageName = Str::random(10).'.'.$extension;
-            file_put_contents(public_path().'/upload_files/'.$imageName, base64_decode($image));            
-            $customer->image =  $imageName;
+                $realImage = base64_decode($image);
+                file_put_contents(public_path().'/upload_files/'.$fileName, $realImage);    
+            $customer->image =  $fileName;
 
-           }
+          }
         }
 
         $customer->save();
@@ -319,12 +336,13 @@ class ApiController extends Controller
                     if($customer->image != ''){
                         $image = $customer->image;
                     }
-                return response()->json(['message' => 'Login Successfully','name'=>$exist[0]->name,
+                return response()->json(['message' => 'Login Successfully',
+                'name'=>$exist[0]->name,
                 'email'=>$exist[0]->email,
                 'phone'=>$exist[0]->phone,
-                'dob'=>$exist[0]->dob,
+                'dob'=>date('d-m-Y', strtotime($exist[0]->dob)),
                 'gender'=>$exist[0]->gender,
-                'country_id'=>$exist[0]->country_id,
+                'country_id'=>(int)$exist[0]->country_id,
                 'city'=>$city,
                 'image'=>$image,
                 'customer_id'=>$exist[0]->id,'status'=>200], 200);
@@ -431,10 +449,13 @@ class ApiController extends Controller
                 if($customer->city != ''){
                     $city = $customer->city;
                 }
-                return response()->json(['message' => 'Verified Your Account','name'=>$customer->name,
+                return response()->json(['message' => 'Verified Your Account',
+                'name'=>$customer->name,
                 'email'=>$customer->email,
                 'phone'=>$customer->phone,
+                'dob'=>date('d-m-Y', strtotime($customer->dob)),
                 'gender'=>$customer->gender,
+                'country_id'=>(int)$customer->country_id,
                 'city'=>$city,
                 'customer_id'=>$customer->id,'status'=>200], 200);
             }else{
@@ -442,6 +463,42 @@ class ApiController extends Controller
             }
         }else{
             return response()->json(['message' => 'Customer id not found'], 400);
+        }
+    }
+
+
+    public function splitAddress(Request $request)
+    {
+        if($request->address !=null){
+            $split_address = explode("-", $request->address);
+
+            $split_count = count($split_address) - 2;
+            $country = $split_address[$split_count + 1];
+            if($country == ' United Arab Emirates'){
+                for($i=0;$i<=$split_count;$i++){
+                    $address1[]= $split_address[$i];
+                }
+                $new_address = collect($address1)->implode(' - ');
+
+                $split_city = explode(" ", $split_address[$split_count]);
+
+                $city = area::where('area', 'like', '%' .$split_city[1]. '%')->first();
+                
+                if(!empty($city)){
+                    return response()->json(['message' => 'Address Split Successfully',
+                        'address'=>$new_address,
+                        'city'=>$city->area,
+                        'status'=>200], 200);
+                }
+                else{
+                    return response()->json(['message' => 'This Address Not Available'], 400);
+                }
+            }
+            else{
+                return response()->json(['message' => 'This Address Not Available'], 400);
+            }
+        }else{
+            return response()->json(['message' => 'address not found'], 400);
         }
     }
 
@@ -1690,12 +1747,12 @@ if(count($coupon)>0){
         $postData->firstName = $customer->name; 
         $postData->email = $customer->email; 
         $postData->merchantAttributes = new StdClass();
-        $postData->merchantAttributes->redirectUrl = "http://15.184.21.73/payment-success";
+        $postData->merchantAttributes->redirectUrl = "http://app.isalonuae.com/payment-success";
         $postData->amount = new StdClass();
         $postData->amount->currencyCode = "AED"; 
         $postData->amount->value = $amount; 
         
-        $outlet = "cb081997-96d7-4aaa-b399-865016a34ead";
+        $outlet = "e437f4ad-8d6c-4621-bd89-c91672b4c88a";
         $token=$this->getAccessToken();
          
         $json = json_encode($postData);
@@ -1727,7 +1784,7 @@ if(count($coupon)>0){
     public function getRetrivePayment($id){
         $booking = booking::find($id);
         $orderID = $booking->order_id;
-        $outlet = "cb081997-96d7-4aaa-b399-865016a34ead";
+        $outlet = "e437f4ad-8d6c-4621-bd89-c91672b4c88a";
         $token=$this->getAccessToken();
       
       $curl = curl_init();

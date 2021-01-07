@@ -123,6 +123,9 @@ Route::POST('/save-review', 'ApiController@saveReview');
 Route::get('/get-review/{order_id}', 'ApiController@getReview');
 
 
+//split address
+Route::post('/split-address', 'ApiController@splitAddress');
+
 
 
 //salon

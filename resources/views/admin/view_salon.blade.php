@@ -10,9 +10,9 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/select/select2.min.css">
 
-    <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY&sensor=false&libraries=places"></script> -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCanHknp355-rJzwBPbz1FZDWs9t9ym_lY&sensor=false&libraries=places"></script>
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMTNFnPj4AizpevEiZcG77II6MptFemd4&sensor=false&libraries=places"></script>
+    <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMTNFnPj4AizpevEiZcG77II6MptFemd4&sensor=false&libraries=places"></script> -->
     <style type="text/css">
         .input-controls {
           margin-top: 10px;
@@ -285,7 +285,11 @@
                   <h6>Package Details</h6>
                   <p>Package Name : {{$salon_package->package_name}}</p>
                   <p>Price : {{$salon_package->price}} AED</p>
-                  <p>Validity : {{$salon_package->validity_count}}</p>
+                  @if($salon_package->validity == 1)
+                  <p>Validity : {{$salon_package->validity_count}} Days</p>
+                  @else 
+                  <p>Validity : {{$salon_package->validity_count}} Month</p>
+                  @endif
                 </div>
                 @endif
               </div>
