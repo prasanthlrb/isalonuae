@@ -39,6 +39,15 @@ use session;
 use Auth;
 use DB;
 use PDF;
+use Validator;
+use Mail;
+use Carbon\Carbon;
+use App\Events\ChatEvent;
+use StdClass;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Image;
+use Storage;
+use Str;
 
 class CronController extends Controller
 {
