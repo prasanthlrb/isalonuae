@@ -106,7 +106,8 @@
                                             <span class="avatar-status-away"></span> -->
                                         </div>
                                         <div class="chat-sidebar-name">
-                                            <h6 class="mb-0">{{$row->name}}</h6><span class="text-muted"> {{$row->phone}}</span>
+                                            <h6 class="mb-0">{{$row->name}}</h6>
+                                            <span class="text-muted"> {{$row->phone}}</span>
                                         </div>
                                     </div>
                                     </a>
@@ -168,9 +169,11 @@
             
             <ul class="list-unstyled">
               <!-- <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>California</li> -->
-              <li><i class="cursor-pointer bx bx-phone-call mb-1 mr-50"></i>{{$customer->phone}}</li>
+              <li><i class="cursor-pointer bx bx-phone-call mb-1 mr-50"></i>Phone : {{$customer->phone}}</li>
               <!-- <li><i class="cursor-pointer bx bx-time mb-1 mr-50"></i>July 10</li> -->
-              <li><i class="cursor-pointer bx bx-envelope mb-1 mr-50"></i>{{$customer->email}}</li>
+              <li><i class="cursor-pointer bx bx-envelope mb-1 mr-50"></i>Mail : {{$customer->email}}</li>
+
+              <li><i class="cursor-pointer bx bx-calendar mb-1 mr-50"></i>Date of Birth : <?php echo date('d-m-Y',strtotime($customer->dob)) ?></li>
             </ul>
 
                     <div class="row">

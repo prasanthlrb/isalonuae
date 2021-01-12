@@ -94,7 +94,7 @@ public function send_sms($phone,$msg)
         $salon->vat_certificate_no = $request->vat_certificate_no;
         $salon->passport_number = $request->passport_number;
         //$salon->member_license = $request->member_license;
-        $salon->salon_commission = $request->salon_commission;
+        $salon->salon_commission = '6';
         $salon->city = $request->city;
         $salon->latitude = $request->latitude;
         $salon->longitude = $request->longitude;

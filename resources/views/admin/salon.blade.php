@@ -223,26 +223,34 @@
                         <textarea id="address" name="address" class="form-control"></textarea>
                     </div>
                   </div>
+
                   <div class="form-group col-md-4">
+                        <label>Salon Commission</label>
+                        <input type="number" id="salon_commission" name="salon_commission" class="form-control">
+                    </div>
+                  
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
                         <label>Emirates ID</label>
                         <input type="text" id="emirates_id" name="emirates_id" class="form-control">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Trade License No</label>
+                        <input type="text" id="trade_license_no" name="trade_license_no" class="form-control">
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-4">
-                        <label>Trade License No</label>
-                        <input type="text" id="trade_license_no" name="trade_license_no" class="form-control">
-                    </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label>Vat Certificate No</label>
                         <input type="text" id="vat_certificate_no" name="vat_certificate_no" class="form-control">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label>Passport Number</label>
                         <input type="text" id="passport_number" name="passport_number" class="form-control">
                     </div>
-                    
                 </div>
 
                 <div class="row">

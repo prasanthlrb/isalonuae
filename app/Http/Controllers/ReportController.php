@@ -193,7 +193,14 @@ class ReportController extends Controller
                 </td>';
             })
 
-        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status'])
+            ->addColumn('commission', function ($booking) {
+                return '<td>
+                <p>('.$booking->commission_percentage.' %)</p>
+                <p>'.$booking->commission_amount.'</p>
+                </td>';
+            })
+
+        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status','commission'])
         ->make(true);
 
         //return Datatables::of($orders) ->addIndexColumn()->make(true);
@@ -259,6 +266,13 @@ class ReportController extends Controller
                 <p>AED' . $booking->payment . '</p>
                 </td>';
             })
+            ->addColumn('commission', function ($booking) {
+                return '<td>
+                <p>('.$booking->commission_percentage.' %)</p>
+                <p>'.$booking->commission_amount.'</p>
+                </td>';
+            })
+
             ->addColumn('action', function ($booking) {
                 $output='';
                 if($booking->status == '0'){
@@ -277,7 +291,7 @@ class ReportController extends Controller
                 </td>';
             })
 
-        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status','action'])
+        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status','action','commission'])
         ->make(true);
 
         //return Datatables::of($orders) ->addIndexColumn()->make(true);

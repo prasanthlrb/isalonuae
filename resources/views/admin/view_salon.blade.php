@@ -292,6 +292,31 @@
                   @endif
                 </div>
                 @endif
+                
+              </div>
+              
+              <div class="row">
+                <div class="col-12">
+                  <h6>Attachements</h6>
+                  <div class="col-4">
+                    <h6><small class="text-muted">Trade License Copy</small></h6>
+                    @if($salon->trade_license != '')
+                    <p><img style="width:200px;height:100px;" src="/upload_files/{{$salon->trade_license}}"></p>
+                    @endif
+                  </div> 
+                  <div class="col-4">
+                    <h6><small class="text-muted">Passport Copy</small></h6>
+                    @if($salon->passport_copy != '')
+                    <p><img style="width:200px;height:100px;" src="/upload_files/{{$salon->passport_copy}}"></p>
+                    @endif
+                  </div>
+                  <div class="col-4">
+                    <h6><small class="text-muted">Emirated ID Copy</small></h6>
+                    @if($salon->emirated_id_copy != '')
+                    <p><img style="width:200px;height:100px;" src="/upload_files/{{$salon->emirated_id_copy}}"></p>
+                    @endif
+                  </div>
+                </div>
               </div>
           </div>
 
