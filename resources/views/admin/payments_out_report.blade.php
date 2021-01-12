@@ -63,6 +63,7 @@
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
                                 <th>Commission</th>
+                                <th>Payable Amount</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -76,6 +77,7 @@
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
                                 <th>Commission</th>
+                                <th>Payable Amount</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -128,6 +130,7 @@ var orderPageTable = $('#datatable').DataTable({
         { data: 'payment', name: 'payment' },
         // { data: 'payment_type', name: 'payment_type' },
         { data: 'commission', name: 'commission' },
+        { data: 'payable_amount', name: 'payable_amount' },
         { data: 'status', name: 'status' },
         { data: 'action', name: 'action' },
     ]

@@ -113,6 +113,8 @@ class BookingExport implements FromCollection, ShouldAutoSize , WithHeadings , W
 
         $service_charge = ($user->salon_commission / 100) * ($booking->total);
 
+        $payable_amount = $booking->total - $service_charge;
+
         return [
             $booking->id,
             $booking->date,
@@ -127,6 +129,7 @@ class BookingExport implements FromCollection, ShouldAutoSize , WithHeadings , W
             'AED '.$booking->total,
             $user->salon_commission.' %' ,
             'AED '.$service_charge,
+            'AED '.$payable_amount,
             $payment_type,
         ];
     }
@@ -147,6 +150,7 @@ class BookingExport implements FromCollection, ShouldAutoSize , WithHeadings , W
             'Total Amount',
             'Service Charge (%)',
             'Service Charge (Amount)',
+            'Payable Amount',
             'Payment Type',
         ];
     }

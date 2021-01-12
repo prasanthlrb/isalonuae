@@ -39,6 +39,7 @@
                                 <th>Date</th>
                                 <th>Payment</br></th>
                                 <th>Commission</th>
+                                <th>Payable Amount</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -51,6 +52,9 @@
                             <td>
                                 {{$row->commission_percentage}} % <br>
                                 {{$row->commission_amount}}
+                            </td>
+                            <td>
+                                AED {{$row->payment - $row->commission_amount}}
                             </td>
                             <td>
                             @if($row->status == '0')
@@ -68,6 +72,7 @@
                                 <th>Date</th>
                                 <th>Payment</br></th>
                                 <th>Commission</th>
+                                <th>Payable Amount</th>
                                 <th>Status</th>
                             </tr>
                         </tfoot>
