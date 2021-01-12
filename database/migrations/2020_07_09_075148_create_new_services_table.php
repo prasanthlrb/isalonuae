@@ -22,6 +22,7 @@ class CreateNewServicesTable extends Migration
             $table->string('price')->nullable();
             $table->string('remark',5000)->nullable();
             $table->string('deny_remark',5000)->nullable();
+            $table->string('read_status')->default('0');
             $table->string('status')->default('0');
             $table->timestamps();
         });

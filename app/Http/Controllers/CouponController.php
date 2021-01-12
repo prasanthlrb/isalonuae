@@ -21,6 +21,18 @@ class CouponController extends Controller
         return view('admin.couponList',compact('coupon'));
     }
 
+    public function couponReadStatus(){
+        $coupon1 = coupon::where('read_status',0)->get();
+        foreach($coupon1 as $row){
+            $coupon2 = coupon::find($row->id);
+            $coupon2->read_status = 1;
+            $coupon2->save();
+        }
+
+        $coupon = coupon::where('status',1)->get();
+        return view('admin.couponList',compact('coupon'));
+    }
+
     public function addCoupon(){
         $service = service::all();
         $user = customer::all();

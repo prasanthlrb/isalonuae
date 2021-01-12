@@ -24,6 +24,7 @@ class CreatePushNotificationsTable extends Migration
             $table->string('other_status')->nullable();
             $table->string('deny_remark',5000)->nullable();
             $table->string('status')->default('0');
+            $table->string('read_status')->default('0');
             $table->timestamps();
         });
     }

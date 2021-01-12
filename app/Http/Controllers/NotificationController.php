@@ -178,6 +178,21 @@ class NotificationController extends Controller
         return view('admin.push_notification',compact('push_notification','customer','user'));
     }
 
+    public function notificationReadStatus(){
+        $notification = push_notification::where('read_status',0)->get();
+        foreach($notification as $row){
+            $not = push_notification::find($row->id);
+            $not->read_status = 1;
+            $not->save();
+        }
+
+        $push_notification = push_notification::all();
+        $customer = customer::all();
+        $user = User::where('role_id','admin')->where('status',1)->get();
+        return view('admin.push_notification',compact('push_notification','customer','user'));
+    }
+
+
     public function editNotification($id){
         $push_notification = push_notification::find($id);
         return response()->json($push_notification); 

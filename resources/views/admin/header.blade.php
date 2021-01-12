@@ -35,10 +35,10 @@
                                 <ul class="search-list"></ul>
                             </div>
                         </li>
-                        <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon bx bx-bell bx-tada bx-flip-horizontal"></i><span class="badge badge-pill badge-danger badge-up">{{$customer_count}}</span></a>
+                        <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon bx bx-bell bx-tada bx-flip-horizontal"></i><span class="badge badge-pill badge-danger badge-up">{{$customer_count + $notification_count + $coupon_count + $service_count + $booking_count}}</span></a>
                             <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                                 <li class="dropdown-menu-header">
-                                    <div class="dropdown-header px-1 py-75 d-flex justify-content-between"><span class="notification-title">{{$customer_count}} Notification</span>
+                                    <div class="dropdown-header px-1 py-75 d-flex justify-content-between"><span class="notification-title">{{$customer_count + $notification_count + $coupon_count + $service_count + $booking_count}} Notification</span>
                                     <!-- <span class="text-bold-400 cursor-pointer">Mark all as read</span> -->
                                 </div>
                                 </li>
@@ -54,6 +54,78 @@
                                         <span class="text-bold-500">Name : {{$row->name}} / Phone : +971 {{$row->phone}}</span> / Email : {{$row->email}}
                                         </h6>
                                         <small class="notification-text">Date of Birth : {{date('d-m-Y',strtotime($row->dob))}}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                                @foreach($notification as $row)
+                                <a class="d-flex justify-content-between"  href="/admin/notification-read-status">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-left pr-0">
+                                        <div class="avatar mr-1 m-0"><img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="39" width="39"></div>
+                                        </div>
+                                        <div class="media-body">
+                                        <h6 class="media-heading">
+                                        <span class="text-bold-500">Push Notification From Salon : @foreach($salon as $user1)
+                                @if($user1->id == $row->salon_id)
+                                {{$user1->salon_name}}
+                                @endif
+                                @endforeach / Title : {{$row->title}}</span> / Description : {{$row->description}}
+                                        </h6>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                                @foreach($coupon as $row)
+                                <a class="d-flex justify-content-between"  href="/admin/coupon-read-status">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-left pr-0">
+                                        <div class="avatar mr-1 m-0"><img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="39" width="39"></div>
+                                        </div>
+                                        <div class="media-body">
+                                        <h6 class="media-heading">
+                                        <span class="text-bold-500">Coupon Notification From Salon : @foreach($salon as $user1)
+                                @if($user1->id == $row->salon_id)
+                                {{$user1->salon_name}}
+                                @endif
+                                @endforeach / Coupon Code : {{$row->coupon_code}}</span> 
+                                        </h6>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                                @foreach($service as $row)
+                                <a class="d-flex justify-content-between"  href="/admin/service-read-status">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-left pr-0">
+                                        <div class="avatar mr-1 m-0"><img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="39" width="39"></div>
+                                        </div>
+                                        <div class="media-body">
+                                        <h6 class="media-heading">
+                                        <span class="text-bold-500">Service Notification From Salon : @foreach($salon as $user1)
+                                @if($user1->id == $row->salon_id)
+                                {{$user1->salon_name}}
+                                @endif
+                                @endforeach / Service : {{$row->service_name}}</span> / Duration : {{$row->duration}} / Price : {{$row->price}}
+                                        </h6>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                                @foreach($booking as $row)
+                                <a class="d-flex justify-content-between"  href="/admin/booking-read-status">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-left pr-0">
+                                        <div class="avatar mr-1 m-0"><img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="39" width="39"></div>
+                                        </div>
+                                        <div class="media-body">
+                                        <h6 class="media-heading">
+                                        <span class="text-bold-500">Booking Notification From Salon : @foreach($salon as $user1)
+                                @if($user1->id == $row->salon_id)
+                                {{$user1->salon_name}}
+                                @endif
+                                @endforeach / Booking ID : {{$row->b_id}}</span> / Value : AED {{$row->total}}
+                                        </h6>
                                         </div>
                                     </div>
                                 </a>

@@ -16,6 +16,7 @@ class ReviewController extends Controller
     {
         $this->middleware('auth');
     }
+
     
     public function Review(){
         $review = review::where('salon_id',Auth::user()->user_id)->get();

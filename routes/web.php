@@ -251,6 +251,8 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/notification-delete/{id}', 'NotificationController@deleteNotification');
 	Route::get('/notification-send/{id}', 'NotificationController@sendNotification');
 
+	Route::get('/notification-read-status', 'NotificationController@notificationReadStatus');
+
 	Route::POST('/update-notification-request', 'SalonController@updateNotificationRequest');
 
 	Route::get('/get-notification-salon/{id}', 'NotificationController@getNotificationSalon');
@@ -329,6 +331,11 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/service-package-delete/{id}', 'SalonController@deleteServicePackage');
 	Route::get('/get_package_services/{id}', 'SalonController@getPackageServices');
 
+	
+	Route::get('/coupon-read-status', 'CouponController@couponReadStatus');
+	Route::get('/service-read-status', 'ServiceController@serviceReadStatus');
+	Route::get('/booking-read-status', 'AdminController@bookingReadStatus');
+	
 });
 
 
@@ -431,6 +438,8 @@ Route::group(['prefix' => 'vendor'],function(){
 	Route::POST('/save-admin-chat', 'Vendor\ChatController@saveAdminChat');
 
 	Route::get('/print-invoice/{id}', 'Vendor\ChatController@printInvoice');
+
+	Route::get('/booking-read-status', 'Vendor\ChatController@bookingReadStatus');
 });
 
 Auth::routes();

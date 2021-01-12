@@ -14,6 +14,9 @@ use App\booking_item;
 use App\booking_package;
 use App\payments_in;
 use App\payments_out;
+use App\push_notification;
+use App\coupon;
+use App\new_service;
 use Hash;
 use App\service;
 use App\salon_service;
@@ -36,6 +39,20 @@ class AdminController extends Controller
         return view('admin.booking',compact('booking','customer','salon'));
     }
 
+    public function bookingReadStatus(){
+        $booking1 = booking::where('read_status',0)->get();
+        foreach($booking1 as $row){
+            $booking2 = booking::find($row->id);
+            $booking2->read_status = 1;
+            $booking2->save();
+        }
+
+        $booking = booking::orderBy('id','DESC')->get();
+        $customer = customer::all();
+        $salon = User::all();
+        return view('admin.booking',compact('booking','customer','salon'));
+    }
+
     public function printInvoice($id){
         $booking = booking::find($id);
         $customer = customer::find($booking->customer_id);
@@ -50,6 +67,7 @@ class AdminController extends Controller
         $pdf->setPaper('A4');
         return $pdf->stream('report.pdf');
     }
+
 
     public function dashboard(){
         $salon_count = User::where('role_id','admin')->where('status',1)->where('busisness_type',1)->count();

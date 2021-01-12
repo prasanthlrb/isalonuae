@@ -90,6 +90,19 @@ class ServiceController extends Controller
         return view('admin.new_service',compact('service','salon'));
     }
 
+    public function serviceReadStatus(){
+        $new_service1 = new_service::where('read_status',0)->get();
+        foreach($new_service1 as $row){
+            $new_service2 = new_service::find($row->id);
+            $new_service2->read_status = 1;
+            $new_service2->save();
+        }
+
+        $service = new_service::all();
+        $salon = User::all();
+        return view('admin.new_service',compact('service','salon'));
+    }
+
     public function updateNewService($id,$status){
         $new_service = new_service::find($id);
         $new_service->status = $status;

@@ -160,6 +160,19 @@ class ChatController extends Controller
       $customer = customer::all();
       return view('vendor.booking',compact('booking','customer'));
   }
+
+  public function bookingReadStatus(){
+    $booking1 = booking::where('salon_read',0)->get();
+    foreach($booking1 as $row){
+        $booking2 = booking::find($row->id);
+        $booking2->salon_read = 1;
+        $booking2->save();
+    }
+
+    $booking = booking::where('salon_id',Auth::user()->user_id)->orderBy('id','DESC')->get();
+      $customer = customer::all();
+      return view('vendor.booking',compact('booking','customer'));
+}
     
     public function chatToCustomer($id){
         $booking = booking::find($id);

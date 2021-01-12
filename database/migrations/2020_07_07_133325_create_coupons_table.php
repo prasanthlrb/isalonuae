@@ -30,6 +30,7 @@ class CreateCouponsTable extends Migration
             $table->string('user_id')->nullable();
             $table->string('status')->nullable();
             $table->string('deny_remark',5000)->nullable();
+            $table->string('read_status')->default('0');
             $table->timestamps();
         });
     }
