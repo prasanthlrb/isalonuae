@@ -38,6 +38,7 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
+                                <th>Commission</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -55,6 +56,10 @@
                             @endif
                             </td>
                             <td>
+                                {{$row->commission_percentage}} % <br>
+                                {{$row->commission_amount}}
+                            </td>
+                            <td>
                             @if($row->status == '0')
                             Un Paid
                             @elseif($row->status == '1')
@@ -69,6 +74,7 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
+                                <th>Commission</th>
                                 <th>Status</th>
                             </tr>
                         </tfoot>

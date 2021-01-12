@@ -40,6 +40,7 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
+                                <th>Commission</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -50,6 +51,10 @@
                             <td>#{{$row->id}}</td>
                             <td>{{$row->date}}</td>
                             <td>AED {{$row->payment}}</td>
+                            <td>
+                                {{$row->commission_percentage}} % <br>
+                                {{$row->commission_amount}}
+                            </td>
                             <td>
                             @if($row->status == '0')
                             Un Paid
@@ -77,6 +82,7 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
+                                <th>Commission</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>

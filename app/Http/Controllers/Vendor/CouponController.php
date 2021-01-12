@@ -20,7 +20,7 @@ class CouponController extends Controller
     
     public function index(){
         $coupon = coupon::where('salon_id',Auth::user()->user_id)->get();
-        return view('vendor.couponList',compact('coupon'));
+        return view('vendor.couponlist',compact('coupon'));
     }
 
     public function addCoupon(){
