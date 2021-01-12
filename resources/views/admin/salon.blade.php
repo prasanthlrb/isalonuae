@@ -39,12 +39,12 @@
         <div class="form-group col-md-4">
 <button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
     <i class="bx bx-plus"></i>
-    <span>New Busisness</span>
+    <span>New Business</span>
 </button>
         </div>
 
         <div class="form-group col-md-4">
-            <label>Search Busisness Type</label>
+            <label>Search Business Type</label>
             <select id="search_busisness_type" name="search_busisness_type" class="form-control">
                 <option value="0">All</option>
                 <option value="1">Salon</option>
@@ -78,7 +78,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Busisness Name</th>
+                                <th>Business Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
                                 <th>Current Status</th>
@@ -91,7 +91,7 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Busisness Name</th>
+                                <th>Business Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
                                 <th>Current Status</th>
@@ -196,11 +196,11 @@
                 </div> -->
                 <div class="row salon-view">
                     <div class="form-group col-md-6">
-                        <label>Busisness Name</label>
+                        <label>Business Name</label>
                         <input type="text" id="salon_name" name="salon_name" class="form-control">
                     </div>
                     <div class="form-group col-md-6">
-                        <label>Busisness ID</label>
+                        <label>Business ID</label>
                         <input type="text" id="salon_id" name="salon_id" class="form-control">
                     </div>
                 </div>

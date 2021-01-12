@@ -38,7 +38,7 @@
       <div class="d-flex align-items-center">
         <div class="chat-sidebar-profile-toggle">
           <div class="avatar">
-            <img src="/images/portrait/small/avatar-s-11.jpg" alt="user_avatar" height="36" width="36">
+            <img src="/images/logo/logo.png" alt="user_avatar" height="36" width="36">
           </div>
         </div>
         <fieldset class="form-group position-relative has-icon-left mx-75 mb-0">
@@ -135,9 +135,24 @@
     
     <script src="/app-assets/js/scripts/pages/app-chat.js"></script>
     
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
 <script type="text/javascript">
 $('.chat-to-salon').addClass('active');
+$('#body').addClass('chat-application');
+//    Pusher.logToConsole = true;
+//       var channel_name = $('#salon_id').val();
+//       alert(channel_name);
+//       var pusher = new Pusher('590b6d6860cec4d1dc67', {
+//       cluster: 'ap2'
+//     });
+//     var channel = pusher.subscribe(channel_name);
+//     channel.bind('chat-event', function(data) {
+//         console.log(data);
+//         viewChat(channel_name);
+//     });
+
+// viewChat(channel_name);
 
 function viewChat(id)
 {

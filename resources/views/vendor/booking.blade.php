@@ -95,6 +95,7 @@
                 @if($row->address_id != '')
                     <a onclick="ViewAddress({{$row->id}})" href="#" class="dropdown-item"> Customer Address</a>
                 @endif
+                <a target="_blank" href="/vendor/print-invoice/{{$row->id}}" class="dropdown-item"> Print</a>
                 </div>
             </div>
                                                         </td>

@@ -426,6 +426,11 @@ Route::group(['prefix' => 'vendor'],function(){
 	Route::get('/chat-to-customer/{id}', 'Vendor\ChatController@chatToCustomer');
 	Route::get('/get-customer-chat/{id}', 'Vendor\ChatController@getCustomerChat');
 	Route::POST('/save-customer-chat', 'Vendor\ChatController@saveCustomerChat');
+
+	Route::get('/get-admin-chat/{id}', 'Vendor\ChatController@getAdminChat');
+	Route::POST('/save-admin-chat', 'Vendor\ChatController@saveAdminChat');
+
+	Route::get('/print-invoice/{id}', 'Vendor\ChatController@printInvoice');
 });
 
 Auth::routes();

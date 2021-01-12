@@ -36,7 +36,7 @@
                 <li class="salon nav-item">
                     <a href="/admin/salon">
                         <i class="menu-livicon" data-icon="scissors"></i>
-                        <span class="menu-title" data-i18n="Email">Busisness</span>
+                        <span class="menu-title" data-i18n="Email">Business</span>
                     </a>
                 </li>
                 @endif
@@ -52,7 +52,7 @@
                 <li class="package nav-item">
                     <a href="/admin/salon-package">
                         <i class="menu-livicon" data-icon="morph-folder"></i>
-                        <span class="menu-title" data-i18n="Email">Busisness Package</span>
+                        <span class="menu-title" data-i18n="Email">Business Package</span>
                     </a>
                 </li>
                 @endif
@@ -200,14 +200,13 @@
 
                 <li class=" navigation-header"><span>Chat</span></li>
 
-                @if($role->chat_to_salon_read == 'on')
                  <li class="chat-to-salon nav-item">
                     <a href="/admin/chat-to-salon">
                         <i class="menu-livicon" data-icon="comments"></i>
-                        <span class="menu-title" data-i18n="Chat">Chat to Salon</span>
+                        <span class="menu-title" data-i18n="Chat">Chat to Business</span>
                     </a>
                 </li>
-                @endif
+
                 @if($role->chat_to_customer_read == 'on')
                  <li class="chat-to-customer nav-item">
                     <a href="/admin/chat-to-customer">

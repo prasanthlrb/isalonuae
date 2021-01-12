@@ -15,6 +15,8 @@ use Hash;
 use session;
 use Auth;
 use Carbon\Carbon;
+use App\Events\ChatEvent;
+use App\Events\ChatAdmin;
 
 class ChatController extends Controller
 {
@@ -31,7 +33,7 @@ class ChatController extends Controller
     }
 
     public function chatToSalon(){
-        $salon = User::all();
+        $salon = User::where('role_id','admin')->where('status',1)->get();
         return view('admin.chat_to_salon',compact('salon'));
     }
 
@@ -44,8 +46,17 @@ class ChatController extends Controller
       $chat_salon = new chat_salon;
       $chat_salon->text = $request->salon_text;
       $chat_salon->salon_id = $request->salon_id;
-      $chat_salon->admin_send = 1;
+      $chat_salon->message_from = 1;
       $chat_salon->save();
+
+      $dateTime = new Carbon($chat_salon->updated_at, new \DateTimeZone('Asia/Dubai'));
+      $message =  array(
+         'message'=> $chat_salon->text,
+         'message_from'=> '1',
+         'date'=> $dateTime->diffForHumans(),
+         'channel_name'=> $chat_salon->salon_id,
+      );
+      event(new ChatAdmin($message));
 
       return response()->json($request->salon_id); 
     }
@@ -97,7 +108,7 @@ $output='
         
       foreach($chat as $row){
         $dateTime = new Carbon($row->updated_at, new \DateTimeZone('Asia/Dubai'));
-        if($row->salon_send == '1'){
+        if($row->message_from == '0'){
       $output.='<div class="chat chat-left">
           <div class="chat-body">
             <div class="chat-message">

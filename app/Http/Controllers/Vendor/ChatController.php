@@ -12,12 +12,15 @@ use App\service;
 use App\booking;
 use App\booking_item;
 use App\manage_address;
+use App\booking_package;
 use Hash;
 use session;
 use Auth;
 use Carbon\Carbon;
 use DB;
 use App\Events\ChatEvent;
+use App\Events\ChatAdmin;
+use PDF;
 
 class ChatController extends Controller
 {
@@ -25,6 +28,21 @@ class ChatController extends Controller
     {
         $this->middleware('auth');
     }
+
+    public function printInvoice($id){
+      $booking = booking::find($id);
+      $customer = customer::find($booking->customer_id);
+      $salon = User::find($booking->salon_id);
+
+      $service = service::all();
+      
+      $booking_item = booking_item::where('booking_id',$id)->get();
+      $booking_package = booking_package::where('booking_id',$id)->get();
+
+      $pdf = PDF::loadView('pdf.invoicepdf',compact('booking','salon','customer','booking_item','booking_package','service'));
+      $pdf->setPaper('A4');
+      return $pdf->stream('report.pdf');
+  }
 
     public function viewAddress($id){
       $data = manage_address::find($id);
@@ -181,6 +199,29 @@ class ChatController extends Controller
       return response()->json($request->booking_id); 
     }
 
+    public function saveAdminChat(Request $request){
+      $request->validate([
+          'salon_text'=>'required',
+      ]);
+      date_default_timezone_set("Asia/Dubai");
+      date_default_timezone_get();
+      $chat_salon = new chat_salon;
+      $chat_salon->text = $request->salon_text;
+      $chat_salon->salon_id = Auth::user()->user_id;
+      $chat_salon->message_from = 0;
+      $chat_salon->save();
+
+      $dateTime = new Carbon($chat_salon->updated_at, new \DateTimeZone('Asia/Dubai'));
+        $message =  array(
+           'message'=> $chat_salon->text,
+           'message_from'=> '0',
+           'date'=> $dateTime->diffForHumans(),
+           'channel_name'=> Auth::user()->user_id,
+        );
+        event(new ChatAdmin($message));
+      return response()->json(Auth::user()->user_id); 
+    }
+
     public function getCustomerChat($id){
         $chat = salon_customer::where('booking_id',$id)->get();
 
@@ -219,4 +260,42 @@ chatContainer.scrollTop($(".chat-container > .chat-content").height());
          
         return response()->json(['html'=>$output],200); 
     }
+
+
+    public function getAdminChat($id){
+      $chat = chat_salon::where('salon_id',$id)->get();
+
+      date_default_timezone_set("Asia/Dubai");
+      date_default_timezone_get();
+      $output=''; 
+  foreach($chat as $row){
+      $dateTime = new Carbon($row->updated_at, new \DateTimeZone('Asia/Dubai'));
+      if($row->message_from == 0){
+      $output.='
+      <div class="chat ">
+        <div class="chat-body">
+            <div class="chat-message">
+                <p>'.$row->text.'</p>
+                <span  style="right:20px !important;"  class="chat-time">'.$dateTime->diffForHumans().'</span>
+            </div>
+        </div>
+      </div>';
+      }
+      else{
+      $output.='
+      <div class="chat chat-left">
+          <div class="chat-body">
+              <div class="chat-message">
+                  <p>'.$row->text.'</p>
+                  <span style="left:20px !important;" class="chat-time">'.$dateTime->diffForHumans().'</span>
+              </div>
+          </div>
+      </div>';
+      }
+  }
+       
+      return response()->json(['html'=>$output],200); 
+  }
+
+
 }

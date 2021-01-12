@@ -17,8 +17,7 @@ class CreateChatSalonsTable extends Migration
             $table->id();
             $table->string('salon_id')->nullable();
             $table->string('admin_id')->nullable();
-            $table->string('admin_send')->nullable();
-            $table->string('salon_send')->nullable();
+            $table->string('message_from')->nullable();
             $table->string('date')->nullable();
             $table->string('time')->nullable();
             $table->TEXT('text')->nullable();
