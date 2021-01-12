@@ -49,13 +49,6 @@
                             <td>{{$row->date}}</td>
                             <td>AED {{$row->payment}}</td>
                             <td>
-                            @if($row->payment_type == 0)
-                            Cash
-                            @elseif($row->payment_type == 1)
-                            Bank
-                            @endif
-                            </td>
-                            <td>
                                 {{$row->commission_percentage}} % <br>
                                 {{$row->commission_amount}}
                             </td>
