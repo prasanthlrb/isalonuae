@@ -241,8 +241,8 @@ class CronController extends Controller
         ->where('payment_status',0)
         ->get();
 
-    foreach($booking1 as $booking){
-
+    foreach($booking1 as $book){
+        $booking = booking::find($book->id);
         $orderID = $booking->order_id;
         $outlet = "e437f4ad-8d6c-4621-bd89-c91672b4c88a";
         $token=$this->getAccessToken();
