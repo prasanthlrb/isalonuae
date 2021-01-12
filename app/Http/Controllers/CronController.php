@@ -83,13 +83,13 @@ class CronController extends Controller
                 $user->admin_balance = ($user->admin_pay + $row->total_amount) - $user->admin_paid;
                 $user->save();
 
-                $commission_amount = ($user->commission_percentage / 100) * $row->total_amount;
+                $commission_amount = ($user->salon_commission / 100) * $row->total_amount;
 
                 $payments_out = new payments_out;
                 $payments_out->date = date('Y-m-d');
                 $payments_out->salon_id = $row->salon_id;
                 $payments_out->payment = $row->total_amount;
-                $payments_out->commission_percentage = $user->commission_percentage;
+                $payments_out->commission_percentage = $user->salon_commission;
                 $payments_out->commission_amount = $commission_amount;
                 $payments_out->save();
         }
@@ -122,13 +122,13 @@ class CronController extends Controller
                 $user->salon_balance = ($user->salon_pay + $row->total_amount) - $user->salon_paid;
                 $user->save();
 
-                $commission_amount = ($user->commission_percentage / 100) * $row->total_amount;
+                $commission_amount = ($user->salon_commission / 100) * $row->total_amount;
 
                 $payments_in = new payments_in;
                 $payments_in->date = date('Y-m-d');
                 $payments_in->salon_id = $row->salon_id;
                 $payments_in->payment = $row->total_amount;
-                $payments_in->commission_percentage = $user->commission_percentage;
+                $payments_in->commission_percentage = $user->salon_commission;
                 $payments_in->commission_amount = $commission_amount;
                 $payments_in->save();
         }
