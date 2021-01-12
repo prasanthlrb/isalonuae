@@ -44,10 +44,13 @@
                             <th>Appointment Date/Time</th>
                             <th>Amount</th>
                             <th>Status</th>
+                            <th>Print</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($booking as $row)
+                    @if($row->payment_type == '1' && $row->payment_status == '0')
+                    @else
                         <tr>
                             <td>#{{$row->b_id}}</td>
                             <td>
@@ -74,7 +77,11 @@
                             Visited
                             @endif
                             </td>
+                            <td>
+                            <a href="/admin/print-invoice/{{$row->id}}" target="_blank">Print</a>
+                            </td>
                         </tr>
+                        @endif
                         @endforeach
                     </tbody>
                     <tfoot>
@@ -85,6 +92,7 @@
                             <th>Appointment Date/Time</th>
                             <th>Amount</th>
                             <th>Status</th>
+                            <th>Print</th>
                         </tr>
                     </tfoot>
                 </table>

@@ -38,7 +38,6 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -56,9 +55,9 @@
                             @endif
                             </td>
                             <td>
-                            @if($row->status == 0)
-                            Pending
-                            @elseif($row->status == 1)
+                            @if($row->status == '0')
+                            Un Paid
+                            @elseif($row->status == '1')
                             Paid
                             @endif
                             </td>
@@ -70,7 +69,6 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
                                 <th>Status</th>
                             </tr>
                         </tfoot>

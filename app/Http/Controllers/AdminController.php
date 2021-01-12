@@ -10,6 +10,8 @@ use App\User;
 use App\customer;
 use App\role;
 use App\booking;
+use App\booking_item;
+use App\booking_package;
 use App\payments_in;
 use App\payments_out;
 use Hash;
@@ -18,6 +20,7 @@ use App\salon_service;
 use session;
 use Auth;
 use DB;
+use PDF;
 
 class AdminController extends Controller
 {
@@ -31,6 +34,21 @@ class AdminController extends Controller
         $customer = customer::all();
         $salon = User::all();
         return view('admin.booking',compact('booking','customer','salon'));
+    }
+
+    public function printInvoice($id){
+        $booking = booking::find($id);
+        $customer = customer::find($booking->customer_id);
+        $salon = User::find($booking->salon_id);
+
+        $service = service::all();
+        
+        $booking_item = booking_item::where('booking_id',$id)->get();
+        $booking_package = booking_package::where('booking_id',$id)->get();
+
+        $pdf = PDF::loadView('pdf.invoicepdf',compact('booking','salon','customer','booking_item','booking_package','service'));
+        $pdf->setPaper('A4');
+        return $pdf->stream('report.pdf');
     }
 
     public function dashboard(){
@@ -295,82 +313,6 @@ class AdminController extends Controller
         $user = admin::find($id);
         $user->delete();
         return response()->json(['message'=>'Successfully Delete'],200); 
-    }
-
-    public function expiredSalon(){
-        $user = user::all();
-
-        $today = date('Y-m-d');
-        foreach($user as $row){
-            if($row->expiry_date < $today){
-                $salon = User::find($row->id);
-                $salon->status = 2;
-                $salon->save();
-            }
-        }
-        //return response()->json(['message'=>'Successfully Delete'],200); 
-    }
-
-    public function cashReport(){
-        $booking =DB::table('bookings')
-        ->where('payment_type',0)
-        ->where('payment_status',1)
-        ->where('status',0)
-        ->select('salon_id' , DB::raw('SUM(total) as total_amount'))
-        ->groupBy('salon_id')
-        ->get();
-
-        foreach($booking as $row){
-            $user = User::find($row->salon_id);
-            
-            $user->admin_pay = $user->admin_pay + $row->total_amount;
-            $user->admin_balance = ($user->admin_pay + $row->total_amount) - $user->admin_paid;
-            $user->save();
-
-            $payments_out = new payments_out;
-            $payments_out->date = date('Y-m-d');
-            $payments_out->salon_id = $row->salon_id;
-            $payments_out->payment = $row->total_amount;
-            $payments_out->save();
-        }
-
-        $booking_status = booking::where('status',0)->where('payment_type',0)->where('payment_status',1)->get();
-        foreach($booking_status as $status){
-            $booking_id = booking::find($status->id);
-            $booking_id->status = 1;
-            $booking_id->save() ;
-        }
-    }
-
-    public function cardReport(){
-        $booking =DB::table('bookings')
-        ->where('payment_type',1)
-        ->where('payment_status',1)
-        ->where('status',0)
-        ->select('salon_id' , DB::raw('SUM(total) as total_amount'))
-        ->groupBy('salon_id')
-        ->get();
-
-        foreach($booking as $row){
-            $user = User::find($row->salon_id);
-            
-            $user->salon_pay = $user->salon_pay + $row->total_amount;
-            $user->salon_balance = ($user->salon_pay + $row->total_amount) - $user->salon_paid;
-            $user->save();
-
-            $payments_in = new payments_in;
-            $payments_in->date = date('Y-m-d');
-            $payments_in->salon_id = $row->salon_id;
-            $payments_in->payment = $row->total_amount;
-            $payments_in->save();
-        }
-
-        $booking_status = booking::where('status',0)->where('payment_type',1)->where('payment_status',1)->get();
-        foreach($booking_status as $status){
-            $booking_id = booking::find($status->id);
-            $booking_id->status = 1;
-            $booking_id->save() ;
-        }
     }
 
 

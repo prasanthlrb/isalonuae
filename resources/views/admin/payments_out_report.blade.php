@@ -62,7 +62,9 @@
                                 <th>Date</th>
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
+                                <!-- <th>Transaction /<br>Mode</th> -->
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,7 +75,9 @@
                                 <th>Date</th>
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
+                                <!-- <th>Transaction /<br>Mode</th> -->
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -122,7 +126,9 @@ var orderPageTable = $('#datatable').DataTable({
         { data: 'date', name: 'date' },
         { data: 'salon_details', name: 'salon_details' },
         { data: 'payment', name: 'payment' },
-        { data: 'payment_type', name: 'payment_type' },
+        // { data: 'payment_type', name: 'payment_type' },
+        { data: 'status', name: 'status' },
+        { data: 'action', name: 'action' },
     ]
 });
 
@@ -148,5 +154,24 @@ $('#search').click(function(){
     orderPageTable.ajax.url(new_url).load();
     //orderPageTable.draw();
 });
+
+function ChangeStatus(id,id1){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/admin/change-status-paymentsout/'+id+'/'+id1,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Update');
+          
+          var new_url = '/admin/get-payments-out-report/1/1';
+            orderPageTable.ajax.url(new_url).load();
+
+        }
+      });
+    } 
+}
 </script>
 @endsection

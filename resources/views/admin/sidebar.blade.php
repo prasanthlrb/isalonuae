@@ -36,7 +36,7 @@
                 <li class="salon nav-item">
                     <a href="/admin/salon">
                         <i class="menu-livicon" data-icon="scissors"></i>
-                        <span class="menu-title" data-i18n="Email">Salon</span>
+                        <span class="menu-title" data-i18n="Email">Busisness</span>
                     </a>
                 </li>
                 @endif
@@ -52,7 +52,7 @@
                 <li class="package nav-item">
                     <a href="/admin/salon-package">
                         <i class="menu-livicon" data-icon="morph-folder"></i>
-                        <span class="menu-title" data-i18n="Email">Salon Package</span>
+                        <span class="menu-title" data-i18n="Email">Busisness Package</span>
                     </a>
                 </li>
                 @endif
@@ -270,12 +270,12 @@
                 </li>
                 @endif
                 @if($role->application_settings_read == 'on')
-                <li class="application-settings nav-item">
+                <!-- <li class="application-settings nav-item">
                     <a href="/admin/application-settings">
                         <i class="menu-livicon" data-icon="settings"></i>
                         <span class="menu-title" data-i18n="Chat">Application Settings</span>
                     </a>
-                </li>
+                </li> -->
                 @endif
                 @if($role->terms_and_condition_read == 'on')
                 <li class="terms-and-condition nav-item">
@@ -294,12 +294,12 @@
                 </li>
                 @endif
                 @if($role->banner_read == 'on')
-                <li class="banner nav-item">
+                <!-- <li class="banner nav-item">
                     <a href="/admin/banner">
                         <i class="menu-livicon" data-icon="magic"></i>
                         <span class="menu-title" data-i18n="Chat">Promotion Banner</span>
                     </a>
-                </li>
+                </li> -->
                 @endif
                 @if($role->settlement_period_read == 'on')
                 <li class="settlement-period nav-item">

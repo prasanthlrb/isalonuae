@@ -1,5 +1,5 @@
- @section('css')
-     <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
+@section('css')
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css">
  @endsection
  @extends('admin.layouts')
 @section('body-section')
@@ -9,12 +9,12 @@
                 <div class="content-header-left col-12 mb-2 mt-1">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h5 class="content-header-title float-left pr-1 mb-0">Salon List</h5>
+                            <h5 class="content-header-title float-left pr-1 mb-0">Busisness List</h5>
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active">Salon
+                                    <li class="breadcrumb-item active">Busisness
                                     </li>
                                 </ol>
                             </div>
@@ -30,23 +30,55 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-        <!-- new task button -->
-        <button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
-          <i class="bx bx-plus"></i>
-          <span>New Salon</span>
-        </button>
+        
+
+<form id="search_form" action="#" method="post" enctype="multipart/form-data">
+{{ csrf_field() }}
+<div class="card-header">
+    <div class="row">
+        <div class="form-group col-md-4">
+<button id="add_new" style="width: 200px;" type="button" class="btn btn-primary add-task-btn btn-block my-1">
+    <i class="bx bx-plus"></i>
+    <span>New Busisness</span>
+</button>
         </div>
+
+        <div class="form-group col-md-4">
+            <label>Search Busisness Type</label>
+            <select id="search_busisness_type" name="search_busisness_type" class="form-control">
+                <option value="0">All</option>
+                <option value="1">Salon</option>
+                <option value="2">Spa</option>
+                <option value="3">Makeup Artist</option>
+                <option value="4">Beauty Clinic</option>
+                <option value="5">Home Services</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-2">
+            <button id="search" class="btn btn-primary btn-block mr-10" type="button">Search</button>
+        </div>
+        <!-- <div class="form-group col-md-2">
+            <button id="downloadexcel" class="btn btn-primary btn-block mr-10" type="submit">Excel</button>
+        </div> -->
+    </div>
+</div>
+</form>
+    
+        </div>
+
+
         <div class="card-content">
             <div class="card-body card-dashboard">
                 <!-- <p class="card-text">In this Table Show All type of Salon Information, Booking Details and Payment Details.</p> -->
                 
                 <div class="table-responsive">
                    
-                    <table class="table zero-configuration">
+                    <table id="datatable" class="table zero-configuration">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Salon Name</th>
+                                <th>Busisness Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
                                 <th>Current Status</th>
@@ -55,63 +87,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($salon as $key => $row)
-                            <tr>
-                                <td>{{$key + 1}}</td>
-                                <td>{{$row->salon_name}}</td>
-                                <td>{{$row->name}}</td>
-                                <td>{{$row->phone}}</td>
-
-                                
-                                <td>
-                                @if($row->status == '0')
-                                <span class="text-warning">New User</span>
-                                @elseif($row->status == '1')
-                                <span class="text-success">Active</span>
-                                @elseif($row->status == '2')
-                                <span class="text-danger">Pack Ecpired</span>
-                                @elseif($row->status == '3')
-                                <span class="text-danger">Blocked</span>
-                                @endif
-                                </td>
-                                <td>
-                                    @foreach($salon_package as $package)
-                                    @if($package->id == $row->salon_package)
-                                    {{$package->package_name}}
-                                    @endif
-                                    @endforeach
-                                </td>
-                                <td><div class="dropdown">
-                                    <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
-                                    </span>
-                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                      <a onclick="Edit({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
-                                      <a onclick="Delete({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
-                                      <a onclick="UpgradePlan({{$row->id}})" class="dropdown-item"><i class="bx bxs-chat mr-1"></i> Upgrade Package</a>
-                                      <a target="_blank" class="dropdown-item" href="/admin/salon-login/{{$row->id}}"><i class="bx bxs-chat mr-1"></i> Salon Login</a>
-                                      <!-- <a class="dropdown-item" href="/admin/chat-to-salon"><i class="bx bxs-chat mr-1"></i> Chat</a> -->
-                                    @if($row->status == '0')
-                                    <a onclick="ChangeStatus({{$row->id}},1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>
-                                    @elseif($row->status == '1')
-                                    <a onclick="ChangeStatus({{$row->id}},3)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a>
-                                    @elseif($row->status == '2')
-                                    <a onclick="UpgradePlan({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active New Plan</a>
-                                    @elseif($row->status == '3')
-                                    <a onclick="ChangeStatus({{$row->id}},1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>
-                                    @endif
-                                      
-
-                                      <a class="dropdown-item" href="/admin/view-salon/{{$row->id}}"><i class="bx bx-show-alt mr-1"></i> See Profile</a>
-                                    </div>
-                                  </div>
-                                </td>
-                            </tr>
-                        @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Salon Name</th>
+                                <th>Busisness Name</th>
                                 <th>Owner / Person Name</th>
                                 <th>Phone Number</th>
                                 <th>Current Status</th>
@@ -399,18 +379,58 @@
 @endsection
 @section('js')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-                    <!-- BEGIN: Page Vendor JS-->
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
     <!-- END: Page Vendor JS-->
-    <script src="/app-assets/js/scripts/datatables/datatable.js"></script>
+    <!-- <script src="/app-assets/js/scripts/datatables/datatable.js"></script> -->
 <script type="text/javascript">
 $('.salon').addClass('active');
+
+var orderPageTable = $('#datatable').DataTable({
+    "processing": true,
+    "serverSide": true,
+    //"pageLength": 50,
+    "ajax":{
+        "url": "/admin/get-salon/0",
+        "dataType": "json",
+        "type": "POST",
+        "data":{ _token: "{{csrf_token()}}"}
+    },
+    "columns": [
+        { data: 'DT_RowIndex', orderable: false, searchable: false },
+        { data: 'salon_name', name: 'salon_name' },
+        { data: 'name', name: 'name' },
+        { data: 'phone', name: 'phone' },
+        { data: 'membership', name: 'membership' },
+        { data: 'status', name: 'status' },
+        { data: 'action', name: 'action' },
+    ]
+});
+
+
+$('#search').click(function(){
+    //alert('hi');
+    var search_busisness_type = $('#search_busisness_type').val();
+    var id;
+    if(search_busisness_type!=""){
+      id = search_busisness_type;
+    }else{
+      id = '0';
+    }
+
+    var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+    orderPageTable.ajax.url(new_url).load();
+    //orderPageTable.draw();
+});
+
+
+
+
 var action_type;
 $('#add_new').click(function(){
     $('#popup_modal').modal('show');
@@ -461,7 +481,10 @@ function Save(){
         {                
             $("#form")[0].reset();
             $('#popup_modal').modal('hide');
-            $('.zero-configuration').load(location.href+' .zero-configuration');
+            
+            var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+            orderPageTable.ajax.url(new_url).load();
+
             toastr.success(data, 'Successfully Save');
         },error: function (data) {
             var errorData = data.responseJSON.errors;
@@ -483,7 +506,10 @@ function Save(){
         console.log(data);
           $("#form")[0].reset();
            $('#popup_modal').modal('hide');
-           $('.zero-configuration').load(location.href+' .zero-configuration');
+           
+            var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+            orderPageTable.ajax.url(new_url).load();
+
            toastr.success(data, 'Successfully Update');
       },error: function (data) {
         var errorData = data.responseJSON.errors;
@@ -565,7 +591,10 @@ function UpdatePlan(){
         {                
             $("#planform")[0].reset();
             $('#membership_modal').modal('hide');
-            $('.zero-configuration').load(location.href+' .zero-configuration');
+            
+            var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+            orderPageTable.ajax.url(new_url).load();
+
             toastr.success(data, 'Successfully Save');
         },error: function (data) {
             var errorData = data.responseJSON.errors;
@@ -585,7 +614,10 @@ function Delete(id){
         success: function(data)
         {
           toastr.success(data, 'Successfully Delete');
-          $('.zero-configuration').load(location.href+' .zero-configuration');
+            
+            var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+            orderPageTable.ajax.url(new_url).load();
+
         }
       });
     } 
@@ -601,7 +633,10 @@ function ChangeStatus(id,id1){
         success: function(data)
         {
           toastr.success(data, 'Successfully Update');
-          $('.zero-configuration').load(location.href+' .zero-configuration');
+          
+            var new_url = '/admin/get-salon/'+$('#search_busisness_type').val();
+            orderPageTable.ajax.url(new_url).load();
+
         }
       });
     } 

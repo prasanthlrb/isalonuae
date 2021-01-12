@@ -44,7 +44,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Service</th>
-                                                        <th>Category</th>
+                                                        <th>Duration</th>
+                                                        <th>Price</th>
                                                         <th>Remark</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
@@ -54,7 +55,8 @@
                                                 @foreach($service as $row)
                                                     <tr>
                                                         <td>{{$row->service_name}}</td>
-                                                        <td>{{$row->category}}</td>
+                                                        <td>{{$row->duration}}</td>
+                                                        <td>{{$row->price}}</td>
                                                         <td>{{$row->remark}}</td>
                                                         <td>
                                                         @if($row->status == 1)
@@ -82,7 +84,8 @@
                                                 <tfoot>
                                                     <tr>
                                                         <th>Service</th>
-                                                        <th>Category</th>
+                                                        <th>Duration</th>
+                                                        <th>Price</th>
                                                         <th>Remark</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
@@ -125,8 +128,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Category</label>
-                        <input autocomplete="off" type="text" id="category" name="category" class="form-control">
+                        <label>Duration</label>
+                        <input autocomplete="off" type="text" id="duration" name="duration" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input autocomplete="off" type="text" id="price" name="price" class="form-control">
                     </div>
 
                     <div class="form-group">
@@ -232,7 +240,8 @@ function Edit(id){
       $('#save').text('Save Change');
       $('input[name=service_name]').val(data.service_name);
       $('textarea[name=remark]').val(data.remark);
-      $('input[name=category]').val(data.category);
+      $('input[name=duration]').val(data.duration);
+      $('input[name=price]').val(data.price);
       $('input[name=id]').val(id);
       $('#popup_modal').modal('show');
       action_type = 2;

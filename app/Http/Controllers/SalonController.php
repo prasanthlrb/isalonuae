@@ -21,12 +21,115 @@ use App\country;
 use Hash;
 use DB;
 use Mail;
+use session;
+use Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class SalonController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:admin');
+    }
+
+    public function Salon(){
+        $salon = User::where('role_id','admin')->get();
+        $city = area::where('parent_id',0)->get();
+        $area = area::where('parent_id','!=',0)->get();
+        $country = country::all();
+        $salon_package = salon_package::all();
+        return view('admin.salon',compact('salon','salon_package','city','area','country'));
+    }
+
+    public function getSalon($id){
+
+        if($id != '0'){
+            $salon = User::where('role_id','admin')->where('busisness_type',$id)->get();
+        }else{
+            $salon = User::where('role_id','admin')->get();
+        }        
+
+        return Datatables::of($salon)
+            ->addColumn('salon_id', function ($salon) {
+                return '<td>#'.$salon->id.'</td>';
+            })
+            ->addColumn('salon_name', function ($salon) {
+                if ($salon->salon_name != '') {
+                    return '<td>#'.$salon->salon_name.'</td>';
+                } else {
+                    return '<td>#'.$salon->name.'</td>';
+                }
+            })
+            ->addColumn('name', function ($salon) {
+                return '<td>
+                <p>' . $salon->name . '</p>
+                </td>';
+            })
+            ->addColumn('phone', function ($salon) {
+                $country = country::find($salon->country_id);
+                if(!empty($country)){
+                    return '<td><p>+' . $country->country_code . '' . $salon->phone . '</p></td>';
+                }
+                else{
+                    return '<td><p>' . $salon->phone . '</p></td>';
+                }
+            })
+            ->addColumn('membership', function ($salon) {
+                $salon_package = salon_package::find($salon->salon_package);
+                if(!empty($salon_package)){
+                    return '<td><p>' . $salon_package->package_name . '</p></td>';
+                }
+                else{
+                    return'';
+                }
+            })
+            ->addColumn('status', function ($salon) {
+                if($salon->status == '0'){
+                    return '<td><span class="text-warning">New User</span>';
+                }
+                elseif($salon->status == '1'){
+                    return '<td><span class="text-success">Active</span>';
+                }
+                elseif($salon->status == '2'){
+                    return '<td><span class="text-danger">Pack Ecpired</span>';
+                }
+                elseif($salon->status == '3'){
+                    return '<td><span class="text-danger">Blocked</span>';
+                }
+            })
+            ->addColumn('action', function ($salon) {
+                $output='';
+                if($salon->status == '0'){
+                    $output.='<a onclick="ChangeStatus('.$salon->id.',1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>';
+                }
+                elseif($salon->status == '1'){
+                    $output.='<a onclick="ChangeStatus('.$salon->id.',1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>';
+                }
+                elseif($salon->status == '2'){
+                     $output.='<a onclick="ChangeStatus('.$salon->id.',3)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Block</a>';
+                }
+                elseif($salon->status == '3'){
+                     $output.='<a onclick="ChangeStatus('.$salon->id.',1)" class="dropdown-item" href="#"><i class="bx bx-lock-alt mr-1"></i> Active</a>';
+                }  
+                return'<td>
+                    <div class="dropdown">
+                        <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu"></span>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            <a onclick="Edit('.$salon->id.')" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> edit</a>
+                            <a onclick="Delete('.$salon->id.')" class="dropdown-item" href="#"><i class="bx bx-trash mr-1"></i> delete</a>
+                            <a onclick="UpgradePlan('.$salon->id.')" class="dropdown-item"><i class="bx bxs-chat mr-1"></i> Upgrade Package</a>
+                            <a target="_blank" class="dropdown-item" href="/admin/salon-login/'.$salon->id.'"><i class="bx bxs-chat mr-1"></i> Salon Login</a>
+                            '.$output.'    
+                            <a class="dropdown-item" href="/admin/view-salon/'.$salon->id.'"><i class="bx bx-show-alt mr-1"></i> See Profile</a>
+                        </div>
+                    </div>
+                </td>';
+            })
+           
+
+        ->rawColumns(['salon_id','salon_name', 'name', 'phone','membership', 'status','action'])
+        ->addIndexColumn()
+        ->make(true);
     }
     
     public function viewSalon($id){
@@ -321,14 +424,7 @@ class SalonController extends Controller
         $salon->save();
         return response()->json('successfully update'); 
     }
-    public function Salon(){
-        $salon = User::where('role_id','admin')->get();
-        $city = area::where('parent_id',0)->get();
-        $area = area::where('parent_id','!=',0)->get();
-        $country = country::all();
-        $salon_package = salon_package::all();
-        return view('admin.salon',compact('salon','salon_package','city','area','country'));
-    }
+    
 
     public function editSalon($id){
         $salon = User::find($id);

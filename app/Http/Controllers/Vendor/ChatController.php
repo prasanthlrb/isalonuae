@@ -11,6 +11,7 @@ use App\customer;
 use App\service;
 use App\booking;
 use App\booking_item;
+use App\manage_address;
 use Hash;
 use session;
 use Auth;
@@ -23,6 +24,11 @@ class ChatController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function viewAddress($id){
+      $data = manage_address::find($id);
+      return response()->json($data); 
     }
 
     private function sendChatNotification($id){

@@ -40,8 +40,8 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,19 +51,24 @@
                             <td>{{$row->date}}</td>
                             <td>AED {{$row->payment}}</td>
                             <td>
-                            @if($row->payment_type == 0)
-                            Cash
-                            @elseif($row->payment_type == 1)
-                            Bank
-                            @endif
-                            </td>
-                            <td>
-                            @if($row->status == 0)
-                            Pending
-                            @elseif($row->status == 1)
+                            @if($row->status == '0')
+                            Un Paid
+                            @elseif($row->status == '1')
                             Paid
                             @endif
                             </td>
+                <td>
+                    <div class="dropdown">
+                        <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu"></span>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            @if($row->status == '0')
+                            <a onclick="ChangeStatus({{$row->id}},1)" class="dropdown-item" href="#"> Paid</a>   
+                            @elseif($row->status == '1')
+                            <a onclick="ChangeStatus({{$row->id}},0)" class="dropdown-item" href="#"> Un Paid</a>
+                            @endif
+                        </div>
+                    </div>
+                </td>
                         </tr>
                         @endforeach
                         </tbody>
@@ -72,8 +77,8 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -113,5 +118,20 @@
 $('.payments-out-report').addClass('active');
 $('.report').addClass('active');
 
+function ChangeStatus(id,id1){
+    var r = confirm("Are you sure");
+    if (r == true) {
+      $.ajax({
+        url : '/vendor/change-status-paymentsout/'+id+'/'+id1,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          toastr.success(data, 'Successfully Update');
+          location.reload();
+        }
+      });
+    } 
+}
 </script>
 @endsection

@@ -20,4 +20,12 @@ class ReviewController extends Controller
         $customer = customer::all();
         return view('admin.review',compact('review','customer','salon'));
     }
+
+    public function reviewStatus($id,$status){
+        $review = review::find($id);
+        $review->status = $status;
+        $review->save();
+
+        return response()->json('successfully updated'); 
+    }
 }

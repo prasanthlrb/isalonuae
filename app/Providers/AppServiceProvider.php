@@ -41,6 +41,18 @@ class AppServiceProvider extends ServiceProvider
             $view->with(compact('role'));
         });
 
+        view()->composer('vendor.layouts', function($view) {
+            $today = date('Y-m-d');
+            $tommorrow = date('Y-m-d',strtotime("$today +1 day"));
+            $sevendays = date('Y-m-d',strtotime("$today +7 day"));
+
+            $customer = customer::whereRaw('DAYOFYEAR(curdate()) <= DAYOFYEAR(dob) AND DAYOFYEAR(curdate()) + 7 >=  dayofyear(dob)')->orderByRaw('DAYOFYEAR(dob)')->get();
+
+            $customer_count = customer::whereRaw('DAYOFYEAR(curdate()) <= DAYOFYEAR(dob) AND DAYOFYEAR(curdate()) + 7 >=  dayofyear(dob)')->orderByRaw('DAYOFYEAR(dob)')->count();
+           
+            $view->with(compact('customer','customer_count'));
+        });
+
         view()->composer('vendor.dashboard', function($view) {
             $role = array();
             if(Auth::user()->role_id != 'admin'){

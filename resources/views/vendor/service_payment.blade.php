@@ -247,9 +247,9 @@ function Edit(id){
     {
       $('#modal-title').text('Update Service Payment');
       $('#save').text('Save Change');
-      $('input[name=service_name]').val(data.service_name);
-      $('textarea[name=remark]').val(data.remark);
-      $('input[name=category]').val(data.category);
+      $('select[name=service_id]').val(data.service_id);
+      $('select[name=duration]').val(data.duration);
+      $('input[name=price]').val(data.price);
       $('input[name=id]').val(id);
       $('#popup_modal').modal('show');
       action_type = 2;

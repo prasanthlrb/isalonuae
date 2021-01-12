@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\customer;
-use App\order;
+use App\booking;
+use App\coupon;
 use App\service;
 use App\customer_password;
 use Hash;
@@ -25,10 +26,19 @@ class CustomerController extends Controller
 
     public function viewCustomerDetails($id){
          $customer_all = customer::all();
-         $order = order::all();
          $service = service::all();
+         $coupon = coupon::where('status',1)->get();
          $customer = customer::find($id);
-        return view('admin.customer_details',compact('customer','customer_all','order','service'));
+
+         $booking = DB::table("bookings")
+        ->join('users', 'users.id', '=', 'bookings.salon_id')
+        ->select('users.*','bookings.*')
+        //->orderBy('distance', 'ASC')
+        ->where("bookings.customer_id",$id)
+        //->groupBy("users.id")
+        ->get();
+
+        return view('admin.customer_details',compact('booking','customer_all','booking','service','coupon','customer'));
     }
 
 

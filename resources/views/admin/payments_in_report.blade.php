@@ -62,7 +62,8 @@
                                 <th>Date</th>
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
+                                <!-- <th>Transaction /<br>Mode</th> -->
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,7 +74,8 @@
                                 <th>Date</th>
                                 <th>Salon Name</th>
                                 <th>Payment</br></th>
-                                <th>Transaction /<br>Mode</th>
+                                <!-- <th>Transaction /<br>Mode</th> -->
+                                <th>Status</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -122,7 +124,8 @@ var orderPageTable = $('#datatable').DataTable({
         { data: 'date', name: 'date' },
         { data: 'salon_details', name: 'salon_details' },
         { data: 'payment', name: 'payment' },
-        { data: 'payment_type', name: 'payment_type' },
+        // { data: 'payment_type', name: 'payment_type' },
+        { data: 'status', name: 'status' },
     ]
 });
 

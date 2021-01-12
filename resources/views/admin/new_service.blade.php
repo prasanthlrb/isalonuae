@@ -41,7 +41,8 @@
                             <th>#</th>
                             <th>Salon</th>
                             <th>Service</th>
-                            <th>Category</th>
+                            <th>Duration</th>
+                            <th>Price</th>
                             <th>Remark</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -58,7 +59,8 @@
                             @endif
                             @endforeach
                             <td>{{$row->service_name}}</td>
-                            <td>{{$row->category}}</td>
+                            <td>{{$row->duration}}</td>
+                            <td>{{$row->price}}</td>
                             <td>{{$row->remark}}</td>
                             <td>
                             	@if($row->status == 1)
@@ -87,7 +89,8 @@
                                 <th>#</th>
                                 <th>Salon</th>
                                 <th>Service</th>
-	                            <th>Category</th>
+	                            <th>Duration</th>
+                                <th>Price</th>
 	                            <th>Remark</th>
 	                            <th>Status</th>
 	                            <th>Action</th>

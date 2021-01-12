@@ -41,7 +41,8 @@
 						                                <th>Customer Name</th>
 						                                <th>Comments</th>
 						                                <th>Reviews</th>
-						                                <th>Date & Time</th>
+                                                        <th>Date & Time</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -99,6 +100,15 @@
                     </div>
                 @endif
                                                     <td>{{$row->created_at}}</td>
+                                <td>
+                                @if($row->status == 0)
+                                Waiting
+                                @elseif($row->status == 1)
+                                Approved
+                                @elseif($row->status == 2)
+                                Denied
+                                @endif
+                                </td>
                                                 </tr>
                                                 @endforeach
                                                 </tbody>
@@ -108,7 +118,8 @@
 						                                <th>Customer Name</th>
 						                                <th>Comments</th>
 						                                <th>Reviews</th>
-						                                <th>Date & Time</th>
+                                                        <th>Date & Time</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </tfoot>
                                             </table>

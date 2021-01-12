@@ -35,15 +35,22 @@ class ReportController extends Controller
         return view('vendor.report');
     }
 
+    public function changeStatusPaymentsout($id,$status){
+        $payments_in = payments_in::find($id);
+        $payments_in->status = $status;
+        $payments_in->save();
+        return response()->json('successfully update'); 
+    }
+
     public function PaymentsInReport(){
-        $booking = payments_in::where('salon_id',Auth::user()->user_id)->orderBy('id','desc')->get();
+        $booking = payments_out::where('salon_id',Auth::user()->user_id)->orderBy('id','desc')->get();
         $customer = customer::all();
         $salon = User::all();
         return view('vendor.payments_in_report',compact('booking','customer','salon'));
     }
 
     public function PaymentsOutReport(){
-        $booking = payments_out::where('salon_id',Auth::user()->user_id)->orderBy('id','desc')->get();
+        $booking = payments_in::where('salon_id',Auth::user()->user_id)->orderBy('id','desc')->get();
         $customer = customer::all();
         $salon = User::all();
         return view('vendor.payments_out_report',compact('booking','customer','salon'));

@@ -175,12 +175,12 @@
 
                     <div class="row">
                       
-                      <div class="col-12">
+                      <!-- <div class="col-12">
                         <h6>Package Details</h6>
                         <p>Package Name :</p>
                         <p>Price :</p>
                         <p>Validity :</p>
-                      </div>
+                      </div> -->
                     </div>
           </div>
 
@@ -190,28 +190,43 @@
                 <table class="table zero-configuration">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
+                            <th>Booking ID</th>
                             <th>Salon Name</th>
-                            <th>Amount</th>
+                            <th>Payment Type</th>
+                            <th>Payment Status</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($order as $row)
+                    @foreach($booking as $row)
                         <tr>
-                            <td>{{$row->order_id}}</td>
-                            <td>{{$row->customer_id}}</td>
+                            <td>#{{$row->id}}</td>
                             <td>{{$row->salon_name}}</td>
-                            <td>{{$row->amount}}</td>
+                            <td>
+                              @if($row->payment_type == 0)
+                              Cash
+                              @else 
+                              Card
+                              @endif
+                            </td>
+                            <td>
+                              @if($row->payment_status == 0)
+                              Un Paid
+                              @else 
+                              Paid
+                              @endif
+                            </td>
+                            <td>{{$row->total}} AED</td>
                         </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
+                            <th>Booking ID</th>
                             <th>Salon Name</th>
-                            <th>Amount</th>
+                            <th>Payment Type</th>
+                            <th>Payment Status</th>
+                            <th>Total</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -222,7 +237,88 @@
 
           <div class="tab-pane" id="coupon" aria-labelledby="coupon-tab" role="tabpanel">
 
-            <div class="table-responsive">
+          <div class="table-responsive">
+                <table class="table zero-configuration">
+                    <thead>
+                        <tr>
+                          <th>Coupon Code</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Discount Type</th>
+                          <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($coupon as $row)
+                    @if($row->user_type == '')
+                      <tr>
+                        <td>
+                          @if(date('Y-m-d') > $row->end_date )
+                            <span style="color:red">{{$row->coupon_code}}</span>
+                          @else
+                            <span style="color:green">{{$row->coupon_code}}</span>
+                          @endif
+                        </td>
+                        <td>{{$row->start_date}}</td>
+                        <td>{{$row->end_date}}</td>
+                        <td>
+                          @if($row->discount_type == '1')
+                          Discount from product
+                          @elseif($row->discount_type == '2')
+                          Discount % from product
+                          @elseif($row->discount_type == '3')
+                          Discount from total cart
+                          @else
+                          Discount % from total cart
+                          @endif
+                        </td>
+                        <td>{{$row->amount}}</td>
+                      </tr>
+                    @else 
+                    <?php 
+                      $arraydata=array();
+                      foreach(explode(',',$row->user_id) as $user1){
+                        $arraydata[]=$user1;
+                      }
+                    ?>
+                      @if(in_array($customer->id , $arraydata))
+                      <tr>
+                        <td>
+                          @if(date('Y-m-d') > $row->end_date )
+                            <span style="color:red">{{$row->coupon_code}}</span>
+                          @else
+                            <span style="color:green">{{$row->coupon_code}}</span>
+                          @endif
+                        </td>
+                        <td>{{$row->start_date}}</td>
+                        <td>{{$row->end_date}}</td>
+                        <td>
+                          @if($row->discount_type == '1')
+                          Discount from product
+                          @elseif($row->discount_type == '2')
+                          Discount % from product
+                          @elseif($row->discount_type == '3')
+                          Discount from total cart
+                          @else
+                          Discount % from total cart
+                          @endif
+                        </td>
+                        <td>{{$row->amount}}</td>
+                      </tr>
+                      @endif
+                    @endif
+                    @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                          <th>Coupon Code</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Discount Type</th>
+                          <th>Amount</th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
 
           </div>

@@ -86,12 +86,15 @@
                 </span>
                 <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
                 @if($row->booking_status == 0)
-                  <a href="/vendor/chat-to-customer/{{$row->id}}" class="dropdown-item"><i class="bx bx-edit-alt mr-1"></i> Chat</a>
+                  <a href="/vendor/chat-to-customer/{{$row->id}}" class="dropdown-item"> Chat</a>
+                  <a onclick="OTP({{$row->id}})" class="dropdown-item" href="#"> Verified Otp</a>
                 @endif
                 @if($row->payment_status == 0)
-                    <a onclick="Paid({{$row->id}})" href="#" class="dropdown-item"><i class="bx bx-edit-alt mr-1"></i> Paid</a>
+                    <a onclick="Paid({{$row->id}})" href="#" class="dropdown-item"> Paid</a>
                 @endif
-                  <a onclick="OTP({{$row->id}})" class="dropdown-item" href="#"><i class="bx bx-edit-alt mr-1"></i> Verified Otp</a>
+                @if($row->address_id != '')
+                    <a onclick="ViewAddress({{$row->id}})" href="#" class="dropdown-item"> Customer Address</a>
+                @endif
                 </div>
             </div>
                                                         </td>
@@ -156,6 +159,39 @@
     </div>
 </div>
 <!-- /Bootstrap Modal -->
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="address_modal" tabindex="-1" role="dialog" aria-labelledby="popup_modal" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-grey-dark-5">
+                <h6 class="modal-title" id="modal-title1">View Location</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            <ul class="list-unstyled">
+                <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>
+                <label>Building / Community : </label><label id="addr_title"></label>
+                </li>
+                <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>
+                <label>Appartment Number : </label><label id="address"></label>
+                </li>
+                <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>
+                <label>Landmark : </label><label id="landmark"></label>
+                </li>
+                <li><i class="cursor-pointer bx bx-map mb-1 mr-50"></i>
+                <label>Address : </label><label id="map_title"></label>
+                </li>
+            </ul>
+                    
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Bootstrap Modal -->
 @endsection
 @section('extra-js')
     <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -195,6 +231,25 @@ function updateOTP(){
             }
         }
     });
+}
+
+
+function ViewAddress(id){
+  $.ajax({
+    url : '/vendor/view-address/'+id,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data)
+    {
+      $('#modal-title1').text('View Location');
+      $('#map_title').text(data.map_title);
+      $('#city').text(data.city);
+      $('#addr_title').text(data.addr_title);
+      $('#address').text(data.address);
+      $('#landmark').text(data.landmark);
+      $('#address_modal').modal('show');
+    }
+  });
 }
 
 function OTP(id){

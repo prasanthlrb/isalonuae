@@ -58,6 +58,13 @@ Route::get('/get-area/{id}', 'PageController@getArea');
 Route::get('/customer-create-password/{id}', 'PageController@customerCreatePassword');
 Route::POST('/customer-update-password', 'PageController@customerUpdatePassword');
 
+
+//cron-job-url
+Route::get('/expired-salon', 'CronController@expiredSalon');
+Route::get('/cash-report', 'CronController@cashReport');
+Route::get('/card-report', 'CronController@cardReport');
+Route::get('/check-payment-status', 'CronController@checkPaymentStatus');
+
 Route::group(['prefix' => 'admin'],function(){
 
 	Route::get('/login', 'Admin\LoginController@showLoginForm')->name('admin.login');
@@ -85,6 +92,8 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::post('/date-payments-in-report', 'ReportController@datePaymentsInReport');
 	Route::post('/date-payments-out-report', 'ReportController@datePaymentsOutReport');
 
+	Route::get('/change-status-paymentsout/{id}/{status}', 'ReportController@changeStatusPaymentsout');
+
 	Route::get('/app-terms', 'AdminController@appTerms');
 	Route::POST('/update-app-terms', 'AdminController@updateAppTerms');
 
@@ -99,6 +108,7 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::POST('/update-salon', 'SalonController@updateSalon');
 	Route::get('/salon/{id}', 'SalonController@editSalon');
 	Route::get('/salon', 'SalonController@Salon');
+	Route::POST('/get-salon/{id}', 'SalonController@getSalon');
 	Route::get('/salon-delete/{id}', 'SalonController@deleteSalon');
 
 	Route::get('/ChangeStatus/{id}/{id1}', 'SalonController@ChangeStatus');
@@ -147,7 +157,6 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::get('/salon-package-delete/{id}', 'PackageController@deleteSalonPackage');
 	
 	Route::get('/get-salon-package-item/{id}', 'PackageController@getSalonPackageItem');
-
 
 
 	//service
@@ -230,6 +239,7 @@ Route::group(['prefix' => 'admin'],function(){
 	Route::POST('/customer-update-password', 'CustomerController@customerUpdatePassword');
 
 	Route::get('/review', 'ReviewController@Review');
+	Route::get('/review-status/{id}/{id1}', 'ReviewController@reviewStatus');
 
 	//notification
 	Route::POST('/save-notification', 'NotificationController@saveNotification');
@@ -304,11 +314,7 @@ Route::group(['prefix' => 'admin'],function(){
 
 
 	Route::get('/booking', 'AdminController@getBooking');
-
-	Route::get('/expired-salon', 'AdminController@expiredSalon');
-	Route::get('/cash-report', 'AdminController@cashReport');
-	Route::get('/card-report', 'AdminController@cardReport');
-
+	Route::get('/print-invoice/{id}', 'AdminController@printInvoice');
 
 	//roles
 	Route::POST('/save-role', 'RoleController@saveRole');
@@ -392,6 +398,8 @@ Route::group(['prefix' => 'vendor'],function(){
 	Route::get('/payments-in-report', 'Vendor\ReportController@PaymentsInReport');
 	Route::get('/payments-out-report', 'Vendor\ReportController@PaymentsOutReport');
 
+	Route::get('/change-status-paymentsout/{id}/{status}', 'Vendor\ReportController@changeStatusPaymentsout');
+
 	//roles
 	Route::POST('/save-role', 'Vendor\RoleController@saveRole');
 	Route::POST('/update-role', 'Vendor\RoleController@updateRole');
@@ -406,6 +414,8 @@ Route::group(['prefix' => 'vendor'],function(){
 	Route::get('/get-booking', 'Vendor\ChatController@getBooking');
 	Route::post('/verified-otp', 'Vendor\ChatController@verifiedOtp');
 	Route::get('/update-payment-status/{id}', 'Vendor\ChatController@updatePaymentStatus');
+
+	Route::get('/view-address/{id}', 'Vendor\ChatController@viewAddress');
 
 	Route::get('/bank-details', 'Vendor\ReviewController@bankDetails');
 	Route::POSt('/update-bank-details', 'Vendor\ReviewController@updateBankDetails');

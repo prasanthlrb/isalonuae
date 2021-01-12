@@ -642,6 +642,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -704,6 +705,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -768,6 +770,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -832,6 +835,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -896,6 +900,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -960,6 +965,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -1021,6 +1027,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -1079,6 +1086,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -1194,6 +1202,7 @@ class ApiController extends Controller
     public function getShopReview($id){
         $q =DB::table('reviews as r');
         $q->where('r.salon_id', '=', $id);
+        $q->where('r.status', '=', 1);
         $q->join('customers as c','c.id', '=', 'r.customer_id');
         $q->select('r.comments','r.reviews','c.name','r.updated_at');
         $reviews = $q->get();
@@ -1249,6 +1258,7 @@ class ApiController extends Controller
         }
         $q =DB::table('reviews as r');
         $q->where('r.salon_id', '=', $user->id);
+        $q->where('r.status', '=', 1);
         $q->groupBy('r.salon_id');
         $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
         $review = $q->first();
@@ -1423,7 +1433,7 @@ class ApiController extends Controller
         ->orderBy('distance', 'ASC')
         ->where("users.role_id",'admin')
         ->where('salon_name','LIKE', "%$name%")
-        ->where('status',0)
+        ->where('status',1)
         //->groupBy("users.id")
         ->get();   
 
@@ -1453,6 +1463,7 @@ class ApiController extends Controller
             }
             $q =DB::table('reviews as r');
             $q->where('r.salon_id', '=', $value->id);
+            $q->where('r.status', '=', 1);
             $q->groupBy('r.salon_id');
             $q->select([DB::raw("(count(*)) AS review_count"), DB::raw("(sum(r.reviews) / count(*)) AS review_average")]);
             $review = $q->first();
@@ -1947,9 +1958,12 @@ if(count($coupon)>0){
 
     public function saveBookingItem(Request $request){
         try{
+            $service = service::find($request->service_id);
+
             $booking_item = new booking_item;
             $booking_item->booking_id = $request->booking_id;
             $booking_item->service_id = $request->service_id;
+            $booking_item->service_name = $service->service_name_english;
             $booking_item->price = $request->price;
             $booking_item->save();
         return response()->json(

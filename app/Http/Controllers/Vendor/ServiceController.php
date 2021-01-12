@@ -51,12 +51,15 @@ class ServiceController extends Controller
     
     public function saveService(Request $request){
         $request->validate([
-            'service_name'=>'required',
+            'service_name'=> 'required',
+            'price'=> 'required',
+            'duration'=> 'required',
         ]);
 
         $new_service = new new_service;
         $new_service->service_name = $request->service_name;
-        $new_service->category = $request->category;
+        $new_service->price = $request->price;
+        $new_service->duration = $request->duration;
         $new_service->remark = $request->remark;
         $new_service->salon_id = Auth::user()->user_id;
         $new_service->save();
@@ -66,11 +69,14 @@ class ServiceController extends Controller
     public function updateService(Request $request){
         $request->validate([
             'service_name'=> 'required',
+            'price'=> 'required',
+            'duration'=> 'required',
         ]);
         
         $new_service = new_service::find($request->id);
         $new_service->service_name = $request->service_name;
-        $new_service->category = $request->category;
+        $new_service->price = $request->price;
+        $new_service->duration = $request->duration;
         $new_service->remark = $request->remark;
         $new_service->save();
         return response()->json('successfully update'); 
@@ -100,6 +106,11 @@ class ServiceController extends Controller
     }
 
     public function saveServicePayment(Request $request){
+        $request->validate([
+            'service_id' => 'required|unique:salon_services,service_id,NULL,id,salon_id,'.Auth::user()->user_id,
+            'duration'=> 'required',
+            'price'=> 'required',
+        ]);
         $salon_service = new salon_service;
         $salon_service->salon_id = Auth::user()->user_id;
         $salon_service->service_id = $request->service_id;
@@ -111,6 +122,11 @@ class ServiceController extends Controller
     }
 
     public function updateServicePayment(Request $request){
+        $request->validate([
+            'service_id' => 'required|unique:salon_services,service_id,'.$request->id.',id,salon_id,'.Auth::user()->user_id,
+            'duration'=> 'required',
+            'price'=> 'required',
+        ]);
         $salon_service = salon_service::find($request->id);
         $salon_service->salon_id = Auth::user()->user_id;
         $salon_service->service_id = $request->service_id;
@@ -153,9 +169,9 @@ class ServiceController extends Controller
 
     public function saveServicePackage(Request $request){
         $request->validate([
-            'package_name_english'=> 'required',
+            'package_name_english' => 'required|unique:packages,package_name_english,NULL,id,salon_id,'.Auth::user()->user_id,
             'package_name_arabic'=> 'required',
-            //'service_ids'=> 'required',
+            'price'=> 'required',
         ]);
 
         $service_ids='';
@@ -185,9 +201,9 @@ class ServiceController extends Controller
 
     public function updateServicePackage(Request $request){
         $request->validate([
-            'package_name_english'=> 'required',
+            'package_name_english' => 'required|unique:packages,package_name_english,'.$request->id.',id,salon_id,'.Auth::user()->user_id,
             'package_name_arabic'=> 'required',
-            //'service_ids.*'=> 'required',
+            'price'=> 'required',
         ]);
 
         $service_ids='';

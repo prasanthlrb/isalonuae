@@ -154,7 +154,7 @@
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/role" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Roles</a></li>
                 @endif
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/gallery" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Add Gallery</a></li>
-                    <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/bank-details" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Bank Details</a></li>
+                    <!-- <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/bank-details" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Bank Details</a></li> -->
                     <li data-menu=""><a class="roles dropdown-item align-items-center" href="/vendor/store-time" data-toggle="dropdown"><i class="bx bx-right-arrow-alt"></i>Update Store Time</a></li>
                 </ul>
             </li>

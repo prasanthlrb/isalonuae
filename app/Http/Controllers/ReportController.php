@@ -42,6 +42,13 @@ class ReportController extends Controller
         return view('admin.payments_out_report');
     }
 
+    public function changeStatusPaymentsout($id,$status){
+        $payments_out = payments_out::find($id);
+        $payments_out->status = $status;
+        $payments_out->save();
+        return response()->json('successfully update'); 
+    }
+
     public function getBooking($fdate,$tdate){
 
         $fdate = date('Y-m-d', strtotime($fdate));
@@ -118,7 +125,7 @@ class ReportController extends Controller
                 <p>AED' . $booking->total . '</p>
                 </td>';
             })
-
+            
         ->rawColumns(['booking_id','booking_date', 'payment_type', 'customer_details','salon_details', 'total_services','total_amount'])
         ->make(true);
 
@@ -141,10 +148,17 @@ class ReportController extends Controller
                 return '<td>#'.$booking->id.'</td>';
             })
             ->addColumn('payment_type', function ($booking) {
-                if ($booking->payment_type == 0) {
+                if ($booking->payment_type == '0') {
                     return '<td>Cash</td>';
-                } else if ($booking->payment_type == 1) {
+                } else if ($booking->payment_type == '1') {
                     return '<td>Bank</td>';
+                }
+            })
+            ->addColumn('status', function ($booking) {
+                if ($booking->status == '0') {
+                    return '<td>Un Paid</td>';
+                } else if ($booking->status == '1') {
+                    return '<td>Paid</td>';
                 }
             })
             ->addColumn('date', function ($booking) {
@@ -179,7 +193,7 @@ class ReportController extends Controller
                 </td>';
             })
 
-        ->rawColumns(['id','date', 'payment_type','salon_details','payment'])
+        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status'])
         ->make(true);
 
         //return Datatables::of($orders) ->addIndexColumn()->make(true);
@@ -201,10 +215,17 @@ class ReportController extends Controller
                 return '<td>#'.$booking->id.'</td>';
             })
             ->addColumn('payment_type', function ($booking) {
-                if ($booking->payment_type == 0) {
+                if ($booking->payment_type == '0') {
                     return '<td>Cash</td>';
-                } else if ($booking->payment_type == 1) {
+                } else if ($booking->payment_type == '1') {
                     return '<td>Bank</td>';
+                }
+            })
+            ->addColumn('status', function ($booking) {
+                if ($booking->status == '0') {
+                    return '<td>Un Paid</td>';
+                } else if ($booking->status == '1') {
+                    return '<td>Paid</td>';
                 }
             })
             ->addColumn('date', function ($booking) {
@@ -238,8 +259,25 @@ class ReportController extends Controller
                 <p>AED' . $booking->payment . '</p>
                 </td>';
             })
+            ->addColumn('action', function ($booking) {
+                $output='';
+                if($booking->status == '0'){
+                    $output.='<a onclick="ChangeStatus('.$booking->id.',1)" class="dropdown-item" href="#"> Paid</a>';
+                }
+                elseif($booking->status == '1'){
+                    $output.='<a onclick="ChangeStatus('.$booking->id.',0)" class="dropdown-item" href="#"> Un Paid</a>';
+                }
+                return'<td>
+                    <div class="dropdown">
+                        <span class="bx bx-dots-horizontal-rounded font-medium-3 dropdown-toggle nav-hide-arrow cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu"></span>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-125px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            '.$output.'    
+                        </div>
+                    </div>
+                </td>';
+            })
 
-        ->rawColumns(['id','date', 'payment_type','salon_details','payment'])
+        ->rawColumns(['id','date', 'payment_type','salon_details','payment','status','action'])
         ->make(true);
 
         //return Datatables::of($orders) ->addIndexColumn()->make(true);
